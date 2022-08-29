@@ -1,16 +1,24 @@
 
-export interface LoadMessage {
-	type: 'loadSVG',
-	data: string,
-}
-
 export interface SaveMessage {
 	type: 'saveSVG',
 	data: string,
 }
 
-export interface WebViewLoadedMessage {
-	type: 'webviewLoaded',
+// Show the "discard changes" button
+export interface ShowCloseButtonRequest {
+	type: 'showCloseUnsavedBtn',
 }
 
-export type WebViewMessage = SaveMessage | LoadMessage | WebViewLoadedMessage;
+export interface HideCloseButtonRequest {
+	type: 'hideCloseUnsavedBtn',
+}
+
+export interface ResumeEditingMessage {
+	type: 'resumeEditing',
+}
+
+export interface InitialSvgDataRequest {
+	type: 'getInitialData',
+}
+
+export type WebViewMessage = SaveMessage | ShowCloseButtonRequest | HideCloseButtonRequest | ResumeEditingMessage | InitialSvgDataRequest;

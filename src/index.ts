@@ -49,17 +49,26 @@ const promptForDrawing = async (dialogHandle: string, initialData?: string): Pro
 				void dialogs.setButtons(dialogHandle, [{
 					id: 'ok',
 				}]);
-			} else if (message.type === 'webviewLoaded') {
+			} else if (message.type === 'getInitialData') {
 				return initialData;
+			} else if (message.type === 'showCloseUnsavedBtn') {
+				void dialogs.setButtons(dialogHandle, [{
+					id: 'cancel',
+					title: 'Discard changes',
+				}]);
+			} else if (message.type === 'hideCloseUnsavedBtn') {
+				void dialogs.setButtons(dialogHandle, []);
 			}
 		});
 
 		dialogs.open(dialogHandle).then((result: DialogResult) => {
-			if (saveData) {
+			if (saveData && result.id === 'ok') {
 				const saveOption: SaveOptionType = result.formData?.saveOptions?.saveOption ?? 'saveAsCopy';
 				resolve([ saveData, saveOption ]);
+			} else if (result.id === 'cancel') {
+				reject('Canceled by user.');
 			} else {
-				reject('Canceled.');
+				reject(`Unknown button ID ${result.id}`);
 			}
 		});
 	});

@@ -1,12 +1,38 @@
 import Editor from 'js-draw';
 import 'js-draw/bundle';
-import { SaveMessage, WebViewLoadedMessage, WebViewMessage } from '../types';
+import { ShowCloseButtonRequest, HideCloseButtonRequest, InitialSvgDataRequest, SaveMessage, WebViewMessage } from '../types';
 
 declare const webviewApi: any;
 
 let haveLoadedFromSvg = false;
 const editor = new Editor(document.body);
 const toolbar = editor.addToolbar();
+
+toolbar.addActionButton('Close', () => {
+	webviewApi.postMessage({ type: 'showCloseUnsavedBtn' } as ShowCloseButtonRequest);
+
+	const originalDisplay = editor.getRootElement().style.display;
+	editor.getRootElement().style.display = 'none';
+
+	const confirmationDialog = document.createElement('div');
+	confirmationDialog.className = 'exitOptionsDialog';
+
+	const message = document.createElement('div');
+	message.innerText = 'Discard unsaved changes?';
+
+	const resumeEditingBtn = document.createElement('button');
+	resumeEditingBtn.innerText = 'Resume editing';
+
+	resumeEditingBtn.onclick = () => {
+		webviewApi.postMessage({ type: 'hideCloseUnsavedBtn' } as HideCloseButtonRequest);
+		editor.getRootElement().style.display = originalDisplay;
+		confirmationDialog.remove();
+	};
+
+	confirmationDialog.replaceChildren(message, resumeEditingBtn);
+	document.body.appendChild(confirmationDialog);
+});
+
 toolbar.addActionButton('Save', () => {
 	const saveMessage: SaveMessage = {
 		type: 'saveSVG',
@@ -16,7 +42,7 @@ toolbar.addActionButton('Save', () => {
 	editor.getRootElement().remove();
 
 	const doneMessageContainer = document.createElement('form');
-	doneMessageContainer.className = 'pressDoneMessage';
+	doneMessageContainer.className = 'exitOptionsDialog';
 	doneMessageContainer.name = 'saveOptions';
 
 	const saveOptionsContainer = document.createElement('div');
@@ -57,15 +83,15 @@ toolbar.addActionButton('Save', () => {
 });
 
 webviewApi.onMessage((message: WebViewMessage) => {
-	if (message.type === 'loadSVG') {
-		editor.loadFromSVG(message.data);
+	if (message.type === 'resumeEditing') {
+		editor.getRootElement().style.visibility = 'unset';
 	} else {
 		console.log('unknown message', message);
 	}
 });
 
-const loadedMessage: WebViewLoadedMessage = {
-	type: 'webviewLoaded',
+const loadedMessage: InitialSvgDataRequest = {
+	type: 'getInitialData',
 };
 webviewApi.postMessage(loadedMessage).then(result => {
 	// Don't load the image multiple times.
