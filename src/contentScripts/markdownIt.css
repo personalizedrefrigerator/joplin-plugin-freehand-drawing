@@ -1,0 +1,22 @@
+.jsdraw--editButton {
+	display: none;
+	max-width: 50px;
+	max-height: 50px;
+	z-index: 1;
+}
+
+.jsdraw--svgWrapper {
+	display: inline-grid;
+}
+
+.jsdraw--svgWrapper > * {
+	grid-row: 1;
+	grid-column: 1;
+}
+
+.jsdraw--svgWrapper:hover .jsdraw--editButton,
+.jsdraw--svgWrapper:focus .jsdraw--editButton,
+.jsdraw--svgWrapper:focus-within .jsdraw--editButton,
+.jsdraw--editButton:focus {
+	display: block;
+}

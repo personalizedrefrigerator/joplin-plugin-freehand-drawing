@@ -32,6 +32,11 @@ const manifest = readManifest(manifestPath);
 const pluginArchiveFilePath = path.resolve(publishDir, `${manifest.id}.jpl`);
 const pluginInfoFilePath = path.resolve(publishDir, `${manifest.id}.json`);
 
+const moduleFallback = {
+	os: require.resolve('os-browserify/browser'),
+	path: require.resolve('path-browserify'),
+};
+
 function validatePackageJson() {
 	const content = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
 	if (!content.name || content.name.indexOf('joplin-plugin-') !== 0) {
@@ -143,6 +148,7 @@ const pluginConfig = Object.assign({}, baseConfig, {
 		alias: {
 			api: path.resolve(__dirname, 'api'),
 		},
+		fallback: moduleFallback,
 		// JSON files can also be required from scripts so we include this.
 		// https://github.com/joplin/plugin-bibtex/pull/2
 		extensions: ['.js', '.tsx', '.ts', '.json'],
@@ -177,6 +183,7 @@ const extraScriptConfig = Object.assign({}, baseConfig, {
 		alias: {
 			api: path.resolve(__dirname, 'api'),
 		},
+		fallback: moduleFallback,
 		extensions: ['.js', '.tsx', '.ts', '.json'],
 	},
 });
@@ -184,6 +191,9 @@ const extraScriptConfig = Object.assign({}, baseConfig, {
 const createArchiveConfig = {
 	stats: 'errors-only',
 	entry: './dist/index.js',
+	resolve: {
+		fallback: moduleFallback,
+	},
 	output: {
 		filename: 'index.js',
 		path: publishDir,

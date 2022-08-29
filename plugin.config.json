@@ -1,3 +1,3 @@
 {
-	"extraScripts": [ "webview.ts" ]
+	"extraScripts": [ "dialog/webview.ts", "contentScripts/markdownIt.ts" ]
 }
