@@ -1,12 +1,8 @@
-# Joplin Plugin
+# `joplin-plugin-freehand-drawing`
 
-This is a template to create a new Joplin plugin.
+A Joplin plugin for creating and editing freehand drawings.
 
-The main two files you will want to look at are:
-
-- `/src/index.ts`, which contains the entry point for the plugin source code.
-- `/src/manifest.json`, which is the plugin manifest. It contains information such as the plugin a name, version, etc.
-
+# Development
 ## Building the plugin
 
 The plugin is built using Webpack, which creates the compiled code in `/dist`. A JPL archive will also be created at the root, which can use to distribute the plugin.

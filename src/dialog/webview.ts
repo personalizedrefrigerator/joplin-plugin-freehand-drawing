@@ -69,7 +69,7 @@ const loadedMessage: WebViewLoadedMessage = {
 };
 webviewApi.postMessage(loadedMessage).then(result => {
 	// Don't load the image multiple times.
-	if (!haveLoadedFromSvg) {
+	if (result && !haveLoadedFromSvg) {
 		haveLoadedFromSvg = true;
 		editor.loadFromSVG(result);
 	}
