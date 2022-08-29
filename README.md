@@ -2,6 +2,8 @@
 
 A Joplin plugin for creating and editing freehand drawings.
 
+![](./screenshot.png)
+
 # Development
 ## Building the plugin
 
