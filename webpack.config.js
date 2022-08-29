@@ -9,9 +9,7 @@
 const path = require('path');
 const crypto = require('crypto');
 const fs = require('fs-extra');
-const chalk = require('chalk');
 const CopyPlugin = require('copy-webpack-plugin');
-const WebpackOnBuildPlugin = require('on-build-webpack');
 const tar = require('tar');
 const glob = require('glob');
 const execSync = require('child_process').execSync;
@@ -37,15 +35,15 @@ const pluginInfoFilePath = path.resolve(publishDir, `${manifest.id}.json`);
 function validatePackageJson() {
 	const content = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
 	if (!content.name || content.name.indexOf('joplin-plugin-') !== 0) {
-		console.warn(chalk.yellow(`WARNING: To publish the plugin, the package name should start with "joplin-plugin-" (found "${content.name}") in ${packageJsonPath}`));
+		console.warn(`WARNING: To publish the plugin, the package name should start with "joplin-plugin-" (found "${content.name}") in ${packageJsonPath}`);
 	}
 
 	if (!content.keywords || content.keywords.indexOf('joplin-plugin') < 0) {
-		console.warn(chalk.yellow(`WARNING: To publish the plugin, the package keywords should include "joplin-plugin" (found "${JSON.stringify(content.keywords)}") in ${packageJsonPath}`));
+		console.warn(`WARNING: To publish the plugin, the package keywords should include "joplin-plugin" (found "${JSON.stringify(content.keywords)}") in ${packageJsonPath}`);
 	}
 
 	if (content.scripts && content.scripts.postinstall) {
-		console.warn(chalk.yellow(`WARNING: package.json contains a "postinstall" script. It is recommended to use a "prepare" script instead so that it is executed before publish. In ${packageJsonPath}`));
+		console.warn(`WARNING: package.json contains a "postinstall" script. It is recommended to use a "prepare" script instead so that it is executed before publish. In ${packageJsonPath}`);
 	}
 }
 
@@ -62,8 +60,8 @@ function currentGitInfo() {
 		return `${branch}:${commit}`;
 	} catch (error) {
 		const messages = error.message ? error.message.split('\n') : [''];
-		console.info(chalk.cyan('Could not get git commit (not a git repo?):', messages[0].trim()));
-		console.info(chalk.cyan('Git information will not be stored in plugin info file'));
+		console.info('Could not get git commit (not a git repo?):', messages[0].trim());
+		console.info('Git information will not be stored in plugin info file');
 		return '';
 	}
 }
@@ -102,7 +100,7 @@ function createPluginArchive(sourceDir, destPath) {
 		distFiles
 	);
 
-	console.info(chalk.cyan(`Plugin archive has been created in ${destPath}`));
+	console.info(`Plugin archive has been created in ${destPath}`);
 }
 
 function createPluginInfo(manifestPath, destPath, jplFilePath) {
@@ -120,7 +118,7 @@ function onBuildCompleted() {
 		createPluginInfo(manifestPath, pluginInfoFilePath, pluginArchiveFilePath);
 		validatePackageJson();
 	} catch (error) {
-		console.error(chalk.red(error.message));
+		console.error(error.message);
 	}
 }
 
@@ -190,7 +188,11 @@ const createArchiveConfig = {
 		filename: 'index.js',
 		path: publishDir,
 	},
-	plugins: [new WebpackOnBuildPlugin(onBuildCompleted)],
+	plugins: [{
+		apply(compiler) {
+			compiler.hooks.done.tap('archiveOnBuildListener', onBuildCompleted);
+		}
+	}],
 };
 
 function resolveExtraScriptPath(name) {
@@ -231,11 +233,8 @@ function buildExtraScriptConfigs(userConfig) {
 	return output;
 }
 
-function main(processArgv) {
-	const yargs = require('yargs/yargs');
-	const argv = yargs(processArgv).argv;
-
-	const configName = argv['joplin-plugin-config'];
+function main(environ) {
+	const configName = environ['joplin-plugin-config'];
 	if (!configName) throw new Error('A config file must be specified via the --joplin-plugin-config flag');
 
 	// Webpack configurations run in parallel, while we need them to run in
@@ -273,19 +272,22 @@ function main(processArgv) {
 	return configs[configName];
 }
 
-let exportedConfigs = [];
 
-try {
-	exportedConfigs = main(process.argv);
-} catch (error) {
-	console.error(chalk.red(error.message));
-	process.exit(1);
-}
+module.exports = (env) => {
+	let exportedConfigs = [];
 
-if (!exportedConfigs.length) {
-	// Nothing to do - for example where there are no external scripts to
-	// compile.
-	process.exit(0);
-}
+	try {
+		exportedConfigs = main(env);
+	} catch (error) {
+		console.error(error.message);
+		process.exit(1);
+	}
+	
+	if (!exportedConfigs.length) {
+		// Nothing to do - for example where there are no external scripts to
+		// compile.
+		process.exit(0);
+	}
 
-module.exports = exportedConfigs;
+	return exportedConfigs;
+};
