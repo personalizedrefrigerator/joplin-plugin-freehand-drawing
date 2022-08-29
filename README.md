@@ -4,6 +4,10 @@ A Joplin plugin for creating and editing freehand drawings.
 
 ![](./screenshot.png)
 
+Links:
+ * [GitHub repository](https://github.com/personalizedrefrigerator/joplin-plugin-freehand-drawing)
+ * [On the Joplin Forum](https://discourse.joplinapp.org/t/plugin-js-draw-integration/27114)
+
 # Development
 ## Building the plugin
 
