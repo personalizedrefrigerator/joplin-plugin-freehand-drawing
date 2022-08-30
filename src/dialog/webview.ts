@@ -1,5 +1,6 @@
 import Editor from 'js-draw';
 import 'js-draw/bundle';
+import { escapeHtml } from '../htmlUtil';
 import { ShowCloseButtonRequest, HideCloseButtonRequest, InitialSvgDataRequest, SaveMessage, WebViewMessage } from '../types';
 
 declare const webviewApi: any;
@@ -34,9 +35,21 @@ toolbar.addActionButton('Close', () => {
 });
 
 toolbar.addActionButton('Save', () => {
+	const svgElem = editor.toSVG();
+
+	// diagrams.io has special requirements for arguments encoding.
+	// Generate the container element with custom code:
+	const svgText = ['<svg'];
+	for (const attr of svgElem.getAttributeNames()) {
+		svgText.push(` ${attr}="${escapeHtml(svgElem.getAttribute(attr))}"`);
+	}
+	svgText.push('>');
+	svgText.push(svgElem.innerHTML);
+	svgText.push('</svg>');
+
 	const saveMessage: SaveMessage = {
 		type: 'saveSVG',
-		data: editor.toSVG().outerHTML,
+		data: svgText.join(''),
 	};
 	webviewApi.postMessage(saveMessage);
 	editor.getRootElement().remove();

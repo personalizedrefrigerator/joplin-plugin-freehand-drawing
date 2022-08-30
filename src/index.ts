@@ -107,6 +107,7 @@ joplin.plugins.register({
 			const [ updatedData, saveOption ] = await promptForDrawing(drawingDialog, await resource.getDataAsString());
 
 			if (saveOption === 'overwrite') {
+				console.log('Overwriting with', updatedData);
 				await resource.updateData(updatedData);
 			} else {
 				await insertNewDrawing(updatedData);

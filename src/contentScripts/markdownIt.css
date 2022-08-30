@@ -3,6 +3,10 @@
 	max-width: 50px;
 	max-height: 50px;
 	z-index: 1;
+	opacity: 0.9;
+
+	align-self: flex-end;
+	justify-self: right;
 }
 
 .jsdraw--svgWrapper {

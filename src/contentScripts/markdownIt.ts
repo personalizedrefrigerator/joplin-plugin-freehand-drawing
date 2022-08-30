@@ -57,7 +57,7 @@ const editImage = (contentScriptId: string, container: HTMLElement) => {
 };
 
 const onImgLoad = (container: HTMLElement) => {
-	const button = container.querySelector('button');
+	const button = container.querySelector('button.jsdraw--editButton');
 	const imageElem = container.querySelector('img');
 
 	const outOfDateCacheBreakers = window['outOfDateCacheBreakers'] ?? {};
