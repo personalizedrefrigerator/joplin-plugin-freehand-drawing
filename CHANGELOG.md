@@ -1,4 +1,4 @@
-# 1.0.4
+# 1.0.5
  * Updates `js-draw` to the latest version
    * Caches rendered strokes (where possible) for performance
    * Bug fixes
