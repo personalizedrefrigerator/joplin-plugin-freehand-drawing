@@ -18,7 +18,7 @@ const editImage = (contentScriptId: string, container: HTMLElement) => {
 		const cachebreakerMatch = /^(.*)\?t=(\d+)$/.exec(initialSrc);
 		const fileUrl = cachebreakerMatch ? cachebreakerMatch[1] : initialSrc;
 
-		const oldCachebreaker = cachebreakerMatch ? cachebreakerMatch[2] : 0;
+		const oldCachebreaker = cachebreakerMatch ? parseInt(cachebreakerMatch[2]) : 0;
 		const newCachebreaker = (new Date()).getTime();
 
 		// Add the cachebreaker to the global list -- we may need to change cachebreakers
@@ -68,10 +68,10 @@ const onImgLoad = (container: HTMLElement) => {
 	}
 
 	const fileUrl = imageSrcMatch[1];
-	const cachebreaker = imageSrcMatch[2];
+	const cachebreaker = parseInt(imageSrcMatch[2] ?? '0');
 	const badCachebreaker = outOfDateCacheBreakers[fileUrl] ?? {};
 
-	if (cachebreaker === badCachebreaker?.outdated) {
+	if (isNaN(cachebreaker) || cachebreaker <= badCachebreaker?.outdated) {
 		imageElem.src = `${fileUrl}?t=${badCachebreaker.suggested}`;
 	}
 
