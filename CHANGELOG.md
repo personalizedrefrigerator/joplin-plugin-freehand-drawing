@@ -1,3 +1,8 @@
+# 1.0.6
+ * Updates `js-draw`
+   * Adds a text tool
+   * Various bug fixes and improvements 
+
 # 1.0.5
  * Updates `js-draw` to the latest version
    * Caches rendered strokes (where possible) for performance
