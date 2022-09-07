@@ -3,7 +3,7 @@
 
 A Joplin plugin for creating and editing freehand drawings.
 
-![](./screenshot.png)
+<img width="600" src="./screenshot.png"/>
 
 ## Installing
 Search for "freehand drawing" under the plugins tab in Joplin's settings:
@@ -15,7 +15,8 @@ After installation, an "insert drawing" button should appear in the toolbar:
 Existing drawings can be edited by hovering over the drawing in the markdown preview pane, then clicking "edit".
 ![screenshot of a drawing in the preview pane and an edit button, beneath the cursor. The edit button is at the bottom-right of the drawing.](https://user-images.githubusercontent.com/46334387/188909876-1b7c41d5-8fd9-4a15-86d9-a91504ddf5c1.png)
 
-
+# Notes
+ * This plugin uses [js-draw](https://github.com/personalizedrefrigerator/js-draw) to edit/create freehand drawings. Bugs related to `js-draw` can be reported using its [issue tracker](https://github.com/personalizedrefrigerator/js-draw/issues).
 
 
 # Development
