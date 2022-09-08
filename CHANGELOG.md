@@ -1,3 +1,9 @@
+# 1.0.8
+ * Updates `js-draw`
+   * Adds a pipette tool (pick colors by clicking on the screen)
+   * Adds recent colors to the list of suggested colors
+ * Fixes "resume editing" button sometimes not working.
+
 # 1.0.7
  * Updates `js-draw`
    * Fixes loading text from SVGs in Chrome, and thus in Joplin.
