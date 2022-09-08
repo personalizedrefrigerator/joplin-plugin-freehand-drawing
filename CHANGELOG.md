@@ -1,5 +1,9 @@
+# 1.0.10
+ * Updates `js-draw`
+   * Fixes a regression -- opening the color picker and attempting to change the color would cause the picker to immediately disappear.
+
 # 1.0.9
- * Match Joplin's theme
+ * Match Joplin's theme.
 
 # 1.0.8
  * Updates `js-draw`
