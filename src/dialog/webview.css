@@ -27,3 +27,12 @@ body, :root {
 .exitOptionsDialog input[type="radio"] {
 	min-width: 20px;
 }
+
+:root .imageEditorContainer {
+	--primary-background-color: var(--joplin-background-color);
+	--primary-background-color-transparent: var(--joplin-background-color-transparent);
+	--secondary-background-color: var(--joplin-background-color2);
+	--primary-foreground-color: var(--joplin-color);
+	--secondary-foreground-color: var(--joplin-color2);
+	--primary-shadow-color: var(--joplin-background-color2);
+}

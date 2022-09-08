@@ -1,3 +1,6 @@
+# 1.0.9
+ * Match Joplin's theme
+
 # 1.0.8
  * Updates `js-draw`
    * Adds a pipette tool (pick colors by clicking on the screen)

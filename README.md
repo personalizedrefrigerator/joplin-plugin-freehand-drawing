@@ -3,7 +3,7 @@
 
 A Joplin plugin for creating and editing freehand drawings.
 
-<img width="600" src="./screenshot.png"/>
+<img width="600" src="./screenshots/editorview-light-1.png"/>
 
 ## Installing
 Search for "freehand drawing" under the plugins tab in Joplin's settings:
