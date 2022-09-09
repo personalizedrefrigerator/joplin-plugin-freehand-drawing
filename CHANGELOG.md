@@ -1,3 +1,7 @@
+# 1.0.12
+ * Updates `js-draw`
+   * Adds a reset zoom/viewport button.
+
 # 1.0.11
  * Updates `js-draw`
    * Make icon foregrounds match Joplin's theme when buttons are selected.
