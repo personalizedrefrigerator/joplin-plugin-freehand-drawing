@@ -10,6 +10,8 @@ const strings = {
 	restoreFromAutosave: 'Restore from autosaved drawing',
 	deleteAutosave: 'Delete all autosaved drawings',
 	noSuchAutosaveExists: 'No autosave exists',
+	discardChanges: 'Discard changes',
+	defaultImageTitle: 'Freehand Drawing',
 };
 
 // While learning how to use the Joplin plugin API,
@@ -58,7 +60,7 @@ const promptForDrawing = async (dialogHandle: string, initialData?: string): Pro
 			} else if (message.type === 'showCloseUnsavedBtn') {
 				void dialogs.setButtons(dialogHandle, [{
 					id: 'cancel',
-					title: 'Discard changes',
+					title: strings.discardChanges,
 				}]);
 			} else if (message.type === 'hideCloseUnsavedBtn') {
 				void dialogs.setButtons(dialogHandle, []);
@@ -91,7 +93,7 @@ joplin.plugins.register({
 		const tmpdir = await TemporaryDirectory.create();
 
 		const insertNewDrawing = async (svgData: string) => {
-			const resource = await Resource.ofData(tmpdir, svgData, 'Freehand Drawing', '.svg');
+			const resource = await Resource.ofData(tmpdir, svgData, strings.defaultImageTitle, '.svg');
 			await joplin.commands.execute('insertText', `![${resource.htmlSafeTitle()}](:/${resource.resourceId})`);
 		}
 
