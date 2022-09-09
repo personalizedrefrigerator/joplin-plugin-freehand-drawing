@@ -1,11 +1,15 @@
 import joplin from 'api';
 import { ContentScriptType, DialogResult, ToolbarButtonLocation } from 'api/types';
+import { autosave, clearAutosave, getAutosave } from './autosave';
 import Resource from './Resource';
 import TemporaryDirectory from './TemporaryDirectory';
 import { WebViewMessage } from './types';
 
 const strings = {
 	insertDrawing: 'Insert Drawing',
+	restoreFromAutosave: 'Restore from autosaved drawing',
+	deleteAutosave: 'Delete all autosaved drawings',
+	noSuchAutosaveExists: 'No autosave exists',
 };
 
 // While learning how to use the Joplin plugin API,
@@ -58,6 +62,10 @@ const promptForDrawing = async (dialogHandle: string, initialData?: string): Pro
 				}]);
 			} else if (message.type === 'hideCloseUnsavedBtn') {
 				void dialogs.setButtons(dialogHandle, []);
+			} else if (message.type === 'autosave') {
+				void clearAutosave().then(() => {
+					void autosave(message.data);
+				});
 			}
 		});
 
@@ -101,6 +109,34 @@ joplin.plugins.register({
 		await joplin.views.toolbarButtons.create(
 			toolbuttonCommand, toolbuttonCommand, ToolbarButtonLocation.EditorToolbar
 		);
+
+		const restoreAutosaveCommand = `${pluginPrefix}restoreAutosave`;
+		const deleteAutosaveCommand = `${pluginPrefix}deleteAutosave`;
+		await joplin.commands.register({
+			name: restoreAutosaveCommand,
+			label: strings.restoreFromAutosave,
+			iconName: 'fas fa-floppy-disk',
+			execute: async () => {
+				const svgData = await getAutosave();
+
+				if (!svgData) {
+					await joplin.views.dialogs.showMessageBox(
+						strings.noSuchAutosaveExists,
+					);
+					return;
+				}
+
+				await insertNewDrawing(svgData);
+			},
+		});
+		await joplin.commands.register({
+			name: deleteAutosaveCommand,
+			label: strings.deleteAutosave,
+			iconName: 'fas fa-trash-can',
+			execute: async () => {
+				await clearAutosave();
+			},
+		});
 
 		const editDrawing = async (resourceUrl: string) => {
 			const resource = await Resource.fromURL(tmpdir, resourceUrl, '.svg', 'image/svg+xml');

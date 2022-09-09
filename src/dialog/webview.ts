@@ -34,7 +34,7 @@ toolbar.addActionButton('Close', () => {
 	document.body.appendChild(confirmationDialog);
 });
 
-toolbar.addActionButton('Save', () => {
+const toSVG = () => {
 	const svgElem = editor.toSVG();
 
 	// diagrams.io has special requirements for arguments encoding.
@@ -47,9 +47,13 @@ toolbar.addActionButton('Save', () => {
 	svgText.push(svgElem.innerHTML);
 	svgText.push('</svg>');
 
+	return svgText.join('');
+};
+
+toolbar.addActionButton('Save', () => {
 	const saveMessage: SaveMessage = {
 		type: 'saveSVG',
-		data: svgText.join(''),
+		data: toSVG(),
 	};
 	webviewApi.postMessage(saveMessage);
 	editor.getRootElement().remove();
@@ -113,3 +117,15 @@ webviewApi.postMessage(loadedMessage).then(result => {
 		editor.loadFromSVG(result);
 	}
 });
+
+// Autosave every two minutes.
+const autosaveInterval = 1000 * 60 * 2;
+setInterval(async () => {
+	console.log('autosaving...');
+	const message: WebViewMessage = {
+		type: 'autosave',
+		data: toSVG(),
+	};
+	await webviewApi.postMessage(message);
+	console.log('Done autosaving.');
+}, autosaveInterval);

@@ -124,7 +124,7 @@ export default (context: { contentScriptId: string }) => {
 						class='jsdraw--editButton'
 						onclick="(${editImageFnString})('${editSvgCommandIdentifier}', this.parentElement)"
 					>
-						Edit
+						🖊️ Edit
 					</button>
 				</span>
 				`;

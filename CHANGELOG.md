@@ -1,3 +1,9 @@
+# 1.0.11
+ * Updates `js-draw`
+   * Make icon foregrounds match Joplin's theme when buttons are selected.
+ * Autosaves every two minutes. At present there is only one autosave file.
+   * Press `Ctrl+Shift+P`, then type `Restore from autosave` to restore from the autosaved drawing.
+
 # 1.0.10
  * Updates `js-draw`
    * Fixes a regression -- opening the color picker and attempting to change the color would cause the picker to immediately disappear.
