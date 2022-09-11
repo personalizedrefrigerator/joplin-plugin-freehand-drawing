@@ -1,3 +1,8 @@
+# 1.0.13
+ * Updates `js-draw`
+   * Accessibility fixes
+   * Other bug fixes.
+
 # 1.0.12
  * Updates `js-draw`
    * Adds a reset zoom/viewport button.
