@@ -1,5 +1,6 @@
 import Editor from 'js-draw';
 import 'js-draw/bundle';
+import localization from '../localization';
 import { escapeHtml } from '../htmlUtil';
 import { ShowCloseButtonRequest, HideCloseButtonRequest, InitialSvgDataRequest, SaveMessage, WebViewMessage } from '../types';
 
@@ -9,7 +10,57 @@ let haveLoadedFromSvg = false;
 const editor = new Editor(document.body);
 const toolbar = editor.addToolbar();
 
-toolbar.addActionButton('Close', () => {
+const makeCloseIcon = () => {
+	const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+	svg.innerHTML = `
+		<style>
+			.toolbar-close-icon {
+				stroke: var(--icon-color);
+				stroke-width: 10;
+				stroke-linejoin: round;
+				stroke-linecap: round;
+				fill: none;
+			}
+		</style>
+		<path
+			d='
+				M 15,15 85,85
+				M 15,85 85,15
+			'
+			class='toolbar-close-icon'
+		/>
+	`;
+	svg.setAttribute('viewBox', '0 0 100 100');
+	return svg;
+};
+
+const makeSaveIcon = () => {
+	const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+	svg.innerHTML = `
+		<style>
+			.toolbar-save-icon {
+				stroke: var(--icon-color);
+				stroke-width: 10;
+				stroke-linejoin: round;
+				stroke-linecap: round;
+				fill: none;
+			}
+		</style>
+		<path
+			d='
+				M 15,55 30,70 85,20
+			'
+			class='toolbar-save-icon'
+		/>
+	`;
+	svg.setAttribute('viewBox', '0 0 100 100');
+	return svg;
+};
+
+toolbar.addActionButton({
+	label: localization.close,
+	icon: makeCloseIcon(),
+}, () => {
 	webviewApi.postMessage({ type: 'showCloseUnsavedBtn' } as ShowCloseButtonRequest);
 
 	const originalDisplay = editor.getRootElement().style.display;
@@ -19,10 +70,10 @@ toolbar.addActionButton('Close', () => {
 	confirmationDialog.className = 'exitOptionsDialog';
 
 	const message = document.createElement('div');
-	message.innerText = 'Discard unsaved changes?';
+	message.innerText = localization.discardUnsavedChanges;
 
 	const resumeEditingBtn = document.createElement('button');
-	resumeEditingBtn.innerText = 'Resume editing';
+	resumeEditingBtn.innerText = localization.resumeEditing;
 
 	resumeEditingBtn.onclick = () => {
 		webviewApi.postMessage({ type: 'hideCloseUnsavedBtn' } as HideCloseButtonRequest);
@@ -50,7 +101,10 @@ const toSVG = () => {
 	return svgText.join('');
 };
 
-toolbar.addActionButton('Save', () => {
+toolbar.addActionButton({
+	label: localization.save,
+	icon: makeSaveIcon(),
+}, () => {
 	const saveMessage: SaveMessage = {
 		type: 'saveSVG',
 		data: toSVG(),
@@ -85,12 +139,12 @@ toolbar.addActionButton('Save', () => {
 
 	// We can only overwrite the resource if we loaded the SVG from a resource.
 	if (haveLoadedFromSvg) {
-		addSaveOption('Overwrite existing', 'overwrite', true);
-		addSaveOption('Save as a copy', 'saveAsCopy');
+		addSaveOption(localization.overwriteExisting, 'overwrite', true);
+		addSaveOption(localization.saveAsNewDrawing, 'saveAsCopy');
 	}
 	
 	const messageElem = document.createElement('div');
-	messageElem.innerText = 'Done! Click "ok" to continue.';
+	messageElem.innerText = localization.clickOkToContinue;
 
 	doneMessageContainer.replaceChildren(
 		messageElem, saveOptionsContainer

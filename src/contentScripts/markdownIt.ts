@@ -1,6 +1,7 @@
 import type MarkdownIt = require("markdown-it");
 import type Renderer = require("markdown-it/lib/renderer");
 import type Token = require("markdown-it/lib/token");
+import localization from "../localization";
 
 declare const webviewApi: any;
 
@@ -124,7 +125,7 @@ export default (context: { contentScriptId: string }) => {
 						class='jsdraw--editButton'
 						onclick="(${editImageFnString})('${editSvgCommandIdentifier}', this.parentElement)"
 					>
-						🖊️ Edit
+						${localization.edit} 🖊️
 					</button>
 				</span>
 				`;

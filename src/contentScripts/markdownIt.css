@@ -1,6 +1,6 @@
 .jsdraw--editButton {
 	display: none;
-	max-width: 50px;
+	width: min-content;
 	max-height: 50px;
 	z-index: 1;
 	opacity: 0.9;

@@ -1,18 +1,10 @@
 import joplin from 'api';
 import { ContentScriptType, DialogResult, ToolbarButtonLocation } from 'api/types';
 import { autosave, clearAutosave, getAutosave } from './autosave';
+import localization from './localization';
 import Resource from './Resource';
 import TemporaryDirectory from './TemporaryDirectory';
 import { WebViewMessage } from './types';
-
-const strings = {
-	insertDrawing: 'Insert Drawing',
-	restoreFromAutosave: 'Restore from autosaved drawing',
-	deleteAutosave: 'Delete all autosaved drawings',
-	noSuchAutosaveExists: 'No autosave exists',
-	discardChanges: 'Discard changes',
-	defaultImageTitle: 'Freehand Drawing',
-};
 
 // While learning how to use the Joplin plugin API,
 // * https://github.com/herdsothom/joplin-insert-date/blob/main/src/index.ts
@@ -60,7 +52,7 @@ const promptForDrawing = async (dialogHandle: string, initialData?: string): Pro
 			} else if (message.type === 'showCloseUnsavedBtn') {
 				void dialogs.setButtons(dialogHandle, [{
 					id: 'cancel',
-					title: strings.discardChanges,
+					title: localization.discardChanges,
 				}]);
 			} else if (message.type === 'hideCloseUnsavedBtn') {
 				void dialogs.setButtons(dialogHandle, []);
@@ -93,14 +85,14 @@ joplin.plugins.register({
 		const tmpdir = await TemporaryDirectory.create();
 
 		const insertNewDrawing = async (svgData: string) => {
-			const resource = await Resource.ofData(tmpdir, svgData, strings.defaultImageTitle, '.svg');
+			const resource = await Resource.ofData(tmpdir, svgData, localization.defaultImageTitle, '.svg');
 			await joplin.commands.execute('insertText', `![${resource.htmlSafeTitle()}](:/${resource.resourceId})`);
 		}
 
 		const toolbuttonCommand = `${pluginPrefix}insertDrawing`;
 		await joplin.commands.register({
 			name: toolbuttonCommand,
-			label: strings.insertDrawing,
+			label: localization.insertDrawing,
 			iconName: 'fas fa-pen-alt',
 			execute: async () => {
 				const [ svgData, _saveOption ] = await promptForDrawing(drawingDialog);
@@ -116,14 +108,14 @@ joplin.plugins.register({
 		const deleteAutosaveCommand = `${pluginPrefix}deleteAutosave`;
 		await joplin.commands.register({
 			name: restoreAutosaveCommand,
-			label: strings.restoreFromAutosave,
+			label: localization.restoreFromAutosave,
 			iconName: 'fas fa-floppy-disk',
 			execute: async () => {
 				const svgData = await getAutosave();
 
 				if (!svgData) {
 					await joplin.views.dialogs.showMessageBox(
-						strings.noSuchAutosaveExists,
+						localization.noSuchAutosaveExists,
 					);
 					return;
 				}
@@ -133,7 +125,7 @@ joplin.plugins.register({
 		});
 		await joplin.commands.register({
 			name: deleteAutosaveCommand,
-			label: strings.deleteAutosave,
+			label: localization.deleteAutosave,
 			iconName: 'fas fa-trash-can',
 			execute: async () => {
 				await clearAutosave();

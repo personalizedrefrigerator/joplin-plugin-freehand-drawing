@@ -1,3 +1,9 @@
+# 1.0.14
+ * Spanish localization
+   * I haven't found a way to determine Joplin's locale through the plugin API. As such, this is based on the system's locale, **not** Joplin's locale.
+ * Updates `js-draw`
+   * Bug fixes
+
 # 1.0.13
  * Updates `js-draw`
    * Accessibility fixes
