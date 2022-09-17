@@ -38,6 +38,25 @@ const defaultStrings: AppLocalization = {
 };
 
 const localizations: Record<string, AppLocalization> = {
+	de: {
+		...defaultStrings,
+		insertDrawing: 'Zeichnung einfügen',
+		restoreFromAutosave: 'Automatische Sicherung wiederherstellen',
+		deleteAutosave: 'Alle automatischen Sicherungen löschen',
+		noSuchAutosaveExists: 'Keine automatischen Sicherungen vorhanden',
+		discardChanges: 'Änderungen verwerfen',
+		defaultImageTitle: 'Freihand-Zeichnen',
+
+		edit: 'Bearbeiten',
+		close: 'Schließen',
+		save: 'Speichern',
+
+		overwriteExisting: 'Existierende Zeichnung überschreiben',
+		saveAsNewDrawing: 'Als neue Zeichnung speichern',
+		clickOkToContinue: 'Fertig! Klicke auf „Ok“ um fortzufahen.',
+		discardUnsavedChanges: 'Ungespeicherte Änderungen verwerfen?',
+		resumeEditing: 'Bearbeiten fortfahren',
+	},
 	en: defaultStrings,
 	es: {
 		...defaultStrings,
