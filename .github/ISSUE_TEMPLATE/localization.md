@@ -1,7 +1,7 @@
 ---
 name: Translation
 about: Translate the editor to a new language
-title: Translation: 
+title: 'Translation: '
 labels: localization
 assignees: ''
 
