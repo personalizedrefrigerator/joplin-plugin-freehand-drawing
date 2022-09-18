@@ -1,3 +1,6 @@
+# 1.0.15
+ * German localization
+
 # 1.0.14
  * Spanish localization
    * I haven't found a way to determine Joplin's locale through the plugin API. As such, this is based on the system's locale, **not** Joplin's locale.
