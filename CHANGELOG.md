@@ -1,3 +1,8 @@
+# 1.0.17
+ * Increases the autosave interval to once per minute.
+ * Updates `js-draw`
+   * Higher quality while moving the view with a touchscreen.
+
 # 1.0.16
  * Updates `js-draw`
    * Fixes strokes with thickness set to a very small number self-intersecting many times.
