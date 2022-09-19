@@ -1,3 +1,7 @@
+# 1.0.16
+ * Updates `js-draw`
+   * Fixes strokes with thickness set to a very small number self-intersecting many times.
+
 # 1.0.15
  * German localization
 

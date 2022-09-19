@@ -15,18 +15,7 @@ const dialogs = joplin.views.dialogs;
 
 // [dialog]: A handle to the dialog
 const initDrawingDialog = async (dialog: string) => {
-	await dialogs.setHtml(dialog, `
-		<!DOCTYPE html>
-		<html>
-			<head>
-				<meta charset='utf-8'/>
-				<meta name='viewport' content='initial-scale=1.0,user-scalable=no,width=device-width'/>
-				<title>Draw</title>
-			</head>
-			<body>
-			</body>
-		</html>
-	`);
+	await dialogs.setHtml(dialog, '');
 	await dialogs.addScript(dialog, './dialog/webview.js');
 	await dialogs.addScript(dialog, './dialog/webview.css');
 	await dialogs.setFitToContent(dialog, false);
