@@ -1,3 +1,8 @@
+# 1.0.18
+ * Updates `js-draw`
+   * Faster autosaves.
+   * Switch tools with `ctrl+1`, `ctrl+2`, ...
+
 # 1.0.17
  * Increases the autosave interval to once per minute.
  * Updates `js-draw`
