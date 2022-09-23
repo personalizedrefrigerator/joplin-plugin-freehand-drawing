@@ -1,3 +1,13 @@
+# 1.0.20
+ * Updates `js-draw`
+   * Selection-related bug fixes.
+   * Fixes an issue where some strokes would distort when saving.
+
+# 1.0.19
+ * Updates `js-draw`
+   * `Ctrl+C`, `Ctrl+V`, and opening images dropped into the editor.
+   * Delete the selection by pressing `Backspace` or `Delete`.
+
 # 1.0.18
  * Updates `js-draw`
    * Faster autosaves.
