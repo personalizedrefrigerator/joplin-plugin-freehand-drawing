@@ -1,3 +1,8 @@
+# 1.0.19
+ * Updates `js-draw`
+   * `Ctrl+C`, `Ctrl+V`, and opening images dropped into the editor.
+   * Delete the selection by pressing `Backspace` or `Delete`.
+
 # 1.0.18
  * Updates `js-draw`
    * Faster autosaves.
