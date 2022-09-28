@@ -1,3 +1,8 @@
+# 1.1.1
+ * Publishes changes from 1.1.0 (`manifest.json` needed to be updated)
+ * Updates `js-draw`
+   * `Ctrl+1` through `Ctrl+9` select pen drawing modes (if a pen is selected). `1-9` still selects tools.
+
 # 1.1.0
  * Bug fixes
    * Fixes: Unable to close `js-draw` editor window if the editor fails to load.
