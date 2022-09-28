@@ -1,3 +1,8 @@
+# 1.0.21
+ * Updates `js-draw`
+   * Bug fixes
+     * Division by zero error when drawing strokes.
+
 # 1.0.20
  * Updates `js-draw`
    * Selection-related bug fixes.

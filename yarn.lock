@@ -47,10 +47,10 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
-"@melloware/coloris@^0.16.0":
-  version "0.16.0"
-  resolved "https://registry.yarnpkg.com/@melloware/coloris/-/coloris-0.16.0.tgz#be1cfa84705db444c6abf942ab57e21f88adfa11"
-  integrity sha512-/aGlfbR3GvRUOvYnhrhE0qi55EIwJLa+DqnHPhefPfSljibNZrrcWrlW5cRvhvUD+jR/TYR41YWfOrQX9E3VwA==
+"@melloware/coloris@^0.16.1":
+  version "0.16.1"
+  resolved "https://registry.yarnpkg.com/@melloware/coloris/-/coloris-0.16.1.tgz#bc94257dbfa31e60591dd2fcc422647cd6e7c1e7"
+  integrity sha512-33Cmes6+ySsTXL6P2/Swu8uuDgNyIZTKlxYxUAh+qyfmd0V8hMHxlRS5ofOXLEl4713YScOKKMOTuAYcyyUfAQ==
 
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
@@ -735,12 +735,12 @@ jest-worker@^27.4.5:
     merge-stream "^2.0.0"
     supports-color "^8.0.0"
 
-js-draw@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/js-draw/-/js-draw-0.4.0.tgz#467aef52199e714727b2ddf5201caf7d9ee29e25"
-  integrity sha512-92DGKnf8LHEkagNjSFqmIlfaSbx5W643un1PtfdhJrLY9pQON/dxXnYY2OrtUb9xiqG0etYhTNBiwBbJ0sYoyg==
+js-draw@^0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/js-draw/-/js-draw-0.4.1.tgz#e28f7f95e5746a23c40f0bc5802cc7c2119b27c9"
+  integrity sha512-VZ0oQKO7Y9qNZkhQdXTlpxe9tSVFeK/0ULOGU+DI0ng3iNBWLxergqlSzOQmvYjbRyk2lIsta2wYIcqSZZc9vA==
   dependencies:
-    "@melloware/coloris" "^0.16.0"
+    "@melloware/coloris" "^0.16.1"
     bezier-js "^6.1.0"
 
 json-parse-even-better-errors@^2.3.1:
