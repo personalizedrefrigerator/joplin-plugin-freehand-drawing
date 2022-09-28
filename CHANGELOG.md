@@ -1,3 +1,8 @@
+# 1.1.0
+ * Bug fixes
+   * Fixes: Unable to close `js-draw` editor window if the editor fails to load.
+   * Fixes: Unable to edit images when the `Joplin Enhancement` plugin is enabled.
+
 # 1.0.21
  * Updates `js-draw`
    * Bug fixes

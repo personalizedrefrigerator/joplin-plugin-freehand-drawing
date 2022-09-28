@@ -15,11 +15,13 @@ const dialogs = joplin.views.dialogs;
 
 // [dialog]: A handle to the dialog
 const initDrawingDialog = async (dialog: string) => {
+	// Sometimes, the dialog doesn't load properly.
+	// Add a cancel button to hide it and try loading again.
+	await dialogs.setButtons(dialog, [{ id: 'cancel' }]);
 	await dialogs.setHtml(dialog, '');
 	await dialogs.addScript(dialog, './dialog/webview.js');
 	await dialogs.addScript(dialog, './dialog/webview.css');
 	await dialogs.setFitToContent(dialog, false);
-	await dialogs.setButtons(dialog, []);
 };
 
 type SaveOptionType = 'saveAsCopy' | 'overwrite';
@@ -37,6 +39,9 @@ const promptForDrawing = async (dialogHandle: string, initialData?: string): Pro
 					id: 'ok',
 				}]);
 			} else if (message.type === 'getInitialData') {
+				// The drawing dialog has loaded -- we don't need the exit button.
+				void dialogs.setButtons(dialogHandle, []);
+
 				return initialData;
 			} else if (message.type === 'showCloseUnsavedBtn') {
 				void dialogs.setButtons(dialogHandle, [{

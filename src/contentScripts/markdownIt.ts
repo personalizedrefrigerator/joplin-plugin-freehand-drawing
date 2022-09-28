@@ -7,8 +7,8 @@ declare const webviewApi: any;
 
 // We need to pass [editSvgCommandIdentifier] as an argument because we're converting
 // editImage to a string.
-const editImage = (contentScriptId: string, container: HTMLElement) => {
-	const imageElem = container.querySelector('img');
+const editImage = (contentScriptId: string, container: HTMLElement, svgId: string) => {
+	const imageElem = container.querySelector('img') ?? document.querySelector(`img#${svgId}`);
 
 	if (!imageElem?.src) {
 		throw new Error(`${imageElem} lacks an src attribute. Unable to edit!`);
@@ -57,9 +57,17 @@ const editImage = (contentScriptId: string, container: HTMLElement) => {
 	}
 };
 
-const onImgLoad = (container: HTMLElement) => {
-	const button = container.querySelector('button.jsdraw--editButton');
+const onImgLoad = (container: HTMLElement, buttonId: string) => {
+	let button = container.querySelector('button.jsdraw--editButton');
 	const imageElem = container.querySelector('img');
+
+	// Another plugin may have moved the button
+	if (!button) {
+		button = document.querySelector(`#${buttonId}`);
+		button.remove();
+		container.appendChild(button);	
+	}
+	container.classList.add('jsdraw--svgWrapper');
 
 	const outOfDateCacheBreakers = window['outOfDateCacheBreakers'] ?? {};
 	const imageSrcMatch = /^(.*)\?t=(\d+)$/.exec(imageElem.src);
@@ -100,6 +108,7 @@ export default (context: { contentScriptId: string }) => {
 	return {
 		plugin: (markdownIt: MarkdownIt, _options) => {
 			const editSvgCommandIdentifier = context.contentScriptId;
+			let idCounter = 0;
 
 			const editImageFnString = editImage.toString().replace(/["]/g, '&quot;');
 			const onImgLoadFnString = onImgLoad.toString().replace(/["]/g, '&quot;');
@@ -116,14 +125,20 @@ export default (context: { contentScriptId: string }) => {
 				if (!svgUrlExp.exec(defaultHtml ?? '')) {
 					return defaultHtml;
 				}
-				const htmlWithOnload = defaultHtml.replace('<img ', `<img onload="(${onImgLoadFnString})(this.parentElement)" `);
+
+				const buttonId = `io-github-personalizedrefrigerator-js-draw-edit-button-${idCounter}`;
+				const svgId = `io-github-personalizedrefrigerator-js-draw-editable-svg-${idCounter}`;
+				idCounter++;
+
+				const htmlWithOnload = defaultHtml.replace('<img ', `<img id="${svgId}" onload="(${onImgLoadFnString})(this.parentElement, '${buttonId}')" `);
 
 				return `
 				<span class='jsdraw--svgWrapper' contentEditable='false'>
 					${htmlWithOnload}
 					<button
 						class='jsdraw--editButton'
-						onclick="(${editImageFnString})('${editSvgCommandIdentifier}', this.parentElement)"
+						onclick="(${editImageFnString})('${editSvgCommandIdentifier}', this.parentElement, '${svgId}')"
+						id="${buttonId}"
 					>
 						${localization.edit} 🖊️
 					</button>
