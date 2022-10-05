@@ -1,3 +1,11 @@
+# 1.1.2
+ * Updates `js-draw`
+   * Hand tool can now be toggled with one click.
+   * Keyboard shortcuts:
+     * `ctrl+d` for duplicate selection
+     * `ctrl+r` for resize image to selection
+     * `shift+click` to expand the selection
+
 # 1.1.1
  * Publishes changes from 1.1.0 (`manifest.json` needed to be updated)
  * Updates `js-draw`

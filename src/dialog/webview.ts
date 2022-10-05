@@ -35,26 +35,7 @@ const makeCloseIcon = () => {
 };
 
 const makeSaveIcon = () => {
-	const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-	svg.innerHTML = `
-		<style>
-			.toolbar-save-icon {
-				stroke: var(--icon-color);
-				stroke-width: 10;
-				stroke-linejoin: round;
-				stroke-linecap: round;
-				fill: none;
-			}
-		</style>
-		<path
-			d='
-				M 15,55 30,70 85,20
-			'
-			class='toolbar-save-icon'
-		/>
-	`;
-	svg.setAttribute('viewBox', '0 0 100 100');
-	return svg;
+	return editor.icons.makeSaveIcon();
 };
 
 toolbar.addActionButton({
