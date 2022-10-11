@@ -153,8 +153,8 @@ webviewApi.postMessage(loadedMessage).then(result => {
 	}
 });
 
-// Autosave every minute.
-const autosaveInterval = 1000 * 60;
+// Autosave every two minutes.
+const autosaveInterval = 1000 * 60 * 2;
 setInterval(async () => {
 	console.log('autosaving...');
 	const message: WebViewMessage = {

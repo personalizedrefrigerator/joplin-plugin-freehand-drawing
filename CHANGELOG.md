@@ -1,3 +1,8 @@
+# 1.2.0
+ * Updates `js-draw`
+  * Edit existing text fields by clicking on them while using the text tool.
+ * Increases auto-save frequency to 0.5 Hz.
+
 # 1.1.2
  * Updates `js-draw`
    * Hand tool can now be toggled with one click.
