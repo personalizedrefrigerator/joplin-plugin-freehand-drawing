@@ -1,3 +1,11 @@
+# 1.2.2
+ * Updates `js-draw`
+   * Fixes exporting multi-line text regions to SVG.
+
+# 1.2.1
+ * Updates `js-draw`
+   * Fixes unnecessary scrollbars when editing/adding text.
+
 # 1.2.0
  * Updates `js-draw`
   * Edit existing text fields by clicking on them while using the text tool.
