@@ -1,3 +1,6 @@
+# 1.3.0
+ * Non-pressure-sensitive strokes by default
+
 # 1.2.2
  * Updates `js-draw`
    * Fixes exporting multi-line text regions to SVG.
