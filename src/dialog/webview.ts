@@ -1,4 +1,4 @@
-import Editor from 'js-draw';
+import Editor, { EditorEventType } from 'js-draw';
 import 'js-draw/bundle';
 import localization from '../localization';
 import { escapeHtml } from '../htmlUtil';
@@ -164,3 +164,19 @@ setInterval(async () => {
 	await webviewApi.postMessage(message);
 	console.log('Done autosaving.');
 }, autosaveInterval);
+
+// Save and restore toolbar state (e.g. pen colors)
+const setupToolbarStateSaveRestore = () => {
+	const toolbarStateKey = 'jsdraw-toolbarState';
+	editor.notifier.on(EditorEventType.ToolUpdated, () => {
+		localStorage.setItem(toolbarStateKey, toolbar.serializeState());
+	});
+
+	try {
+		const toolbarState = localStorage.getItem(toolbarStateKey);
+		toolbar.deserializeState(toolbarState);
+	} catch(e) {
+		console.warn('Error restoring toolbar state!', e);
+	}
+};
+setupToolbarStateSaveRestore();

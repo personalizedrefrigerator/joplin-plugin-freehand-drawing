@@ -1,3 +1,8 @@
+# 1.3.1
+ * Save and load tool state (e.g. pen sizes and colors) when closing/opening the editor.
+ * Allow locking touchscreen screen rotation.
+ * Bug fixes.
+
 # 1.3.0
  * Non-pressure-sensitive strokes by default
 
