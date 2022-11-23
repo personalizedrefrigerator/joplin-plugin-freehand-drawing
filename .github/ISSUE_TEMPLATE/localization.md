@@ -34,7 +34,7 @@ Ignore the surrounding single quotes. For example, to translate `insertDrawing: 
 	discardUnsavedChanges: 'Discard unsaved changes?',
 	resumeEditing: 'Resume editing',
 
-After translating the above strings, please also consider translating the strings in the editor. [These can be translated here.](https://github.com/personalizedrefrigerator/js-draw/issues/new?assignees=&labels=localization&template=translation.md&title=)
+After translating the above strings, please also consider translating the strings in the editor. [These can be translated here.](https://github.com/personalizedrefrigerator/js-draw/issues/new?assignees=&labels=localization&template=translation.yml&title=%5BTranslation%5D%3A+%3Clanguage%3E)
 
 <!--
  If you have development experience and are comfortable creating a pull request, please consider doing so — the translations can be added to ./src/localization.ts .
