@@ -4,8 +4,8 @@
 
 # 1.3.2
  * Updates js-draw:
-  * Save images with `fill=none` for strokes with no fill.
-  * Adds a find dialog that can be opened with `ctrl+f`.
+   * Save images with `fill=none` for strokes with no fill.
+   * Adds a find dialog that can be opened with `ctrl+f`.
 
 # 1.3.1
  * Save and load tool state (e.g. pen sizes and colors) when closing/opening the editor.
