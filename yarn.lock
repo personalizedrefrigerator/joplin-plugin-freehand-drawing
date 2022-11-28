@@ -735,10 +735,10 @@ jest-worker@^27.4.5:
     merge-stream "^2.0.0"
     supports-color "^8.0.0"
 
-js-draw@^0.9.2:
-  version "0.9.2"
-  resolved "https://registry.yarnpkg.com/js-draw/-/js-draw-0.9.2.tgz#9da342fc272876d643dd11144e9a483d2705a7c4"
-  integrity sha512-eJssKkeo99TNKlwwFRlInrHlGec16HJ8t8FD7bIEAbi2adapmbI2E3NrjRD1VyKjMdkdt9xdTjT7ii1PvTFPnA==
+js-draw@^0.9.3:
+  version "0.9.3"
+  resolved "https://registry.yarnpkg.com/js-draw/-/js-draw-0.9.3.tgz#018b3a7ba9b311e897dfd600b776281e0129b681"
+  integrity sha512-4XtQ+BFx7i64vQeBXIxwyHKpAre3D4/k4LhQcpwk3wkqv5QIhH3Y1Gi1AOemfQVO7SuZNIsm6VYtW2MI9wTX/A==
   dependencies:
     "@melloware/coloris" "^0.16.1"
     bezier-js "^6.1.0"

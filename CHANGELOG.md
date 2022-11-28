@@ -1,3 +1,7 @@
+# 1.3.3
+ * Updates `js-draw`
+  - Ability to change the default font size.
+
 # 1.3.2
  * Updates js-draw:
   * Save images with `fill=none` for strokes with no fill.
