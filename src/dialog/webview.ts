@@ -9,6 +9,7 @@ declare const webviewApi: any;
 let haveLoadedFromSvg = false;
 const editor = new Editor(document.body);
 const toolbar = editor.addToolbar();
+editor.focus();
 
 const makeCloseIcon = () => {
 	const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
