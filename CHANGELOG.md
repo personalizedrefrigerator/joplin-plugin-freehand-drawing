@@ -1,3 +1,7 @@
+# 1.3.4
+ * Focus the editor when fisrt opened.
+   * It is no longer necessary to click on the editor to use keyboard shortcuts.
+
 # 1.3.3
  * Updates `js-draw`
   - Ability to change the default font size.
