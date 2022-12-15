@@ -1,3 +1,8 @@
+# 1.3.5
+ * Updates `js-draw`
+   - Misc. bug fixes
+   - Inertial touchscreen scrolling.
+
 # 1.3.4
  * Focus the editor when fisrt opened.
    * It is no longer necessary to click on the editor to use keyboard shortcuts.
