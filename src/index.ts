@@ -81,7 +81,7 @@ joplin.plugins.register({
 		const insertNewDrawing = async (svgData: string) => {
 			const resource = await Resource.ofData(tmpdir, svgData, localization.defaultImageTitle, '.svg');
 			await joplin.commands.execute('insertText', `![${resource.htmlSafeTitle()}](:/${resource.resourceId})`);
-		}
+		};
 
 		const toolbuttonCommand = `${pluginPrefix}insertDrawing`;
 		await joplin.commands.register({

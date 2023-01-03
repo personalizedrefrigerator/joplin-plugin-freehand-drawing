@@ -1,3 +1,8 @@
+# 1.3.6
+ * Updates `js-draw`
+   - Performance improvements
+   - Different icons for rounded/non-rounded pens
+
 # 1.3.5
  * Updates `js-draw`
    - Misc. bug fixes
