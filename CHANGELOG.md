@@ -1,3 +1,7 @@
+# 1.3.7
+ * Updates `js-draw`
+   - Fixes inertial scrolling issue.
+
 # 1.3.6
  * Updates `js-draw`
    - Performance improvements
