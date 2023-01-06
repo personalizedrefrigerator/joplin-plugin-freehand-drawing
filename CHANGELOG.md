@@ -1,3 +1,8 @@
+# 1.3.8
+ * Updates `js-draw`
+   - Works around another inertial scrolling issue triggered when a stylus gets close to the screen during a touch panning gesture.
+   - Adds an "insert image" dialog.
+
 # 1.3.7
  * Updates `js-draw`
    - Fixes inertial scrolling issue.
