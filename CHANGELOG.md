@@ -1,3 +1,7 @@
+# 1.3.9
+ * Updates `js-draw`
+   - Performance improvements
+
 # 1.3.8
  * Updates `js-draw`
    - Works around another inertial scrolling issue triggered when a stylus gets close to the screen during a touch panning gesture.
