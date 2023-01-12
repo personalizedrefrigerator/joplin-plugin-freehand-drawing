@@ -1,3 +1,8 @@
+# 1.3.10
+ * Updates `js-draw`
+   - Resizable eraser
+   - Selection- & text tool-related bug fixes
+
 # 1.3.9
  * Updates `js-draw`
    - Performance improvements
