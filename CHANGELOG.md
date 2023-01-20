@@ -1,3 +1,8 @@
+# 1.4.0
+ * Updates `js-draw`
+   - New pen icons
+   - Snap to grid while holding control key.
+
 # 1.3.10
  * Updates `js-draw`
    - Resizable eraser
