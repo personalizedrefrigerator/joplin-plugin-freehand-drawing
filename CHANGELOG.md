@@ -1,3 +1,12 @@
+# 1.4.2
+ * Updates `js-draw`
+   - Activate shortcuts with `cmd` in addition to `ctrl`. E.g. on MacOS, cmd+a should select everything when the selection tool is enabled.
+   - Allow mirroring the seleciton.
+
+# 1.4.1
+ * Updates `js-draw`
+   - Rotation snapping while rotating the screen with touch
+
 # 1.4.0
  * Updates `js-draw`
    - New pen icons
