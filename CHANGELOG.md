@@ -1,3 +1,8 @@
+# 1.4.3
+ * Updates `js-draw`
+   - `ctrl+A`-related bug fixes.
+   - Adds a "reformat selection" button (allows changing selection color).
+
 # 1.4.2
  * Updates `js-draw`
    - Activate shortcuts with `cmd` in addition to `ctrl`. E.g. on MacOS, cmd+a should select everything when the selection tool is enabled.
