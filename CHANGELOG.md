@@ -1,5 +1,11 @@
+# 1.4.4
+ * [Updates `js-draw`](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#0152)
+   * Don't select/erase objects that have `isSelectable` set to `false`.
+   * Decrease output size of new lines/rectangles/arrows.
+   * Fix view jumping while zooming in/rotating with touchscreen pan tool.
+
 # 1.4.3
- * Updates `js-draw`
+ * [Updates `js-draw`](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#0150)
    - `ctrl+A`-related bug fixes.
    - Adds a "reformat selection" button (allows changing selection color).
 
