@@ -30,5 +30,6 @@
   },
   "dependencies": {
     "js-draw": "^0.15.2"
-  }
+  },
+  "packageManager": "yarn@3.4.1"
 }
