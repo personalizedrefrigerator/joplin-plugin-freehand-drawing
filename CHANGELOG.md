@@ -1,3 +1,8 @@
+# 1.4.5
+ * [Updates `js-draw`](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#0160)
+   - Ability to change the background color.
+   - Overflow menu for the toolbar.
+
 # 1.4.4
  * [Updates `js-draw`](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#0152)
    - Don't select/erase objects that have `isSelectable` set to `false`.
