@@ -1,3 +1,7 @@
+# 1.4.7
+ * Bug fixes
+   - Fixes "insert image" button broken in non-beta versions of Joplin when the rich text editor was visible.
+
 # 1.4.6
  * [Updates `js-draw`](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#0172)
    - Fixes canvas not resizing on window resize.
