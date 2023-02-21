@@ -71,6 +71,41 @@ const promptForDrawing = async (dialogHandle: string, initialData?: string): Pro
 	return await result;
 };
 
+// Returns true if the CodeMirror editor is active.
+const isMarkdownEditor = async () => {
+	return await joplin.commands.execute('editor.execCommand', {
+		name: 'js-draw--isCodeMirrorActive',
+	}) === 'active';
+};
+
+// Attempts to switch from the current editor to the CodeMirror editor.
+const switchToMarkdownEditor = async () => {
+	let attemptIdx = 0;
+	const maxAttempts = 10;
+	while (!(await isMarkdownEditor()) && attemptIdx < maxAttempts) {
+		await joplin.commands.execute('toggleEditors');
+		attemptIdx ++;
+	}
+
+	if (attemptIdx === maxAttempts) {
+		throw new Error('Failed to switch to markdown editor.');
+	}
+};
+
+const saveRichTextEditorSelection = async () => {
+	// For saving the selection if switching between editors.
+	// We want the selection placeholder to be able to compile to a regular expression. Avoid
+	// non-alphanumeric characters.
+	const selectionPointIdText = `placeholderid${Math.random()}${Math.random()}`.replace(/[.]/g, 'x');
+
+	await joplin.commands.execute('editor.execCommand', {
+		name: 'mceInsertContent',
+		value: selectionPointIdText,
+	});
+
+	return selectionPointIdText;
+};
+
 const pluginPrefix = 'jop-freehand-drawing-jsdraw-plugin-';
 
 joplin.plugins.register({
@@ -78,19 +113,42 @@ joplin.plugins.register({
 		const drawingDialog = await dialogs.create(`${pluginPrefix}jsDrawDialog`);
 		const tmpdir = await TemporaryDirectory.create();
 
-		const insertNewDrawing = async (svgData: string) => {
+		const insertNewDrawing = async (svgData: string, richTextEditorSelectionData?: string) => {
 			const resource = await Resource.ofData(tmpdir, svgData, localization.defaultImageTitle, '.svg');
-			await joplin.commands.execute('insertText', `![${resource.htmlSafeTitle()}](:/${resource.resourceId})`);
+			const wasMarkdownEditor = await isMarkdownEditor();
+
+
+			// MCE or Joplin has a bug where inserting markdown code for an SVG image removes
+			// the image data. See https://github.com/laurent22/joplin/issues/7547.
+			if (!wasMarkdownEditor) {
+				await switchToMarkdownEditor();
+
+				// Jump to the rich text editor selection
+				console.log('cm-select', await joplin.commands.execute('editor.execCommand', {
+					name: 'js-draw--cmSelectAndDelete',
+					args: [ richTextEditorSelectionData ],
+				}));
+			}
+
+			const textToInsert = `![${resource.htmlSafeTitle()}](:/${resource.resourceId})`;
+			await joplin.commands.execute('insertText', textToInsert);
+
+			// Try to switch back to the original editor
+			if (!wasMarkdownEditor) {
+				await joplin.commands.execute('toggleEditors');
+			}
 		};
 
 		const toolbuttonCommand = `${pluginPrefix}insertDrawing`;
+
 		await joplin.commands.register({
 			name: toolbuttonCommand,
 			label: localization.insertDrawing,
 			iconName: 'fas fa-pen-alt',
 			execute: async () => {
+				const selectionData = await saveRichTextEditorSelection();
 				const [ svgData, _saveOption ] = await promptForDrawing(drawingDialog);
-				await insertNewDrawing(svgData);
+				await insertNewDrawing(svgData, selectionData);
 			},
 		});
 
@@ -145,6 +203,13 @@ joplin.plugins.register({
 			ContentScriptType.MarkdownItPlugin,
 			markdownItContentScriptId,
 			'./contentScripts/markdownIt.js',
+		);
+
+		const codeMirrorContentScriptId = 'jsdraw__codeMirrorContentScriptId';
+		await joplin.contentScripts.register(
+			ContentScriptType.CodeMirrorPlugin,
+			codeMirrorContentScriptId,
+			'./contentScripts/codeMirror.js'
 		);
 		await joplin.contentScripts.onMessage(markdownItContentScriptId, async (resourceUrl: string) => {
 			return (await editDrawing(resourceUrl)).resourceId;
