@@ -5,6 +5,7 @@ import localization from './localization';
 import Resource from './Resource';
 import TemporaryDirectory from './TemporaryDirectory';
 import { WebViewMessage } from './types';
+import waitFor from './util/waitFor';
 
 // While learning how to use the Joplin plugin API,
 // * https://github.com/herdsothom/joplin-insert-date/blob/main/src/index.ts
@@ -78,20 +79,6 @@ const isMarkdownEditor = async () => {
 	}) === 'active';
 };
 
-// Attempts to switch from the current editor to the CodeMirror editor.
-const switchToMarkdownEditor = async () => {
-	let attemptIdx = 0;
-	const maxAttempts = 10;
-	while (!(await isMarkdownEditor()) && attemptIdx < maxAttempts) {
-		await joplin.commands.execute('toggleEditors');
-		attemptIdx ++;
-	}
-
-	if (attemptIdx === maxAttempts) {
-		throw new Error('Failed to switch to markdown editor.');
-	}
-};
-
 const saveRichTextEditorSelection = async () => {
 	// For saving the selection if switching between editors.
 	// We want the selection placeholder to be able to compile to a regular expression. Avoid
@@ -121,13 +108,18 @@ joplin.plugins.register({
 			// MCE or Joplin has a bug where inserting markdown code for an SVG image removes
 			// the image data. See https://github.com/laurent22/joplin/issues/7547.
 			if (!wasMarkdownEditor) {
-				await switchToMarkdownEditor();
+				// Switch to the markdown editor.
+				await joplin.commands.execute('toggleEditors');
+
+				// Delay: Ensure we're really in the CodeMirror editor.
+				await waitFor(100);
 
 				// Jump to the rich text editor selection
-				console.log('cm-select', await joplin.commands.execute('editor.execCommand', {
+				const selectPlaceholderResult = await joplin.commands.execute('editor.execCommand', {
 					name: 'js-draw--cmSelectAndDelete',
 					args: [ richTextEditorSelectionData ],
-				}));
+				});
+				console.log('js-draw: CodeMirror select placeholder result', selectPlaceholderResult);
 			}
 
 			const textToInsert = `![${resource.htmlSafeTitle()}](:/${resource.resourceId})`;

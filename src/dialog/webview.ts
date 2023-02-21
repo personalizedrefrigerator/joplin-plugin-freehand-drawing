@@ -1,7 +1,7 @@
 import Editor, { EditorEventType } from 'js-draw';
 import 'js-draw/bundle';
 import localization from '../localization';
-import { escapeHtml } from '../htmlUtil';
+import { escapeHtml } from '../util/htmlUtil';
 import { ShowCloseButtonRequest, HideCloseButtonRequest, InitialSvgDataRequest, SaveMessage, WebViewMessage } from '../types';
 
 declare const webviewApi: any;
