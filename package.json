@@ -1,6 +1,6 @@
 {
   "name": "joplin-plugin-freehand-drawing",
-  "version": "1.4.5",
+  "version": "1.4.6",
   "scripts": {
     "dist": "webpack --env joplin-plugin-config=buildMain && webpack --env joplin-plugin-config=buildExtraScripts && webpack --env joplin-plugin-config=createArchive",
     "prepare": "yarn dist",

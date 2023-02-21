@@ -1,3 +1,10 @@
+# 1.4.6
+ * [Updates `js-draw`](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#0172)
+   - Fixes canvas not resizing on window resize.
+   - Fixes changing the color of duplicated text objects.
+ * Bug fixes
+   - Fixes "insert image" button not working in the rich text editor.
+
 # 1.4.5
  * [Updates `js-draw`](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#0160)
    - Ability to change the background color.
