@@ -1,3 +1,7 @@
+# 1.5.0
+ * Map `ctrl+s` to save in js-draw editor
+ * Show "Insert Image" in edit menu and, thus, the "Keyboard Shortcuts" section of settings.
+
 # 1.4.7
  * Bug fixes
    - Fixes "insert image" button broken in non-beta versions of Joplin when the rich text editor was visible.
