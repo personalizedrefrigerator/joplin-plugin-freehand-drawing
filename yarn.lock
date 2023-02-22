@@ -73,7 +73,7 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@types/codemirror@^5.60.7":
+"@types/codemirror@5.60.7":
   version "5.60.7"
   resolved "https://registry.yarnpkg.com/@types/codemirror/-/codemirror-5.60.7.tgz#efbb78e5e79f90c6762c2127c02096648e600808"
   integrity sha512-QXIC+RPzt/1BGSuD6iFn6UMC9TDp+9hkOANYNPVsjjrDdzKphfRkwQDKGp2YaC54Yhz0g6P5uYTCCibZZEiMAA==
@@ -752,10 +752,10 @@ jest-worker@^27.4.5:
     merge-stream "^2.0.0"
     supports-color "^8.0.0"
 
-js-draw@^0.17.2:
-  version "0.17.2"
-  resolved "https://registry.yarnpkg.com/js-draw/-/js-draw-0.17.2.tgz#d598abbc1299c44c883a3068e0fa6080da1f6c16"
-  integrity sha512-1xs26hRJigyDN7uAqnAq6dHWjB2HffgMoh+Y7KDxeqoHrkSuUpKWGCnICGtozHf5ausDgYBRD44hZ7kbv6ERmw==
+js-draw@^0.17.3:
+  version "0.17.3"
+  resolved "https://registry.yarnpkg.com/js-draw/-/js-draw-0.17.3.tgz#6403fe4b6425922a26e8b249e427ccb6c408b1c2"
+  integrity sha512-LmedNHGcZYNdrQMiIzvIogFTWQ7y50tk4qoWSYE5J3E25FLS1HaPyAF4QT+YkeRNyION8LISiXO9nzLhrjS+bw==
   dependencies:
     "@melloware/coloris" "^0.18.0"
     bezier-js "^6.1.3"

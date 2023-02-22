@@ -91,7 +91,7 @@ export class Resource {
 	): Promise<Resource|null> {
 		// Extract the ID
 		const fileURLMatch = /^file:\/\/.*\/([a-zA-Z0-9]+)[.]\w+(?:[?#]|$)/.exec(url);
-		const resourceLinkMatch = /^:\/[a-zA-Z0-9]+$/.exec(url);
+		const resourceLinkMatch = /^:\/([a-zA-Z0-9]+)$/.exec(url);
 
 		let resourceId: string;
 		if (fileURLMatch) {

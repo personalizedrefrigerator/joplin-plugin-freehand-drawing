@@ -1,4 +1,4 @@
-import Editor, { EditorEventType } from 'js-draw';
+import Editor, { EditorEventType, ActionButtonWidget, KeyPressEvent } from 'js-draw';
 import 'js-draw/bundle';
 import localization from '../localization';
 import { escapeHtml } from '../util/htmlUtil';
@@ -39,54 +39,7 @@ const makeSaveIcon = () => {
 	return editor.icons.makeSaveIcon();
 };
 
-toolbar.addActionButton({
-	label: localization.close,
-	icon: makeCloseIcon(),
-}, () => {
-	webviewApi.postMessage({ type: 'showCloseUnsavedBtn' } as ShowCloseButtonRequest);
-
-	const originalDisplay = editor.getRootElement().style.display;
-	editor.getRootElement().style.display = 'none';
-
-	const confirmationDialog = document.createElement('div');
-	confirmationDialog.className = 'exitOptionsDialog';
-
-	const message = document.createElement('div');
-	message.innerText = localization.discardUnsavedChanges;
-
-	const resumeEditingBtn = document.createElement('button');
-	resumeEditingBtn.innerText = localization.resumeEditing;
-
-	resumeEditingBtn.onclick = () => {
-		webviewApi.postMessage({ type: 'hideCloseUnsavedBtn' } as HideCloseButtonRequest);
-		editor.getRootElement().style.display = originalDisplay;
-		confirmationDialog.remove();
-	};
-
-	confirmationDialog.replaceChildren(message, resumeEditingBtn);
-	document.body.appendChild(confirmationDialog);
-});
-
-const toSVG = () => {
-	const svgElem = editor.toSVG();
-
-	// diagrams.io has special requirements for arguments encoding.
-	// Generate the container element with custom code:
-	const svgText = ['<svg'];
-	for (const attr of svgElem.getAttributeNames()) {
-		svgText.push(` ${attr}="${escapeHtml(svgElem.getAttribute(attr))}"`);
-	}
-	svgText.push('>');
-	svgText.push(svgElem.innerHTML);
-	svgText.push('</svg>');
-
-	return svgText.join('');
-};
-
-toolbar.addActionButton({
-	label: localization.save,
-	icon: makeSaveIcon(),
-}, () => {
+const showSaveScreen = () => {
 	const saveMessage: SaveMessage = {
 		type: 'saveSVG',
 		data: toSVG(),
@@ -133,7 +86,75 @@ toolbar.addActionButton({
 	);
 
 	document.body.appendChild(doneMessageContainer);
+};
+
+const showCloseScreen = () => {
+	webviewApi.postMessage({ type: 'showCloseUnsavedBtn' } as ShowCloseButtonRequest);
+
+	const originalDisplay = editor.getRootElement().style.display;
+	editor.getRootElement().style.display = 'none';
+
+	const confirmationDialog = document.createElement('div');
+	confirmationDialog.className = 'exitOptionsDialog';
+
+	const message = document.createElement('div');
+	message.innerText = localization.discardUnsavedChanges;
+
+	const resumeEditingBtn = document.createElement('button');
+	resumeEditingBtn.innerText = localization.resumeEditing;
+
+	resumeEditingBtn.onclick = () => {
+		webviewApi.postMessage({ type: 'hideCloseUnsavedBtn' } as HideCloseButtonRequest);
+		editor.getRootElement().style.display = originalDisplay;
+		confirmationDialog.remove();
+	};
+
+	confirmationDialog.replaceChildren(message, resumeEditingBtn);
+	document.body.appendChild(confirmationDialog);
+};
+
+toolbar.addActionButton({
+	label: localization.close,
+	icon: makeCloseIcon(),
+}, () => {
+	showCloseScreen();
 });
+
+const toSVG = () => {
+	const svgElem = editor.toSVG();
+
+	// diagrams.io has special requirements for arguments encoding.
+	// Generate the container element with custom code:
+	const svgText = ['<svg'];
+	for (const attr of svgElem.getAttributeNames()) {
+		svgText.push(` ${attr}="${escapeHtml(svgElem.getAttribute(attr))}"`);
+	}
+	svgText.push('>');
+	svgText.push(svgElem.innerHTML);
+	svgText.push('</svg>');
+
+	return svgText.join('');
+};
+
+
+class SaveActionButton extends ActionButtonWidget {
+	public constructor() {
+		super(editor, 'save-button', makeSaveIcon, localization.save, showSaveScreen);
+	}
+
+	protected onKeyPress(event: KeyPressEvent): boolean {
+		if (event.ctrlKey) {
+			if (event.key.toLocaleUpperCase() === 'S' || event.key === 's') {
+				showSaveScreen();
+				return true;
+			}
+		}
+
+		return false;
+	}
+}
+
+toolbar.addWidget(new SaveActionButton());
 
 webviewApi.onMessage((message: WebViewMessage) => {
 	if (message.type === 'resumeEditing') {

@@ -1,5 +1,5 @@
 import joplin from 'api';
-import { ContentScriptType, DialogResult, ToolbarButtonLocation } from 'api/types';
+import { ContentScriptType, DialogResult, MenuItemLocation, ToolbarButtonLocation } from 'api/types';
 import { autosave, clearAutosave, getAutosave } from './autosave';
 import localization from './localization';
 import Resource from './Resource';
@@ -131,6 +131,27 @@ joplin.plugins.register({
 			}
 		};
 
+		const editDrawing = async (resourceUrl: string): Promise<Resource|null> => {
+			const expectedMime = 'image/svg+xml';
+			const resource = await Resource.fromURL(tmpdir, resourceUrl, '.svg', expectedMime);
+
+			if (resource.mime !== expectedMime) {
+				alert(localization.notAnEditableImage(resourceUrl, resource.mime));
+				return null;
+			}
+
+			const [ updatedData, saveOption ] = await promptForDrawing(drawingDialog, await resource.getDataAsString());
+
+			if (saveOption === 'overwrite') {
+				console.log('Image editor: Overwriting resource with', updatedData);
+				await resource.updateData(updatedData);
+			} else {
+				await insertNewDrawing(updatedData);
+			}
+
+			return resource;
+		};
+
 		const toolbuttonCommand = `${pluginPrefix}insertDrawing`;
 
 		await joplin.commands.register({
@@ -138,15 +159,29 @@ joplin.plugins.register({
 			label: localization.insertDrawing,
 			iconName: 'fas fa-pen-alt',
 			execute: async () => {
-				const selectionData = await saveRichTextEditorSelection();
-				const [ svgData, _saveOption ] = await promptForDrawing(drawingDialog);
-				await insertNewDrawing(svgData, selectionData);
+				const selection = await joplin.commands.execute('selectedText');
+
+				// If selecting a resource URL, edit that. Else, insert a new drawing.
+				if (selection && /^\:\/[a-zA-Z0-9]+$/.exec(selection)) {
+					console.log('Attemptint to edit selected resource,', selection);
+
+					// TODO: Update the cache-breaker for the resource.
+					await editDrawing(selection);
+				} else {
+					const selectionData = await saveRichTextEditorSelection();
+					const [ svgData, _saveOption ] = await promptForDrawing(drawingDialog);
+					await insertNewDrawing(svgData, selectionData);
+				}
 			},
 		});
 
 		await joplin.views.toolbarButtons.create(
 			toolbuttonCommand, toolbuttonCommand, ToolbarButtonLocation.EditorToolbar
 		);
+
+		// Add to the edit menu. This allows users to assign a custom keyboard shortcut to the action.
+		const toolMenuInsertDrawingButtonId = `${pluginPrefix}insertDrawingToolMenuBtn`;
+		await joplin.views.menuItems.create(toolMenuInsertDrawingButtonId, toolbuttonCommand, MenuItemLocation.Edit);
 
 		const restoreAutosaveCommand = `${pluginPrefix}restoreAutosave`;
 		const deleteAutosaveCommand = `${pluginPrefix}deleteAutosave`;
@@ -176,20 +211,6 @@ joplin.plugins.register({
 			},
 		});
 
-		const editDrawing = async (resourceUrl: string) => {
-			const resource = await Resource.fromURL(tmpdir, resourceUrl, '.svg', 'image/svg+xml');
-			const [ updatedData, saveOption ] = await promptForDrawing(drawingDialog, await resource.getDataAsString());
-
-			if (saveOption === 'overwrite') {
-				console.log('Overwriting with', updatedData);
-				await resource.updateData(updatedData);
-			} else {
-				await insertNewDrawing(updatedData);
-			}
-
-			return resource;
-		};
-
 		const markdownItContentScriptId = 'jsdraw__markdownIt_editDrawingButton';
 		await joplin.contentScripts.register(
 			ContentScriptType.MarkdownItPlugin,
@@ -204,7 +225,7 @@ joplin.plugins.register({
 			'./contentScripts/codeMirror.js'
 		);
 		await joplin.contentScripts.onMessage(markdownItContentScriptId, async (resourceUrl: string) => {
-			return (await editDrawing(resourceUrl)).resourceId;
+			return (await editDrawing(resourceUrl))?.resourceId;
 		});
 	},
 });

@@ -16,6 +16,8 @@ interface AppLocalization {
 	clickOkToContinue: string;
 	discardUnsavedChanges: string;
 	resumeEditing: string;
+
+	notAnEditableImage: (resourceId: string, resourceType: string)=> void;
 }
 
 const defaultStrings: AppLocalization = {
@@ -35,6 +37,9 @@ const defaultStrings: AppLocalization = {
 	clickOkToContinue: 'Done! Click “Ok” to continue.',
 	discardUnsavedChanges: 'Discard unsaved changes?',
 	resumeEditing: 'Resume editing',
+
+	notAnEditableImage: (resourceId: string, resourceType: string) =>
+		`Resource ${resourceId} is not an editable image. Unable to edit resource of type ${resourceType}.`,
 };
 
 const localizations: Record<string, AppLocalization> = {
