@@ -1,3 +1,8 @@
+# 1.5.1
+ * Don't move the save button to the overflow menu.
+ * Add space between save/close buttons and the other buttons.
+ * [Updates `js-draw`](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#0174)
+
 # 1.5.0
  * Map `ctrl+s` to save in js-draw editor
  * Show "Insert Image" in edit menu and, thus, the "Keyboard Shortcuts" section of settings.

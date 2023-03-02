@@ -113,12 +113,14 @@ const showCloseScreen = () => {
 	document.body.appendChild(confirmationDialog);
 };
 
+toolbar.addSpacer({ grow: 1, maxSize: '15px' });
 toolbar.addActionButton({
 	label: localization.close,
 	icon: makeCloseIcon(),
 }, () => {
 	showCloseScreen();
 });
+
 
 const toSVG = () => {
 	const svgElem = editor.toSVG();
@@ -152,8 +154,13 @@ class SaveActionButton extends ActionButtonWidget {
 
 		return false;
 	}
+
+	public canBeInOverflowMenu(): boolean {
+		return false;
+	}
 }
 
+toolbar.addSpacer({ grow: 1, maxSize: '15px' });
 toolbar.addWidget(new SaveActionButton());
 
 webviewApi.onMessage((message: WebViewMessage) => {
