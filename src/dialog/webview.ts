@@ -1,5 +1,5 @@
 import Editor, { EditorEventType, ActionButtonWidget, KeyPressEvent } from 'js-draw';
-import 'js-draw/bundle';
+import 'js-draw/bundledStyles';
 import localization from '../localization';
 import { escapeHtml } from '../util/htmlUtil';
 import { ShowCloseButtonRequest, HideCloseButtonRequest, InitialSvgDataRequest, SaveMessage, WebViewMessage } from '../types';

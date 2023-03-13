@@ -1,3 +1,7 @@
+# 1.5.2
+ * [Updates `js-draw`](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#0190)
+   - Fixes touchpad pinch zoom offset vertically from cursor
+
 # 1.5.1
  * Don't move the save button to the overflow menu.
  * Add space between save/close buttons and the other buttons.
