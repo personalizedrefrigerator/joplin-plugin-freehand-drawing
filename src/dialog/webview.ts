@@ -1,4 +1,4 @@
-import Editor, { EditorEventType, ActionButtonWidget, KeyPressEvent, AbstractComponent, BackgroundComponent, Vec2, Rect2 } from 'js-draw';
+import Editor, { EditorEventType, ActionButtonWidget, KeyPressEvent, AbstractComponent, BackgroundComponent, Vec2, Rect2, Erase } from 'js-draw';
 import 'js-draw/bundledStyles';
 import localization from '../localization';
 import { escapeHtml } from '../util/htmlUtil';
@@ -247,6 +247,10 @@ const loadedMessage: InitialSvgDataRequest = {
 webviewApi.postMessage(loadedMessage).then(result => {
 	// Don't load the image multiple times.
 	if (result && !haveLoadedFromSvg) {
+		// Clear the background
+		const addToHistory = false;
+		editor.dispatchNoAnnounce(new Erase(editor.image.getBackgroundComponents()), addToHistory);
+
 		haveLoadedFromSvg = true;
 		editor.loadFromSVG(result);
 	}
