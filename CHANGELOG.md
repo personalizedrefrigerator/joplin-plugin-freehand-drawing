@@ -1,3 +1,6 @@
+# 1.6.1
+ * Bug fix: Don't apply template backgrounds when loading images that have no background.
+
 # 1.6.0
  * [Updates `js-draw`](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#0120)
    - Grid-style backgrounds
