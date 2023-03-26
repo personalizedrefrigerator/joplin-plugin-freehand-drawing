@@ -143,9 +143,10 @@ joplin.plugins.register({
 			const [ updatedData, saveOption ] = await promptForDrawing(drawingDialog, await resource.getDataAsString());
 
 			if (saveOption === 'overwrite') {
-				console.log('Image editor: Overwriting resource with', updatedData);
+				console.log('Image editor: Overwriting resource...');
 				await resource.updateData(updatedData);
 			} else {
+				console.log('Image editor: Inserting new drawing...');
 				await insertNewDrawing(updatedData);
 			}
 

@@ -1,3 +1,8 @@
+# 1.6.0
+ * [Updates `js-draw`](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#0120)
+   - Grid-style backgrounds
+ * Uses the last-saved image's background and size as a template for new images.
+
 # 1.5.2
  * [Updates `js-draw`](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#0190)
    - Fixes touchpad pinch zoom offset vertically from cursor

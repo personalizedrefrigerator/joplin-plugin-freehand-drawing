@@ -1,4 +1,4 @@
-import Editor, { EditorEventType, ActionButtonWidget, KeyPressEvent } from 'js-draw';
+import Editor, { EditorEventType, ActionButtonWidget, KeyPressEvent, AbstractComponent, BackgroundComponent, Vec2, Rect2 } from 'js-draw';
 import 'js-draw/bundledStyles';
 import localization from '../localization';
 import { escapeHtml } from '../util/htmlUtil';
@@ -39,7 +39,75 @@ const makeSaveIcon = () => {
 	return editor.icons.makeSaveIcon();
 };
 
+const templateKey = 'jsdraw-image-template';
+
+// Update the template for new images.
+const updateTemplateData = () => {
+	// Find the topmost background component.
+	let topmostBackgroundComponent: BackgroundComponent|null = null;
+	for (const elem of editor.image.getBackgroundComponents()) {
+		if (elem instanceof BackgroundComponent) {
+			topmostBackgroundComponent = elem;
+		}
+	}
+
+	let editorBackgroundData: Record<string, any> = {};
+	if (topmostBackgroundComponent) {
+		editorBackgroundData = topmostBackgroundComponent.serialize();
+	}
+
+	const imageSize = editor.getImportExportRect().size;
+
+	const template = JSON.stringify({
+		backgroundData: editorBackgroundData,
+		imageSize: [ imageSize.x, imageSize.y ],
+	});
+	localStorage.setItem(templateKey, template);
+};
+
+// Initialize the editor's state from the template stored in localStorage.
+// This must be done in a way that can be overwritten by editor.loadFrom.
+const initFromTemplate = () => {
+	try {
+		const data = JSON.parse(localStorage.getItem(templateKey) ?? '{ "imageSize": [ 500, 500 ] }');
+
+		if (
+			'imageSize' in data
+			&& typeof data['imageSize'][0] === 'number'
+			&& typeof data['imageSize'][1] === 'number'
+			&& isFinite(data['imageSize'][0])
+			&& isFinite(data['imageSize'][1])
+		) {
+			let width = data.imageSize[0];
+			let height = data.imageSize[1];
+
+			// Don't allow the template to create extremely small or extremely large images.
+			const minDimension = 50;
+			const maxDimension = 5000;
+			width = Math.min(maxDimension, Math.max(minDimension, width));
+			height = Math.min(maxDimension, Math.max(minDimension, height));
+
+			const imageSize = Vec2.of(width, height);
+			const addToHistory = false;
+			editor.dispatchNoAnnounce(
+				editor.setImportExportRect(new Rect2(0, 0, imageSize.x, imageSize.y)),
+				addToHistory
+			);
+		}
+
+		if ('backgroundData' in data) {
+			const background = AbstractComponent.deserialize(data.backgroundData);
+			const addToHistory = false;
+			editor.dispatchNoAnnounce(editor.image.addElement(background), addToHistory);
+		}
+	} catch(e) {
+		console.warn('Error initializing js-draw from template: ', e);
+	}
+};
+
 const showSaveScreen = () => {
+	updateTemplateData();
+
 	const saveMessage: SaveMessage = {
 		type: 'saveSVG',
 		data: toSVG(),
@@ -162,6 +230,8 @@ class SaveActionButton extends ActionButtonWidget {
 
 toolbar.addSpacer({ grow: 1, maxSize: '15px' });
 toolbar.addWidget(new SaveActionButton());
+
+initFromTemplate();
 
 webviewApi.onMessage((message: WebViewMessage) => {
 	if (message.type === 'resumeEditing') {
