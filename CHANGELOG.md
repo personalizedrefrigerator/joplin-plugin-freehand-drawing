@@ -1,3 +1,9 @@
+# 1.7.0
+ * [Updates `js-draw`](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#0121)
+   - Bug fix: Closing color picker: Start drawing immediately, rather than require an extra tap.
+   - Use edge of strokes, rather than center, for erasing/selection. This was previously only the case for flat-tiped strokes.
+   - Adjustments to stroke smoothing.
+
 # 1.6.1
  * Bug fix: Don't apply template backgrounds when loading images that have no background.
 
