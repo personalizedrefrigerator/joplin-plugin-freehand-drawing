@@ -1,7 +1,7 @@
 # `joplin-plugin-freehand-drawing`
 [On GitHub](https://github.com/personalizedrefrigerator/joplin-plugin-freehand-drawing) | [On the Joplin Forum](https://discourse.joplinapp.org/t/plugin-js-draw-integration/27114) | [Online Demo](https://personalizedrefrigerator.github.io/js-draw/example/index.html)
 
-A Joplin plugin for creating and editing freehand drawings.
+A Joplin plugin for creating and editing freehand drawings using [js-draw](https://github.com/personalizedrefrigerator/js-draw).
 
 <img width="600" src="./screenshots/editorview-light-1.png"/>
 
