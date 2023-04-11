@@ -61,6 +61,9 @@ const localizations: Record<string, AppLocalization> = {
 		clickOkToContinue: 'Fertig! Klicke auf „Ok“ um fortzufahen.',
 		discardUnsavedChanges: 'Ungespeicherte Änderungen verwerfen?',
 		resumeEditing: 'Bearbeiten fortfahren',
+		
+		notAnEditableImage: (resourceId: string, resourceType: string) =>
+		`Die Ressource ${resourceId} ist kein bearbeitbares Bild. Ressource vom Typ ${resourceType} kann nicht bearbeitet werden.`,
 	},
 	en: defaultStrings,
 	es: {
