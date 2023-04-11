@@ -1,3 +1,8 @@
+# 1.8.0
+ * [Updates `js-draw`](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#0122)
+   - Improved German localization (thanks to @Mr-Kanister)
+   - Don't draw when the user **clicks** on the canvas to close the color picker. Drawing is still done if the user clicks and drags.
+
 # 1.7.0
  * [Updates `js-draw`](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#0121)
    - Bug fix: Closing color picker: Start drawing immediately, rather than require an extra tap.
