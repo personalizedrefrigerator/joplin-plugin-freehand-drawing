@@ -24,8 +24,8 @@ const editImage = (contentScriptId: string, container: HTMLElement, svgId: strin
 
 		// Add the cachebreaker to the global list -- we may need to change cachebreakers
 		// on future rerenders.
-		window['outOfDateCacheBreakers'] ??= {};
-		window['outOfDateCacheBreakers'][fileUrl] = {
+		(window as any)['outOfDateCacheBreakers'] ??= {};
+		(window as any)['outOfDateCacheBreakers'][fileUrl] = {
 			outdated: oldCachebreaker,
 			suggested: newCachebreaker,
 		};
@@ -41,14 +41,14 @@ const editImage = (contentScriptId: string, container: HTMLElement, svgId: strin
 
 	try {
 		const postMessage = webviewApi.postMessage;
-		postMessage(contentScriptId, message).then(resourceId => {
+		postMessage(contentScriptId, message).then((resourceId: string|null) => {
 			// Update all matching
 			const toRefresh = document.querySelectorAll(`img[data-resource-id="${resourceId}"]`);
 			for (const elem of toRefresh) {
 				const imageElem = elem as HTMLImageElement;
 				imageElem.src = updateCachebreaker(imageElem.src);
 			}
-		}).catch(err => {
+		}).catch((err: any) => {
 			console.error('Error posting message!', err, '\nMessage: ', message);
 		});
 	} catch (err) {
@@ -61,15 +61,24 @@ const onImgLoad = (container: HTMLElement, buttonId: string) => {
 	let button = container.querySelector('button.jsdraw--editButton');
 	const imageElem = container.querySelector('img');
 
+	if (!imageElem) {
+		throw new Error('js-draw editor: Unable to find an image in the given container!');
+	}
+
 	// Another plugin may have moved the button
 	if (!button) {
 		button = document.querySelector(`#${buttonId}`);
+
+		if (!button) {
+			throw new Error(`js-draw editor: Unable to find the image editor button with ID ${buttonId}`);
+		}
+
 		button.remove();
 		container.appendChild(button);	
 	}
 	container.classList.add('jsdraw--svgWrapper');
 
-	const outOfDateCacheBreakers = window['outOfDateCacheBreakers'] ?? {};
+	const outOfDateCacheBreakers = (window as any)['outOfDateCacheBreakers'] ?? {};
 	const imageSrcMatch = /^(.*)\?t=(\d+)$/.exec(imageElem.src);
 	
 	if (!imageSrcMatch) {
@@ -106,7 +115,7 @@ const onImgLoad = (container: HTMLElement, buttonId: string) => {
 
 export default (context: { contentScriptId: string }) => {
 	return {
-		plugin: (markdownIt: MarkdownIt, _options) => {
+		plugin: (markdownIt: MarkdownIt, _options: any) => {
 			const editSvgCommandIdentifier = context.contentScriptId;
 			let idCounter = 0;
 
@@ -119,7 +128,7 @@ export default (context: { contentScriptId: string }) => {
 			markdownIt.renderer.rules.image = (
 				tokens: Token[], idx: number, options: MarkdownIt.Options, env: any, self: Renderer
 			): string => {
-				const defaultHtml = originalRenderer(tokens, idx, options, env, self);
+				const defaultHtml = originalRenderer?.(tokens, idx, options, env, self) ?? '';
 
 				const svgUrlExp = /.*['"](file:[/][/])?[^'"]*[.]svg([?].*)?['"]/i;
 				if (!svgUrlExp.exec(defaultHtml ?? '')) {

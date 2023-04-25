@@ -197,7 +197,7 @@ const toSVG = () => {
 	// Generate the container element with custom code:
 	const svgText = ['<svg'];
 	for (const attr of svgElem.getAttributeNames()) {
-		svgText.push(` ${attr}="${escapeHtml(svgElem.getAttribute(attr))}"`);
+		svgText.push(` ${attr}="${escapeHtml(svgElem.getAttribute(attr)!)}"`);
 	}
 	svgText.push('>');
 	svgText.push(svgElem.innerHTML);
@@ -212,7 +212,7 @@ class SaveActionButton extends ActionButtonWidget {
 		super(editor, 'save-button', makeSaveIcon, localization.save, showSaveScreen);
 	}
 
-	protected onKeyPress(event: KeyPressEvent): boolean {
+	protected override onKeyPress(event: KeyPressEvent): boolean {
 		if (event.ctrlKey) {
 			if (event.key.toLocaleUpperCase() === 'S' || event.key === 's') {
 				showSaveScreen();
@@ -223,7 +223,7 @@ class SaveActionButton extends ActionButtonWidget {
 		return false;
 	}
 
-	public canBeInOverflowMenu(): boolean {
+	public override canBeInOverflowMenu(): boolean {
 		return false;
 	}
 }
@@ -244,7 +244,7 @@ webviewApi.onMessage((message: WebViewMessage) => {
 const loadedMessage: InitialSvgDataRequest = {
 	type: 'getInitialData',
 };
-webviewApi.postMessage(loadedMessage).then(result => {
+webviewApi.postMessage(loadedMessage).then((result: string|null) => {
 	// Don't load the image multiple times.
 	if (result && !haveLoadedFromSvg) {
 		// Clear the background
@@ -277,7 +277,10 @@ const setupToolbarStateSaveRestore = () => {
 
 	try {
 		const toolbarState = localStorage.getItem(toolbarStateKey);
-		toolbar.deserializeState(toolbarState);
+
+		if (toolbarState) {
+			toolbar.deserializeState(toolbarState);
+		}
 	} catch(e) {
 		console.warn('Error restoring toolbar state!', e);
 	}

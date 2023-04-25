@@ -6,7 +6,7 @@ import * as path from 'path';
 import type FsExtra = require('fs-extra');
 const fs = joplin.require('fs-extra') as typeof FsExtra;
 
-const appTmpDirectories = [];
+const appTmpDirectories: TemporaryDirectory[] = [];
 
 export default class TemporaryDirectory {
 	private fileIdCounter: number;
@@ -20,6 +20,10 @@ export default class TemporaryDirectory {
 	// Returns a new path to a temporary file in this directory.
 	// [fileExtension], if given, should include the leading '.'.
 	public nextFilepath(fileExtension: string = ''): string {
+		if (this.path === null) {
+			throw new Error('Temporary directory does not exist. Possible use after destroySync.');
+		}
+
 		this.fileIdCounter++;
 		return path.join(this.path, `tmp${this.fileIdCounter}${fileExtension ?? ''}`);
 	}

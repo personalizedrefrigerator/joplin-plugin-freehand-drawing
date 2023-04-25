@@ -2,7 +2,7 @@ import CodeMirror = require("codemirror");
 
 export default (_context: { contentScriptId: string }) => {
 	return {
-		plugin: (codeMirror: typeof CodeMirror, _options) => {
+		plugin: (codeMirror: typeof CodeMirror, _options: any) => {
 			codeMirror.defineExtension('js-draw--isCodeMirrorActive', () => {
 				return 'active';
 			});

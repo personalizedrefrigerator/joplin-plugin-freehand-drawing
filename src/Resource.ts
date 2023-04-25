@@ -28,7 +28,7 @@ export class Resource {
 	public readonly mime: string;
 	public readonly title: string;
 
-	private readonly fileExt: string;
+	private readonly fileExt: string|undefined;
 	private tempfilePath: string|null;
 
 	private constructor(props: ResourceInitializer) {
@@ -37,7 +37,7 @@ export class Resource {
 		this.mime = props.mime;
 		this.title = props.title;
 		this.fileExt = props.fileExt;
-		this.tempfilePath = props.tempfilePath;
+		this.tempfilePath = props.tempfilePath ?? null;
 	}
 
 	// Fetch file data associated with this resource from the Joplin database
@@ -62,7 +62,7 @@ export class Resource {
 			title: this.title,
 
 			// Remove the leading '.'
-			file_extension: this.fileExt ? /^[.]?(.*)$/.exec(this.fileExt)[1] : null,
+			file_extension: this.fileExt ? /^[.]?(.*)$/.exec(this.fileExt)![1] : null,
 		}; // Don't update metadata
 
 		await joplin.data.put(['resources', this.resourceId], query, metadata, fileData);
@@ -93,14 +93,14 @@ export class Resource {
 		const fileURLMatch = /^file:\/\/.*\/([a-zA-Z0-9]+)[.]\w+(?:[?#]|$)/.exec(url);
 		const resourceLinkMatch = /^:\/([a-zA-Z0-9]+)$/.exec(url);
 
-		let resourceId: string;
+		let resourceId: string|null = null;
 		if (fileURLMatch) {
 			resourceId = fileURLMatch[1];
 		} else if (resourceLinkMatch) {
 			resourceId = resourceLinkMatch[1];
 		}
 
-		if (!resourceId) {
+		if (resourceId === null) {
 			return null;
 		}
 
@@ -119,7 +119,7 @@ export class Resource {
 			fileExt: fileExt,
 
 			// The resource was loaded through Joplin, and thus has no assoicated tempfile.
-			tempfilePath: null,
+			tempfilePath: undefined,
 		});
 	}
 

@@ -1,93 +1,17 @@
 import joplin from 'api';
-import { ButtonSpec, ContentScriptType, DialogResult, MenuItemLocation, ToolbarButtonLocation } from 'api/types';
-import { autosave, clearAutosave, getAutosave } from './autosave';
+import { ContentScriptType, MenuItemLocation, SettingItemType, SettingStorage, ToolbarButtonLocation } from 'api/types';
+import { clearAutosave, getAutosave } from './autosave';
 import localization from './localization';
 import Resource from './Resource';
 import TemporaryDirectory from './TemporaryDirectory';
-import { WebViewMessage } from './types';
 import waitFor from './util/waitFor';
+import DrawingDialog from './dialog/DrawingDialog';
+import { pluginPrefix } from './constants';
 
 // While learning how to use the Joplin plugin API,
 // * https://github.com/herdsothom/joplin-insert-date/blob/main/src/index.ts
 // * and https://github.com/marc0l92/joplin-plugin-drawio
 // were both wonderful references.
-
-const dialogs = joplin.views.dialogs;
-
-type SaveOptionType = 'saveAsCopy' | 'overwrite';
-
-// [dialog]: A handle to the dialog
-const initDrawingDialog = async (dialog: string) => {
-	// Sometimes, the dialog doesn't load properly.
-	// Add a cancel button to hide it and try loading again.
-	await dialogs.setButtons(dialog, [{ id: 'cancel' }]);
-	await dialogs.setHtml(dialog, '');
-	await dialogs.addScript(dialog, './dialog/webview.js');
-	await dialogs.addScript(dialog, './dialog/webview.css');
-	await dialogs.setFitToContent(dialog, false);
-
-	setDrawingDialogFullscreen(false);
-};
-
-// Set whether the drawing dialog takes up the entire Joplin window.
-const setDrawingDialogFullscreen = async (fullscreen: boolean) => {
-	const installationDir = await joplin.plugins.installationDir();
-
-	const cssFile = fullscreen ? 'dialogFullscreen.css' : 'dialogNonfullscreen.css';
-	await joplin.window.loadChromeCssFile(installationDir + '/dialog/userchromeStyles/' + cssFile);
-};
-
-// Returns SVG data for a drawing
-const promptForDrawing = async (dialogHandle: string, initialData?: string): Promise<[string, SaveOptionType]> => {
-	await initDrawingDialog(dialogHandle);
-
-	const setDialogButtons = async (buttons: ButtonSpec[]) => {
-		// No buttons? Allow fullscreen.
-		await setDrawingDialogFullscreen(buttons.length === 0);
-		void dialogs.setButtons(dialogHandle, buttons);
-	};
-
-	const result = new Promise<[string, SaveOptionType]>((resolve, reject) => {
-		let saveData: string|null = null;
-		joplin.views.panels.onMessage(dialogHandle, (message: WebViewMessage) => {
-			if (message.type === 'saveSVG') {
-				saveData = message.data;
-
-				setDialogButtons([{
-					id: 'ok',
-				}]);
-			} else if (message.type === 'getInitialData') {
-				// The drawing dialog has loaded -- we don't need the exit button.
-				setDialogButtons([]);
-
-				return initialData;
-			} else if (message.type === 'showCloseUnsavedBtn') {
-				setDialogButtons([{
-					id: 'cancel',
-					title: localization.discardChanges,
-				}]);
-			} else if (message.type === 'hideCloseUnsavedBtn') {
-				setDialogButtons([]);
-			} else if (message.type === 'autosave') {
-				void clearAutosave().then(() => {
-					void autosave(message.data);
-				});
-			}
-		});
-
-		dialogs.open(dialogHandle).then((result: DialogResult) => {
-			if (saveData && result.id === 'ok') {
-				const saveOption: SaveOptionType = result.formData?.saveOptions?.saveOption ?? 'saveAsCopy';
-				resolve([ saveData, saveOption ]);
-			} else if (result.id === 'cancel') {
-				reject('Canceled by user.');
-			} else {
-				reject(`Unknown button ID ${result.id}`);
-			}
-		});
-	});
-	return await result;
-};
 
 // Returns true if the CodeMirror editor is active.
 const isMarkdownEditor = async () => {
@@ -110,54 +34,105 @@ const saveRichTextEditorSelection = async () => {
 	return selectionPointIdText;
 };
 
-const pluginPrefix = 'jop-freehand-drawing-jsdraw-plugin-';
+const registerAndApplySettings = async (drawingDialog: DrawingDialog) => {
+	// Joplin adds a prefix to the setting in settings.json for us.
+	const editorFillsWindowKey = `disable-editor-fills-window`;
+
+	const applyDialogSettings = async () => {
+		const fullscreenDisabled = await joplin.settings.value(editorFillsWindowKey);
+		await drawingDialog.setCanFullscreen(!fullscreenDisabled);
+	};
+
+	await joplin.settings.registerSettings({
+		[editorFillsWindowKey]: {
+			public: false,
+			value: false,
+			advanced: true,
+
+			label: 'Don\'t fill the entire Joplin window with the js-draw dialog.',
+			storage: SettingStorage.File,
+			type: SettingItemType.Bool,
+		}
+	});
+
+	await joplin.settings.onChange(_event => {
+		void applyDialogSettings();
+	});
+
+	await applyDialogSettings();
+};
+
+/**
+ * Inserts `textToInsert` at the point of current selection, **or**, if `richTextEditorSelectionMarker`
+ * is given and the rich text editor is currently open, replaces `richTextEditorSelectionMarker` with
+ * `textToInsert`.
+ * 
+ * `richTextEditorSelectionMarker` works around a bug in the rich text editor. See
+ * https://github.com/laurent22/joplin/issues/7547
+ */
+const insertText = async (textToInsert: string, richTextEditorSelectionMarker?: string) => {
+	const wasMarkdownEditor = await isMarkdownEditor();
+
+	// MCE or Joplin has a bug where inserting markdown code for an SVG image removes
+	// the image data. See https://github.com/laurent22/joplin/issues/7547.
+	if (!wasMarkdownEditor) {
+		// Switch to the markdown editor.
+		await joplin.commands.execute('toggleEditors');
+
+		// Delay: Ensure we're really in the CodeMirror editor.
+		await waitFor(100);
+
+		// Jump to the rich text editor selection
+		const selectPlaceholderResult = await joplin.commands.execute('editor.execCommand', {
+			name: 'js-draw--cmSelectAndDelete',
+			args: [ richTextEditorSelectionMarker ],
+		});
+		console.log('js-draw: CodeMirror select placeholder result', selectPlaceholderResult);
+	}
+
+	await joplin.commands.execute('insertText', textToInsert);
+
+	// Try to switch back to the original editor
+	if (!wasMarkdownEditor) {
+		await joplin.commands.execute('toggleEditors');
+	}
+};
 
 joplin.plugins.register({
 	onStart: async function() {
-		const drawingDialog = await dialogs.create(`${pluginPrefix}jsDrawDialog`);
+		const drawingDialog = await DrawingDialog.getInstance();
 		const tmpdir = await TemporaryDirectory.create();
+
+		await registerAndApplySettings(drawingDialog);
 
 		const insertNewDrawing = async (svgData: string, richTextEditorSelectionData?: string) => {
 			const resource = await Resource.ofData(tmpdir, svgData, localization.defaultImageTitle, '.svg');
-			const wasMarkdownEditor = await isMarkdownEditor();
-
-
-			// MCE or Joplin has a bug where inserting markdown code for an SVG image removes
-			// the image data. See https://github.com/laurent22/joplin/issues/7547.
-			if (!wasMarkdownEditor) {
-				// Switch to the markdown editor.
-				await joplin.commands.execute('toggleEditors');
-
-				// Delay: Ensure we're really in the CodeMirror editor.
-				await waitFor(100);
-
-				// Jump to the rich text editor selection
-				const selectPlaceholderResult = await joplin.commands.execute('editor.execCommand', {
-					name: 'js-draw--cmSelectAndDelete',
-					args: [ richTextEditorSelectionData ],
-				});
-				console.log('js-draw: CodeMirror select placeholder result', selectPlaceholderResult);
-			}
 
 			const textToInsert = `![${resource.htmlSafeTitle()}](:/${resource.resourceId})`;
-			await joplin.commands.execute('insertText', textToInsert);
-
-			// Try to switch back to the original editor
-			if (!wasMarkdownEditor) {
-				await joplin.commands.execute('toggleEditors');
-			}
+			await insertText(textToInsert, richTextEditorSelectionData);
 		};
 
 		const editDrawing = async (resourceUrl: string): Promise<Resource|null> => {
 			const expectedMime = 'image/svg+xml';
 			const resource = await Resource.fromURL(tmpdir, resourceUrl, '.svg', expectedMime);
 
+			if (!resource) {
+				throw new Error('Invalid resource URL!');
+			}
+
 			if (resource.mime !== expectedMime) {
 				alert(localization.notAnEditableImage(resourceUrl, resource.mime));
 				return null;
 			}
 
-			const [ updatedData, saveOption ] = await promptForDrawing(drawingDialog, await resource.getDataAsString());
+			const drawingData = await drawingDialog.promptForDrawing(await resource.getDataAsString());
+
+			// Action canceled by the user.
+			if (drawingData === null) {
+				return null;
+			}
+
+			const [ updatedData, saveOption ] = drawingData;
 
 			if (saveOption === 'overwrite') {
 				console.log('Image editor: Overwriting resource...');
@@ -187,7 +162,19 @@ joplin.plugins.register({
 					await editDrawing(selection);
 				} else {
 					const selectionData = await saveRichTextEditorSelection();
-					const [ svgData, _saveOption ] = await promptForDrawing(drawingDialog);
+					const drawingData = await drawingDialog.promptForDrawing();
+
+					// If the user canceled the drawing,
+					if (!drawingData) {
+						// Clear the selection marker, if it exists.
+						if (selectionData) {
+							await insertText('', selectionData);
+						}
+
+						return;
+					}
+
+					const [ svgData, _saveOption ] = drawingData;
 					await insertNewDrawing(svgData, selectionData);
 				}
 			},
