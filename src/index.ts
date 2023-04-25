@@ -1,5 +1,5 @@
 import joplin from 'api';
-import { ContentScriptType, DialogResult, MenuItemLocation, ToolbarButtonLocation } from 'api/types';
+import { ButtonSpec, ContentScriptType, DialogResult, MenuItemLocation, ToolbarButtonLocation } from 'api/types';
 import { autosave, clearAutosave, getAutosave } from './autosave';
 import localization from './localization';
 import Resource from './Resource';
@@ -14,6 +14,8 @@ import waitFor from './util/waitFor';
 
 const dialogs = joplin.views.dialogs;
 
+type SaveOptionType = 'saveAsCopy' | 'overwrite';
+
 // [dialog]: A handle to the dialog
 const initDrawingDialog = async (dialog: string) => {
 	// Sometimes, the dialog doesn't load properly.
@@ -23,34 +25,49 @@ const initDrawingDialog = async (dialog: string) => {
 	await dialogs.addScript(dialog, './dialog/webview.js');
 	await dialogs.addScript(dialog, './dialog/webview.css');
 	await dialogs.setFitToContent(dialog, false);
+
+	setDrawingDialogFullscreen(false);
 };
 
-type SaveOptionType = 'saveAsCopy' | 'overwrite';
+// Set whether the drawing dialog takes up the entire Joplin window.
+const setDrawingDialogFullscreen = async (fullscreen: boolean) => {
+	const installationDir = await joplin.plugins.installationDir();
+
+	const cssFile = fullscreen ? 'dialogFullscreen.css' : 'dialogNonfullscreen.css';
+	await joplin.window.loadChromeCssFile(installationDir + '/dialog/userchromeStyles/' + cssFile);
+};
 
 // Returns SVG data for a drawing
 const promptForDrawing = async (dialogHandle: string, initialData?: string): Promise<[string, SaveOptionType]> => {
 	await initDrawingDialog(dialogHandle);
+
+	const setDialogButtons = async (buttons: ButtonSpec[]) => {
+		// No buttons? Allow fullscreen.
+		await setDrawingDialogFullscreen(buttons.length === 0);
+		void dialogs.setButtons(dialogHandle, buttons);
+	};
 
 	const result = new Promise<[string, SaveOptionType]>((resolve, reject) => {
 		let saveData: string|null = null;
 		joplin.views.panels.onMessage(dialogHandle, (message: WebViewMessage) => {
 			if (message.type === 'saveSVG') {
 				saveData = message.data;
-				void dialogs.setButtons(dialogHandle, [{
+
+				setDialogButtons([{
 					id: 'ok',
 				}]);
 			} else if (message.type === 'getInitialData') {
 				// The drawing dialog has loaded -- we don't need the exit button.
-				void dialogs.setButtons(dialogHandle, []);
+				setDialogButtons([]);
 
 				return initialData;
 			} else if (message.type === 'showCloseUnsavedBtn') {
-				void dialogs.setButtons(dialogHandle, [{
+				setDialogButtons([{
 					id: 'cancel',
 					title: localization.discardChanges,
 				}]);
 			} else if (message.type === 'hideCloseUnsavedBtn') {
-				void dialogs.setButtons(dialogHandle, []);
+				setDialogButtons([]);
 			} else if (message.type === 'autosave') {
 				void clearAutosave().then(() => {
 					void autosave(message.data);
