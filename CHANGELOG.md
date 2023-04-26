@@ -1,5 +1,7 @@
 # 1.9.0
  - Updates German localization (thanks to @Mr-Kanister)
+ - By default, display the editor in fullscreen.
+   - A setting has been added that allows disabling this.
 
 # 1.8.0
  * [Updates `js-draw`](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#0122)
