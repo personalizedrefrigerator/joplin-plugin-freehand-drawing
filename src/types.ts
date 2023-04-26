@@ -28,3 +28,14 @@ export interface InitialSvgDataRequest {
 
 export type WebViewMessage =
 	SaveMessage | ShowCloseButtonRequest | HideCloseButtonRequest | ResumeEditingMessage | InitialSvgDataRequest | AutosaveRequest;
+
+
+export interface InitialDataResponse {
+	type: 'initialDataResponse';
+
+	initialData: string|undefined;
+	autosaveIntervalMS: number;
+}
+
+export type WebViewMessageResponse =
+	InitialDataResponse | null;

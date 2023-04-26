@@ -1,3 +1,6 @@
+# 1.9.0
+ - Updates German localization (thanks to @Mr-Kanister)
+
 # 1.8.0
  * [Updates `js-draw`](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#0122)
    - Improved German localization (thanks to @Mr-Kanister)

@@ -2,7 +2,7 @@ import Editor, { EditorEventType, ActionButtonWidget, KeyPressEvent, AbstractCom
 import 'js-draw/bundledStyles';
 import localization from '../localization';
 import { escapeHtml } from '../util/htmlUtil';
-import { ShowCloseButtonRequest, HideCloseButtonRequest, InitialSvgDataRequest, SaveMessage, WebViewMessage } from '../types';
+import { ShowCloseButtonRequest, HideCloseButtonRequest, InitialSvgDataRequest, SaveMessage, WebViewMessage, WebViewMessageResponse } from '../types';
 
 declare const webviewApi: any;
 
@@ -241,32 +241,45 @@ webviewApi.onMessage((message: WebViewMessage) => {
 	}
 });
 
+let autosaveInterval: any|null = null;
+const startAutosaveLoop = (delayBetweenInMS: number) => {
+	if (autosaveInterval !== null) {
+		clearInterval(autosaveInterval);
+	}
+
+	autosaveInterval = setInterval(async () => {
+		console.log('autosaving...');
+		const message: WebViewMessage = {
+			type: 'autosave',
+			data: toSVG(),
+		};
+		await webviewApi.postMessage(message);
+		console.log('Done autosaving.');
+	}, delayBetweenInMS);
+};
+
+// Get initial data and app settings
 const loadedMessage: InitialSvgDataRequest = {
 	type: 'getInitialData',
 };
-webviewApi.postMessage(loadedMessage).then((result: string|null) => {
+webviewApi.postMessage(loadedMessage).then((result: WebViewMessageResponse) => {
 	// Don't load the image multiple times.
-	if (result && !haveLoadedFromSvg) {
-		// Clear the background
-		const addToHistory = false;
-		editor.dispatchNoAnnounce(new Erase(editor.image.getBackgroundComponents()), addToHistory);
-
+	if (result?.type === 'initialDataResponse' && !haveLoadedFromSvg) {
 		haveLoadedFromSvg = true;
-		editor.loadFromSVG(result);
+
+		// If given initial data,
+		if (result.initialData) {
+			// Clear the background
+			const addToHistory = false;
+			editor.dispatchNoAnnounce(new Erase(editor.image.getBackgroundComponents()), addToHistory);
+
+			editor.loadFromSVG(result.initialData);
+		}
+
+		// Set the autosave interval
+		startAutosaveLoop(result.autosaveIntervalMS);
 	}
 });
-
-// Autosave every two minutes.
-const autosaveInterval = 1000 * 60 * 2;
-setInterval(async () => {
-	console.log('autosaving...');
-	const message: WebViewMessage = {
-		type: 'autosave',
-		data: toSVG(),
-	};
-	await webviewApi.postMessage(message);
-	console.log('Done autosaving.');
-}, autosaveInterval);
 
 // Save and restore toolbar state (e.g. pen colors)
 const setupToolbarStateSaveRestore = () => {

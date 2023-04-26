@@ -3,7 +3,7 @@ import { ButtonSpec, DialogResult } from 'api/types';
 import { autosave, clearAutosave } from '../autosave';
 import { pluginPrefix } from '../constants';
 import localization from '../localization';
-import { WebViewMessage } from '../types';
+import { WebViewMessage, WebViewMessageResponse } from '../types';
 
 const dialogs = joplin.views.dialogs;
 export type SaveOptionType = 'saveAsCopy' | 'overwrite';
@@ -13,6 +13,7 @@ export default class DrawingDialog {
 	private handle: string;
 	private canFullscreen: boolean = true;
 	private isFullscreen: boolean = false;
+	private autosaveInterval: number = 120 * 1000; // ms
 
 	/** @returns a reference to the singleton instance of the DrawingDialog. */
     public static async getInstance(): Promise<DrawingDialog> {
@@ -46,6 +47,11 @@ export default class DrawingDialog {
 		await this.setFullscreen(false);
 	}
 
+	/** Sets the autosave interval in milliseconds. */
+	public async setAutosaveInterval(interval: number) {
+		this.autosaveInterval = interval;
+	}
+
 	/**
 	 * Sets whether this dialog is automatically set to fullscreen mode when the
 	 * editor is visible.
@@ -77,40 +83,49 @@ export default class DrawingDialog {
 	}
 
 	/**
+	 * Sets the buttons visible at the bottom of the dialog and toggles fullscreen if necessary (to ensure the buttons)
+	 * are visible.
+	 */
+	private async setDialogButtons(buttons: ButtonSpec[]) {
+		// No buttons? Allow fullscreen.
+		await this.setFullscreen(buttons.length === 0);
+		await dialogs.setButtons(this.handle, buttons);
+	}
+
+	/**
 	 * Displays a dialog that allows the user to insert a drawing.
 	 * 
 	 * @returns the saved drawing or `null` if the action was canceled by the user.
 	 */
 	public async promptForDrawing (initialData?: string): Promise<[string, SaveOptionType]|null> {
 		await this.initializeDialog();
-
-		const setDialogButtons = async (buttons: ButtonSpec[]) => {
-			// No buttons? Allow fullscreen.
-			await this.setFullscreen(buttons.length === 0);
-			void dialogs.setButtons(this.handle, buttons);
-		};
 	
 		const result = new Promise<[string, SaveOptionType]|null>((resolve, reject) => {
 			let saveData: string|null = null;
-			joplin.views.panels.onMessage(this.handle, (message: WebViewMessage) => {
+			joplin.views.panels.onMessage(this.handle, (message: WebViewMessage): WebViewMessageResponse => {
 				if (message.type === 'saveSVG') {
 					saveData = message.data;
 	
-					setDialogButtons([{
+					this.setDialogButtons([{
 						id: 'ok',
 					}]);
 				} else if (message.type === 'getInitialData') {
 					// The drawing dialog has loaded -- we don't need the exit button.
-					setDialogButtons([]);
+					this.setDialogButtons([]);
 	
-					return initialData;
+					return {
+						type: 'initialDataResponse',
+
+						autosaveIntervalMS: this.autosaveInterval,
+						initialData,
+					};
 				} else if (message.type === 'showCloseUnsavedBtn') {
-					setDialogButtons([{
+					this.setDialogButtons([{
 						id: 'cancel',
 						title: localization.discardChanges,
 					}]);
 				} else if (message.type === 'hideCloseUnsavedBtn') {
-					setDialogButtons([]);
+					this.setDialogButtons([]);
 				} else if (message.type === 'autosave') {
 					void clearAutosave().then(() => {
 						void autosave(message.data);

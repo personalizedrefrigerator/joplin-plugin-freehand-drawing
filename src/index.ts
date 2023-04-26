@@ -36,30 +36,59 @@ const saveRichTextEditorSelection = async () => {
 
 const registerAndApplySettings = async (drawingDialog: DrawingDialog) => {
 	// Joplin adds a prefix to the setting in settings.json for us.
-	const editorFillsWindowKey = `disable-editor-fills-window`;
+	const editorFillsWindowKey = 'disable-editor-fills-window';
+	const autosaveIntervalKey = 'autosave-interval-minutes';
 
-	const applyDialogSettings = async () => {
+	const applySettings = async () => {
 		const fullscreenDisabled = await joplin.settings.value(editorFillsWindowKey);
 		await drawingDialog.setCanFullscreen(!fullscreenDisabled);
+
+		let autosaveIntervalMinutes = await joplin.settings.value(autosaveIntervalKey);
+
+		// Default to two minutes.
+		if (!autosaveIntervalMinutes) {
+			autosaveIntervalMinutes = 2;
+		}
+
+		await drawingDialog.setAutosaveInterval(autosaveIntervalMinutes * 60 * 1000);
 	};
 
+	const jsDrawSectionName = 'js-draw';
+	await joplin.settings.registerSection(jsDrawSectionName, {
+		label: 'Freehand Drawing',
+		iconName: 'fas fa-pen-alt',
+		description: localization.settingsPaneDescription,
+	});
+
+	// Editor fullscreen setting
 	await joplin.settings.registerSettings({
 		[editorFillsWindowKey]: {
-			public: false,
-			value: false,
-			advanced: true,
+			public: true,
+			section: 'js-draw',
 
-			label: 'Don\'t fill the entire Joplin window with the js-draw dialog.',
+			label: localization.fullScreenDisabledSettingLabel,
 			storage: SettingStorage.File,
+
 			type: SettingItemType.Bool,
+			value: false,
+		},
+		[autosaveIntervalKey]: {
+			public: false,
+			section: 'js-draw',
+
+			label: localization.autosaveIntervalSettingLabel,
+			storage: SettingStorage.File,
+
+			type: SettingItemType.Int,
+			value: 2,
 		}
 	});
 
 	await joplin.settings.onChange(_event => {
-		void applyDialogSettings();
+		void applySettings();
 	});
 
-	await applyDialogSettings();
+	await applySettings();
 };
 
 /**
