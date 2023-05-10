@@ -1,5 +1,7 @@
-# 1.9.1
+# 1.10.0 and 1.10.1
  * [Updates `js-draw`](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#0230)
+   - Add animations when opening/closing dropdowns.
+   - Snap selection translation/drawing to x/y axes when holding shift.
 
 # 1.9.0
  - Updates German localization (thanks to @Mr-Kanister)
