@@ -1,5 +1,5 @@
 # 1.9.1
- * [Updates `js-draw`](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#0122)
+ * [Updates `js-draw`](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#0230)
 
 # 1.9.0
  - Updates German localization (thanks to @Mr-Kanister)
