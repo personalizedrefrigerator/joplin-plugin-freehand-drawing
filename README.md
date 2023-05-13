@@ -3,7 +3,7 @@
 
 A Joplin plugin for creating and editing freehand drawings using [js-draw](https://github.com/personalizedrefrigerator/js-draw).
 
-<img width="600" src="./screenshots/editorview-light-1.png"/>
+<img width="600" src="./screenshots/editor-lightdark-fullscreen.png"/>
 
 ## Installing
 Search for "freehand drawing" under the plugins tab in Joplin's settings:
