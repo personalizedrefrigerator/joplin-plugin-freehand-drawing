@@ -265,10 +265,11 @@ const loadedMessage: InitialSvgDataRequest = {
 webviewApi.postMessage(loadedMessage).then((result: WebViewMessageResponse) => {
 	// Don't load the image multiple times.
 	if (result?.type === 'initialDataResponse' && !haveLoadedFromSvg) {
-		haveLoadedFromSvg = true;
-
 		// If given initial data,
 		if (result.initialData) {
+			// We did load from an SVG
+			haveLoadedFromSvg = true;
+
 			// Clear the background
 			const addToHistory = false;
 			editor.dispatchNoAnnounce(new Erase(editor.image.getBackgroundComponents()), addToHistory);

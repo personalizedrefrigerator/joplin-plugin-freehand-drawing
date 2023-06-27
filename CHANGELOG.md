@@ -1,3 +1,10 @@
+# 1.11.0
+ * [Updates `js-draw`](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#0240)
+   - Adds support for rendering relatively positioned text from SVGs
+   - Adds a circle pen type.
+ * Bug fixes
+   - Previously, when saving a **new** image, the plugin would ask the user whether they want to save or overwrite. The "overwrite" option has been removed in this case.
+
 # 1.10.0 and 1.10.1
  * [Updates `js-draw`](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#0230)
    - Add animations when opening/closing dropdowns.
