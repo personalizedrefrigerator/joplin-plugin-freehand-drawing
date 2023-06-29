@@ -6,46 +6,46 @@ const fs = joplin.require('fs-extra') as typeof FsExtra;
 
 const getAutosaveDir = async () => {
 	const dataDir = await joplin.plugins.dataDir();
-    const autosavePath = path.join(dataDir, 'autosaves');
-    return autosavePath;
+	const autosavePath = path.join(dataDir, 'autosaves');
+	return autosavePath;
 };
 
 const makeAutosaveDir = async () => {
-    const autosavePath = await getAutosaveDir();
-    if (!(await fs.pathExists(autosavePath))) {
-        await fs.mkdir(autosavePath);
-    }
-    return autosavePath;
+	const autosavePath = await getAutosaveDir();
+	if (!(await fs.pathExists(autosavePath))) {
+	   await fs.mkdir(autosavePath);
+	}
+	return autosavePath;
 };
 
 const autosaveFilename = 'autosave.svg';
 export const autosave = async (data: string) => {
-    const autosaveDir = await makeAutosaveDir();
-    await fs.writeFile(path.join(autosaveDir, autosaveFilename), data);
+	const autosaveDir = await makeAutosaveDir();
+	await fs.writeFile(path.join(autosaveDir, autosaveFilename), data);
 };
 
 export const clearAutosave = async () => {
-    const autosavePath = await getAutosaveDir();
-    if (await fs.pathExists(autosavePath)) {
-        await fs.remove(autosavePath);
-    }
+	const autosavePath = await getAutosaveDir();
+	if (await fs.pathExists(autosavePath)) {
+	   await fs.remove(autosavePath);
+	}
 };
 
 export const hasAutosave = async () => {
-    const autosavePath = await getAutosaveDir();
-    if (await fs.pathExists(path.join(autosavePath, autosaveFilename))) {
-        return true;
-    }
+	const autosavePath = await getAutosaveDir();
+	if (await fs.pathExists(path.join(autosavePath, autosaveFilename))) {
+	   return true;
+	}
 
-    return false;
+	return false;
 };
 
-export const getAutosave = async (): Promise<string|null> => {
-    if (await hasAutosave()) {
-        const autosavePath = await getAutosaveDir();
+export const getAutosave = async (): Promise<string | null> => {
+	if (await hasAutosave()) {
+	   const autosavePath = await getAutosaveDir();
 
-        const data = await fs.readFile(path.join(autosavePath, autosaveFilename), 'utf-8');
-        return data;
-    }
-    return null;
+	   const data = await fs.readFile(path.join(autosavePath, autosaveFilename), 'utf-8');
+	   return data;
+	}
+	return null;
 };

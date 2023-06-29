@@ -16,7 +16,7 @@ export default class DrawingDialog {
 	private autosaveInterval: number = 120 * 1000; // ms
 
 	/** @returns a reference to the singleton instance of the DrawingDialog. */
-    public static async getInstance(): Promise<DrawingDialog> {
+	public static async getInstance(): Promise<DrawingDialog> {
 		if (!DrawingDialog.instance) {
 			DrawingDialog.instance = new DrawingDialog();
 
@@ -25,7 +25,7 @@ export default class DrawingDialog {
 		}
 
 		return DrawingDialog.instance;
-    }
+	}
 
 	private constructor() {
 		// Constructor should not be called directly.
@@ -97,22 +97,22 @@ export default class DrawingDialog {
 	 * 
 	 * @returns the saved drawing or `null` if the action was canceled by the user.
 	 */
-	public async promptForDrawing (initialData?: string): Promise<[string, SaveOptionType]|null> {
+	public async promptForDrawing(initialData?: string): Promise<[string, SaveOptionType] | null> {
 		await this.initializeDialog();
-	
-		const result = new Promise<[string, SaveOptionType]|null>((resolve, reject) => {
-			let saveData: string|null = null;
+
+		const result = new Promise<[string, SaveOptionType] | null>((resolve, reject) => {
+			let saveData: string | null = null;
 			joplin.views.panels.onMessage(this.handle, (message: WebViewMessage): WebViewMessageResponse => {
 				if (message.type === 'saveSVG') {
 					saveData = message.data;
-	
+
 					this.setDialogButtons([{
 						id: 'ok',
 					}]);
 				} else if (message.type === 'getInitialData') {
 					// The drawing dialog has loaded -- we don't need the exit button.
 					this.setDialogButtons([]);
-	
+
 					return {
 						type: 'initialDataResponse',
 
@@ -134,11 +134,11 @@ export default class DrawingDialog {
 
 				return null;
 			});
-	
+
 			dialogs.open(this.handle).then((result: DialogResult) => {
 				if (saveData && result.id === 'ok') {
 					const saveOption: SaveOptionType = result.formData?.saveOptions?.saveOption ?? 'saveAsCopy';
-					resolve([ saveData, saveOption ]);
+					resolve([saveData, saveOption]);
 				} else if (result.id === 'cancel') {
 					resolve(null);
 				} else {
