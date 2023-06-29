@@ -30,6 +30,6 @@
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
-    "js-draw": "^0.24.0"
+    "js-draw": "^0.24.1"
   }
 }
