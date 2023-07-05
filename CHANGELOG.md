@@ -1,3 +1,7 @@
+# 1.12.1
+ * [Updates `js-draw`](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#0251)
+   - Fixes strokes disappearing when drawn with the mouse when running in the version of Electron used by Joplin.
+
 # 1.12.0
  * [Updates `js-draw`](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#0250)
    - Possible fix for strokes canceling on pen up on some devices.
