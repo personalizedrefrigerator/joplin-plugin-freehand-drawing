@@ -1,3 +1,10 @@
+# 1.12.0
+ * [Updates `js-draw`](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#0250)
+   - Possible fix for strokes canceling on pen up on some devices.
+   - Fix strokes sometimes not resizing properly on zoom.
+   - Fix `r` and `R` keys causing rotation in the same direction (they should cause rotation in opposite directions).
+   - Switch to a different pen type submenu.
+
 # 1.11.0
  * [Updates `js-draw`](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#0240)
    - Adds support for rendering relatively positioned text from SVGs
