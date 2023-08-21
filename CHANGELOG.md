@@ -1,3 +1,10 @@
+# 2.0.0
+ * [Updates `js-draw`](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#102)
+   - Adds a new toolbar theme (a theme similar to the original can be enabled in settings)
+   - Adds a theme switcher in settings
+     - The default `js-draw` themes can now be selected in addition to a "match Joplin" setting
+ * Centers the background/drawing area when making a new image.
+
 # 1.12.1
  * [Updates `js-draw`](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#0251)
    - Fixes strokes disappearing when drawn with the mouse when running in the version of Electron used by Joplin.
