@@ -1,3 +1,7 @@
+# 2.1.0
+ * Fix incorrect `manifest.json` version number.
+ * Adjust default color theme for higher contrast.
+
 # 2.0.0
  * [Updates `js-draw`](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#102)
    - Adds a new toolbar theme (a theme similar to the original can be enabled in settings)

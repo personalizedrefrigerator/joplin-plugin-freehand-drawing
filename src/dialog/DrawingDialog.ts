@@ -42,8 +42,8 @@ export default class DrawingDialog {
 		await dialogs.setHtml(this.handle, '');
 
 		// Script path is from the root of the plugin directory
-		await dialogs.addScript(this.handle, './dialog/webview.js');
-		await dialogs.addScript(this.handle, './dialog/webview.css');
+		await dialogs.addScript(this.handle, './dialog/webview/webview.js');
+		await dialogs.addScript(this.handle, './dialog/webview/webview.css');
 
 		await dialogs.setFitToContent(this.handle, false);
 		await this.setFullscreen(false);

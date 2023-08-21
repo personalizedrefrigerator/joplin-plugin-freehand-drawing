@@ -29,15 +29,22 @@ body, :root {
 	min-width: 20px;
 }
 
+:root {
+	/* color-mix isn't supported in all versions of Joplin, so define
+	   derived colors separately. */
+	--calculated-foreground-color-2: color-mix(in srgb, var(--joplin-color3) 30%, var(--joplin-color));
+}
+
 :root .imageEditorContainer.match-joplin-theme {
-	--background-color-1: var(--joplin-background-color3);
+	--background-color-1: var(--joplin-background-color);
 	--foreground-color-1: var(--joplin-color);
-	--background-color-2: var(--joplin-background-color);
-	--foreground-color-2: var(--joplin-color);
+	--background-color-2: var(--joplin-background-color3);
+	--foreground-color-2: var(--calculated-foreground-color-2, var(--joplin-color3));
 	--background-color-3: var(--joplin-raised-background-color);
 	--foreground-color-3: var(--joplin-raised-color);
-	--selection-background-color: var(--joplin-selected-color);
-	--selection-foreground-color: var(--joplin-color);
+
+	--selection-background-color: var(--joplin-background-color-hover3);
+	--selection-foreground-color: var(--joplin-color3);
 	--primary-action-foreground-color: var(--joplin-color4);
 }
 

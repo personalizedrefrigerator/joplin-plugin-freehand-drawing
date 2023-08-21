@@ -67,10 +67,10 @@
     "@jridgewell/resolve-uri" "3.1.0"
     "@jridgewell/sourcemap-codec" "1.4.14"
 
-"@js-draw/material-icons@^1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@js-draw/material-icons/-/material-icons-1.0.2.tgz#f96d39c3200477f33dd818723bfffe62e0f8faf2"
-  integrity sha512-38gexNXIkhIUWgd1Q1bKidmQyAW75OzOitn0y3oOjdALNcRVj9mjT7TvSWZzBQ9g9geSpai6WtoI3PuUFnv48w==
+"@js-draw/material-icons@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@js-draw/material-icons/-/material-icons-1.1.0.tgz#30fdf270406fda15aa510c176c7564c41fa02f37"
+  integrity sha512-2eKmxOsh3ziatLekUiWFNpgwbMBiroYLaIHxpbR0S2uzrrsOxZQ/QNxmxVakMdVv0B/rGPq+Ltr6+iTEDiGblA==
 
 "@js-draw/math@^1.0.2":
   version "1.0.2"
@@ -839,10 +839,10 @@ jest-worker@^27.4.5:
     merge-stream "^2.0.0"
     supports-color "^8.0.0"
 
-js-draw@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/js-draw/-/js-draw-1.0.2.tgz#d9f5b5d933fd0ae7ead603af08592db187058304"
-  integrity sha512-mrZV2rNRJjbCHUD14Tt95dyBq2O8rfkz4pPbdaz+ijEo/CXUB/m6ZMo9dtX4kstKq5TvVuMmVc+Wf0iO9sr68A==
+js-draw@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/js-draw/-/js-draw-1.1.0.tgz#e53ba5455cda3f7d9ec8247ae02a25bcfffafe7f"
+  integrity sha512-z8RqupfICQmoPTpsI//xZAk32wo2zHPxZreeBjU9rJnJxIdvD8KD1CLnTxBcMCZ8csHtaUHsazS4tbG5yw+QYw==
   dependencies:
     "@js-draw/math" "^1.0.2"
     "@melloware/coloris" "0.21.0"

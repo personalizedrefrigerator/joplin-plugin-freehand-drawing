@@ -1,9 +1,10 @@
-import Editor, { EditorEventType, ActionButtonWidget, KeyPressEvent, AbstractComponent, BackgroundComponent, Vec2, Rect2, Erase, ToolbarWidgetTag, makeEdgeToolbar, makeDropdownToolbar } from 'js-draw';
+import Editor, { EditorEventType, AbstractComponent, BackgroundComponent, Vec2, Rect2, Erase, makeEdgeToolbar, makeDropdownToolbar } from 'js-draw';
 import { MaterialIconProvider } from '@js-draw/material-icons';
 import 'js-draw/bundledStyles';
-import localization from '../localization';
-import { escapeHtml } from '../util/htmlUtil';
-import { ShowCloseButtonRequest, HideCloseButtonRequest, InitialSvgDataRequest, SaveMessage, WebViewMessage, WebViewMessageResponse, ToolbarType, EditorStyle } from '../types';
+import localization from '../../localization';
+import { escapeHtml } from '../../util/htmlUtil';
+import { ShowCloseButtonRequest, HideCloseButtonRequest, InitialSvgDataRequest, SaveMessage, WebViewMessage, WebViewMessageResponse, ToolbarType, EditorStyle } from '../../types';
+import updateThemeColorsForContrast from './updateThemeColorsForContrast';
 
 declare const webviewApi: any;
 
@@ -18,6 +19,7 @@ const lastEditorStyleKey = 'jsdraw-last-editor-style';
 // Apply the last theme to the editor to prevent flickering on startup.
 const lastEditorStyle = localStorage.getItem(lastEditorStyleKey) ?? EditorStyle.MatchJoplin;
 editor.getRootElement().classList.add(lastEditorStyle);
+updateThemeColorsForContrast(editor);
 
 
 const templateKey = 'jsdraw-image-template';
@@ -206,31 +208,10 @@ const setupToolbar = (toolbarType: ToolbarType) => {
 		showCloseScreen();
 	});
 
-	class SaveActionButton extends ActionButtonWidget {
-		public constructor() {
-			super(editor, 'save-button', editor.icons.makeSaveIcon, localization.save, showSaveScreen);
-			this.setTags([ ToolbarWidgetTag.Save ]);
-		}
-
-		protected override onKeyPress(event: KeyPressEvent): boolean {
-			console.log('onkeyevent', event);
-			if (event.ctrlKey) {
-				if (event.key === 's' || event.code === 'KeyS') {
-					showSaveScreen();
-					return true;
-				}
-			}
-
-			return false;
-		}
-
-		public override mustBeInToplevelMenu(): boolean {
-			return true;
-		}
-	}
-
 	toolbar.addSpacer({ grow: 1, maxSize: '15px' });
-	toolbar.addWidget(new SaveActionButton());
+	toolbar.addSaveButton(() => {
+		showSaveScreen();
+	});
 
 	// Save and restore toolbar state (e.g. pen colors)
 	const setupToolbarStateSaveRestore = () => {
@@ -290,6 +271,7 @@ webviewApi.postMessage(loadedMessage).then(async (result: WebViewMessageResponse
 		editor.getRootElement().classList.remove(lastEditorStyle);
 		editor.getRootElement().classList.add(result.styleMode);
 		localStorage.setItem(lastEditorStyleKey, result.styleMode);
+		updateThemeColorsForContrast(editor);
 
 		setupToolbar(result.toolbarType);
 
