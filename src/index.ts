@@ -7,7 +7,7 @@ import TemporaryDirectory from './TemporaryDirectory';
 import waitFor from './util/waitFor';
 import DrawingDialog from './dialog/DrawingDialog';
 import { pluginPrefix } from './constants';
-import { ToolbarType } from './types';
+import { EditorStyle, ToolbarType } from './types';
 
 // While learning how to use the Joplin plugin API,
 // * https://github.com/herdsothom/joplin-insert-date/blob/main/src/index.ts
@@ -40,6 +40,7 @@ const registerAndApplySettings = async (drawingDialog: DrawingDialog) => {
 	const editorFillsWindowKey = 'disable-editor-fills-window';
 	const autosaveIntervalKey = 'autosave-interval-minutes';
 	const toolbarTypeKey = 'toolbar-type';
+	const styleModeKey = 'style-mode';
 
 	const applySettings = async () => {
 		const fullscreenDisabled = await joplin.settings.value(editorFillsWindowKey);
@@ -55,7 +56,10 @@ const registerAndApplySettings = async (drawingDialog: DrawingDialog) => {
 		await drawingDialog.setAutosaveInterval(autosaveIntervalMinutes * 60 * 1000);
 
 		const toolbarType = await joplin.settings.value(toolbarTypeKey) as ToolbarType;
-		await drawingDialog.setToolbarType(toolbarType);
+		drawingDialog.setToolbarType(toolbarType);
+
+		const styleMode = await joplin.settings.value(styleModeKey) as EditorStyle;
+		drawingDialog.setStyleMode(styleMode);
 	};
 
 	const jsDrawSectionName = 'js-draw';
@@ -81,6 +85,22 @@ const registerAndApplySettings = async (drawingDialog: DrawingDialog) => {
 				0: localization.toolbarTypeDefault,
 				1: localization.toolbarTypeSidebar,
 				2: localization.toolbarTypeDropdown,
+			},
+		},
+		[styleModeKey]: {
+			public: true,
+			section: 'js-draw',
+
+			label: localization.themeLabel,
+
+			isEnum: true,
+			type: SettingItemType.String,
+			value: EditorStyle.MatchJoplin,
+
+			options: {
+				[EditorStyle.MatchJoplin]: localization.styleMatchJoplin,
+				[EditorStyle.JsDrawLight]: localization.styleJsDrawLight,
+				[EditorStyle.JsDrawDark]: localization.styleJsDrawDark,
 			},
 		},
 		[editorFillsWindowKey]: {

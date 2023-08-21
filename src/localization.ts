@@ -21,12 +21,18 @@ interface AppLocalization {
 	settingsPaneDescription: string;
 	fullScreenDisabledSettingLabel: string;
 	autosaveIntervalSettingLabel: string;
+	themeLabel: string;
 	toolbarTypeLabel: string;
 
 	// Labels for the toolbar type setting
 	toolbarTypeDefault: string;
 	toolbarTypeSidebar: string;
 	toolbarTypeDropdown: string;
+
+	// Labels for the theme setting
+	styleMatchJoplin: string;
+	styleJsDrawLight: string;
+	styleJsDrawDark: string;
 
 	notAnEditableImage: (resourceId: string, resourceType: string)=> void;
 }
@@ -52,11 +58,16 @@ const defaultStrings: AppLocalization = {
 	settingsPaneDescription: 'Settings for the js-draw image editor',
 	fullScreenDisabledSettingLabel: 'Disable editor dialog filling the entire Joplin window.',
 	autosaveIntervalSettingLabel: 'Autosave interval (minutes)',
+	themeLabel: 'Theme',
 	toolbarTypeLabel: 'Toolbar type',
 
 	toolbarTypeDefault: 'Default',
 	toolbarTypeSidebar: 'Sidebar',
 	toolbarTypeDropdown: 'Dropdown',
+
+	styleMatchJoplin: 'Match Joplin',
+	styleJsDrawLight: 'js-draw light',
+	styleJsDrawDark: 'js-draw dark',
 
 	notAnEditableImage: (resourceId: string, resourceType: string) =>
 		`Resource ${resourceId} is not an editable image. Unable to edit resource of type ${resourceType}.`,

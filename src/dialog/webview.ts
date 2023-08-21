@@ -3,7 +3,7 @@ import { MaterialIconProvider } from '@js-draw/material-icons';
 import 'js-draw/bundledStyles';
 import localization from '../localization';
 import { escapeHtml } from '../util/htmlUtil';
-import { ShowCloseButtonRequest, HideCloseButtonRequest, InitialSvgDataRequest, SaveMessage, WebViewMessage, WebViewMessageResponse, ToolbarType } from '../types';
+import { ShowCloseButtonRequest, HideCloseButtonRequest, InitialSvgDataRequest, SaveMessage, WebViewMessage, WebViewMessageResponse, ToolbarType, EditorStyle } from '../types';
 
 declare const webviewApi: any;
 
@@ -12,6 +12,13 @@ const editor = new Editor(document.body, {
 	iconProvider: new MaterialIconProvider(),
 });
 editor.focus();
+
+const lastEditorStyleKey = 'jsdraw-last-editor-style';
+
+// Apply the last theme to the editor to prevent flickering on startup.
+const lastEditorStyle = localStorage.getItem(lastEditorStyleKey) ?? EditorStyle.MatchJoplin;
+editor.getRootElement().classList.add(lastEditorStyle);
+
 
 const templateKey = 'jsdraw-image-template';
 
@@ -43,7 +50,20 @@ const updateTemplateData = () => {
 // This must be done in a way that can be overwritten by editor.loadFrom.
 const initFromTemplate = async () => {
 	try {
-		const data = JSON.parse(localStorage.getItem(templateKey) ?? '{ "imageSize": [ 500, 500 ] }');
+		const defaultData = `{
+			"imageSize": [ 500, 500 ],
+			"backgroundData": {
+				"name":"image-background",
+				"zIndex":0,
+				"data": {
+					"mainColor": "#ffffff",
+					"backgroundType": 1,
+					"gridSize": 25,
+					"gridStrokeWidth": 0.7
+				}
+			}
+		}`;
+		const data = JSON.parse(localStorage.getItem(templateKey) ?? defaultData);
 
 		if (
 			'imageSize' in data
@@ -74,6 +94,7 @@ const initFromTemplate = async () => {
 			const background = AbstractComponent.deserialize(data.backgroundData);
 			const addToHistory = false;
 			await editor.dispatchNoAnnounce(editor.image.addElement(background), addToHistory);
+			console.log('background data', data.backgroundData)
 		}
 	} catch(e) {
 		console.warn('Error initializing js-draw from template: ', e);
@@ -265,6 +286,11 @@ const loadedMessage: InitialSvgDataRequest = {
 webviewApi.postMessage(loadedMessage).then(async (result: WebViewMessageResponse) => {
 	// Don't load the image multiple times.
 	if (result?.type === 'initialDataResponse' && !haveLoadedFromSvg) {
+		// Update the editor's theme
+		editor.getRootElement().classList.remove(lastEditorStyle);
+		editor.getRootElement().classList.add(result.styleMode);
+		localStorage.setItem(lastEditorStyleKey, result.styleMode);
+
 		setupToolbar(result.toolbarType);
 
 		// Zoom to the preview region (loadFromSVG, if called, will zoom to the new region)

@@ -3,7 +3,7 @@ import { ButtonSpec, DialogResult } from 'api/types';
 import { autosave, clearAutosave } from '../autosave';
 import { pluginPrefix } from '../constants';
 import localization from '../localization';
-import { ToolbarType, WebViewMessage, WebViewMessageResponse } from '../types';
+import { EditorStyle, ToolbarType, WebViewMessage, WebViewMessageResponse } from '../types';
 
 const dialogs = joplin.views.dialogs;
 export type SaveOptionType = 'saveAsCopy' | 'overwrite';
@@ -15,6 +15,7 @@ export default class DrawingDialog {
 	private isFullscreen: boolean = false;
 	private autosaveInterval: number = 120 * 1000; // ms
 	private toolbarType: ToolbarType = ToolbarType.Default;
+	private styleMode: EditorStyle = EditorStyle.MatchJoplin;
 
 	/** @returns a reference to the singleton instance of the DrawingDialog. */
 	public static async getInstance(): Promise<DrawingDialog> {
@@ -56,6 +57,11 @@ export default class DrawingDialog {
 	/** Sets the toolbar to be displayed in the dialog. Takes effect on the next editor launch. */
 	public setToolbarType(type: ToolbarType) {
 		this.toolbarType = type;
+	}
+
+	/** Changes the editor's style. Takes effect on the next launch of the editor. */
+	public setStyleMode(style: EditorStyle) {
+		this.styleMode = style;
 	}
 
 	/**
@@ -125,6 +131,7 @@ export default class DrawingDialog {
 						autosaveIntervalMS: this.autosaveInterval,
 						toolbarType: this.toolbarType,
 						initialData,
+						styleMode: this.styleMode,
 					};
 				} else if (message.type === 'showCloseUnsavedBtn') {
 					this.setDialogButtons([{

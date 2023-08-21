@@ -26,15 +26,21 @@ export interface InitialSvgDataRequest {
 	type: 'getInitialData',
 }
 
+export type WebViewMessage =
+	SaveMessage | ShowCloseButtonRequest | HideCloseButtonRequest | ResumeEditingMessage | InitialSvgDataRequest | AutosaveRequest;
+
+
 export enum ToolbarType {
 	Default = 0,
 	Sidebar = 1,
 	Dropdown = 2,
 }
 
-export type WebViewMessage =
-	SaveMessage | ShowCloseButtonRequest | HideCloseButtonRequest | ResumeEditingMessage | InitialSvgDataRequest | AutosaveRequest;
-
+export enum EditorStyle {
+	MatchJoplin = 'match-joplin-theme',
+	JsDrawLight = 'js-draw-default-light',
+	JsDrawDark = 'js-draw-default-dark',
+}
 
 export interface InitialDataResponse {
 	type: 'initialDataResponse';
@@ -42,6 +48,7 @@ export interface InitialDataResponse {
 	initialData: string|undefined;
 	autosaveIntervalMS: number;
 	toolbarType: ToolbarType;
+	styleMode: EditorStyle;
 }
 
 export type WebViewMessageResponse =
