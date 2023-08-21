@@ -1,47 +1,21 @@
-import Editor, { EditorEventType, ActionButtonWidget, KeyPressEvent, AbstractComponent, BackgroundComponent, Vec2, Rect2, Erase } from 'js-draw';
+import Editor, { EditorEventType, ActionButtonWidget, KeyPressEvent, AbstractComponent, BackgroundComponent, Vec2, Rect2, Erase, ToolbarWidgetTag, makeEdgeToolbar, makeDropdownToolbar } from 'js-draw';
+import { MaterialIconProvider } from '@js-draw/material-icons';
 import 'js-draw/bundledStyles';
 import localization from '../localization';
 import { escapeHtml } from '../util/htmlUtil';
-import { ShowCloseButtonRequest, HideCloseButtonRequest, InitialSvgDataRequest, SaveMessage, WebViewMessage, WebViewMessageResponse } from '../types';
+import { ShowCloseButtonRequest, HideCloseButtonRequest, InitialSvgDataRequest, SaveMessage, WebViewMessage, WebViewMessageResponse, ToolbarType } from '../types';
 
 declare const webviewApi: any;
 
 let haveLoadedFromSvg = false;
-const editor = new Editor(document.body);
-const toolbar = editor.addToolbar();
+const editor = new Editor(document.body, {
+	iconProvider: new MaterialIconProvider(),
+});
 editor.focus();
-
-const makeCloseIcon = () => {
-	const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-	svg.innerHTML = `
-		<style>
-			.toolbar-close-icon {
-				stroke: var(--icon-color);
-				stroke-width: 10;
-				stroke-linejoin: round;
-				stroke-linecap: round;
-				fill: none;
-			}
-		</style>
-		<path
-			d='
-				M 15,15 85,85
-				M 15,85 85,15
-			'
-			class='toolbar-close-icon'
-		/>
-	`;
-	svg.setAttribute('viewBox', '0 0 100 100');
-	return svg;
-};
-
-const makeSaveIcon = () => {
-	return editor.icons.makeSaveIcon();
-};
 
 const templateKey = 'jsdraw-image-template';
 
-// Update the template for new images.
+// Update the template for new images based on the current state of the editor
 const updateTemplateData = () => {
 	// Find the topmost background component.
 	let topmostBackgroundComponent: BackgroundComponent|null = null;
@@ -67,7 +41,7 @@ const updateTemplateData = () => {
 
 // Initialize the editor's state from the template stored in localStorage.
 // This must be done in a way that can be overwritten by editor.loadFrom.
-const initFromTemplate = () => {
+const initFromTemplate = async () => {
 	try {
 		const data = JSON.parse(localStorage.getItem(templateKey) ?? '{ "imageSize": [ 500, 500 ] }');
 
@@ -88,17 +62,18 @@ const initFromTemplate = () => {
 			height = Math.min(maxDimension, Math.max(minDimension, height));
 
 			const imageSize = Vec2.of(width, height);
+			const importExportRect = new Rect2(0, 0, imageSize.x, imageSize.y);
 			const addToHistory = false;
-			editor.dispatchNoAnnounce(
-				editor.setImportExportRect(new Rect2(0, 0, imageSize.x, imageSize.y)),
-				addToHistory
+			await editor.dispatchNoAnnounce(
+				editor.setImportExportRect(importExportRect),
+				addToHistory,
 			);
 		}
 
 		if ('backgroundData' in data) {
 			const background = AbstractComponent.deserialize(data.backgroundData);
 			const addToHistory = false;
-			editor.dispatchNoAnnounce(editor.image.addElement(background), addToHistory);
+			await editor.dispatchNoAnnounce(editor.image.addElement(background), addToHistory);
 		}
 	} catch(e) {
 		console.warn('Error initializing js-draw from template: ', e);
@@ -181,14 +156,6 @@ const showCloseScreen = () => {
 	document.body.appendChild(confirmationDialog);
 };
 
-toolbar.addSpacer({ grow: 1, maxSize: '15px' });
-toolbar.addActionButton({
-	label: localization.close,
-	icon: makeCloseIcon(),
-}, () => {
-	showCloseScreen();
-});
-
 
 const toSVG = () => {
 	const svgElem = editor.toSVG();
@@ -206,30 +173,63 @@ const toSVG = () => {
 	return svgText.join('');
 };
 
+// Initial toolbar setup
+const setupToolbar = (toolbarType: ToolbarType) => {
+	const isEdgeToolbar = toolbarType === ToolbarType.Default || toolbarType === ToolbarType.Sidebar;
+	const toolbar = isEdgeToolbar ? makeEdgeToolbar(editor) : makeDropdownToolbar(editor);
 
-class SaveActionButton extends ActionButtonWidget {
-	public constructor() {
-		super(editor, 'save-button', makeSaveIcon, localization.save, showSaveScreen);
-	}
+	toolbar.addDefaults();
 
-	protected override onKeyPress(event: KeyPressEvent): boolean {
-		if (event.ctrlKey) {
-			if (event.key.toLocaleUpperCase() === 'S' || event.key === 's') {
-				showSaveScreen();
-				return true;
-			}
+	toolbar.addSpacer({ grow: 1, maxSize: '15px' });
+	toolbar.addExitButton(() => {
+		showCloseScreen();
+	});
+
+	class SaveActionButton extends ActionButtonWidget {
+		public constructor() {
+			super(editor, 'save-button', editor.icons.makeSaveIcon, localization.save, showSaveScreen);
+			this.setTags([ ToolbarWidgetTag.Save ]);
 		}
 
-		return false;
+		protected override onKeyPress(event: KeyPressEvent): boolean {
+			console.log('onkeyevent', event);
+			if (event.ctrlKey) {
+				if (event.key === 's' || event.code === 'KeyS') {
+					showSaveScreen();
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		public override mustBeInToplevelMenu(): boolean {
+			return true;
+		}
 	}
 
-	public override canBeInOverflowMenu(): boolean {
-		return false;
-	}
-}
+	toolbar.addSpacer({ grow: 1, maxSize: '15px' });
+	toolbar.addWidget(new SaveActionButton());
 
-toolbar.addSpacer({ grow: 1, maxSize: '15px' });
-toolbar.addWidget(new SaveActionButton());
+	// Save and restore toolbar state (e.g. pen colors)
+	const setupToolbarStateSaveRestore = () => {
+		const toolbarStateKey = 'jsdraw-toolbarState';
+		editor.notifier.on(EditorEventType.ToolUpdated, () => {
+			localStorage.setItem(toolbarStateKey, toolbar.serializeState());
+		});
+
+		try {
+			const toolbarState = localStorage.getItem(toolbarStateKey);
+
+			if (toolbarState) {
+				toolbar.deserializeState(toolbarState);
+			}
+		} catch(e) {
+			console.warn('Error restoring toolbar state!', e);
+		}
+	};
+	setupToolbarStateSaveRestore();
+};
 
 initFromTemplate();
 
@@ -262,9 +262,15 @@ const startAutosaveLoop = (delayBetweenInMS: number) => {
 const loadedMessage: InitialSvgDataRequest = {
 	type: 'getInitialData',
 };
-webviewApi.postMessage(loadedMessage).then((result: WebViewMessageResponse) => {
+webviewApi.postMessage(loadedMessage).then(async (result: WebViewMessageResponse) => {
 	// Don't load the image multiple times.
 	if (result?.type === 'initialDataResponse' && !haveLoadedFromSvg) {
+		setupToolbar(result.toolbarType);
+
+		// Zoom to the preview region (loadFromSVG, if called, will zoom to the new region)
+		const addToHistory = false;
+		await editor.dispatchNoAnnounce(editor.viewport.zoomTo(editor.getImportExportRect()), addToHistory);
+
 		// If given initial data,
 		if (result.initialData) {
 			// We did load from an SVG
@@ -272,9 +278,9 @@ webviewApi.postMessage(loadedMessage).then((result: WebViewMessageResponse) => {
 
 			// Clear the background
 			const addToHistory = false;
-			editor.dispatchNoAnnounce(new Erase(editor.image.getBackgroundComponents()), addToHistory);
+			await editor.dispatchNoAnnounce(new Erase(editor.image.getBackgroundComponents()), addToHistory);
 
-			editor.loadFromSVG(result.initialData);
+			await editor.loadFromSVG(result.initialData);
 		}
 
 		// Set the autosave interval
@@ -282,21 +288,3 @@ webviewApi.postMessage(loadedMessage).then((result: WebViewMessageResponse) => {
 	}
 });
 
-// Save and restore toolbar state (e.g. pen colors)
-const setupToolbarStateSaveRestore = () => {
-	const toolbarStateKey = 'jsdraw-toolbarState';
-	editor.notifier.on(EditorEventType.ToolUpdated, () => {
-		localStorage.setItem(toolbarStateKey, toolbar.serializeState());
-	});
-
-	try {
-		const toolbarState = localStorage.getItem(toolbarStateKey);
-
-		if (toolbarState) {
-			toolbar.deserializeState(toolbarState);
-		}
-	} catch(e) {
-		console.warn('Error restoring toolbar state!', e);
-	}
-};
-setupToolbarStateSaveRestore();

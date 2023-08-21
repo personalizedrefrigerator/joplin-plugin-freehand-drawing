@@ -67,10 +67,22 @@
     "@jridgewell/resolve-uri" "3.1.0"
     "@jridgewell/sourcemap-codec" "1.4.14"
 
-"@melloware/coloris@0.20.0":
-  version "0.20.0"
-  resolved "https://registry.yarnpkg.com/@melloware/coloris/-/coloris-0.20.0.tgz#8c812a71452e7c6b166a466115aa35fdcf6d15fc"
-  integrity sha512-v0CeIL/Fh8SDXA9yqk/MShpnNXzN575iBklszdtCF/VHLItVZGTmsqida2iiF78PBQ4LTe7f4thNRLsvR7YiVA==
+"@js-draw/material-icons@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@js-draw/material-icons/-/material-icons-1.0.2.tgz#f96d39c3200477f33dd818723bfffe62e0f8faf2"
+  integrity sha512-38gexNXIkhIUWgd1Q1bKidmQyAW75OzOitn0y3oOjdALNcRVj9mjT7TvSWZzBQ9g9geSpai6WtoI3PuUFnv48w==
+
+"@js-draw/math@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@js-draw/math/-/math-1.0.2.tgz#311fc9a4a1c6fc1c7bc672132e1ad4e2758bdc28"
+  integrity sha512-pwlDo1s6zYsx3Q2ZVba1U3AnbaHmqE3xrAXZzLdaEWxftthr/fGMFGIc/CLV9vPiy0wT+bDtBgsTI+CYqxqy3Q==
+  dependencies:
+    bezier-js "6.1.3"
+
+"@melloware/coloris@0.21.0":
+  version "0.21.0"
+  resolved "https://registry.yarnpkg.com/@melloware/coloris/-/coloris-0.21.0.tgz#690fba88db0eb075cbaa762de0540f6f01f8fbf4"
+  integrity sha512-jy4+XS9yv66dDwp14HK2eRTrmHP57nha1ZY2RP7TWsYJ2L+pZynMIiru8zL40BjAnlRFbWmTat1TS229mScr7g==
 
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
@@ -827,13 +839,13 @@ jest-worker@^27.4.5:
     merge-stream "^2.0.0"
     supports-color "^8.0.0"
 
-js-draw@^0.25.1:
-  version "0.25.1"
-  resolved "https://registry.yarnpkg.com/js-draw/-/js-draw-0.25.1.tgz#e50c61d0713b1464acab21c795253c2db23e2fd8"
-  integrity sha512-LImd3AhqprrJSz5tvNUuWPm+Q3IWDSG553YIxW3v9I5xfmozmu9bguNxmi4XOcy4yRPW3uPLbWD4ayoBCQso0A==
+js-draw@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/js-draw/-/js-draw-1.0.2.tgz#d9f5b5d933fd0ae7ead603af08592db187058304"
+  integrity sha512-mrZV2rNRJjbCHUD14Tt95dyBq2O8rfkz4pPbdaz+ijEo/CXUB/m6ZMo9dtX4kstKq5TvVuMmVc+Wf0iO9sr68A==
   dependencies:
-    "@melloware/coloris" "0.20.0"
-    bezier-js "6.1.3"
+    "@js-draw/math" "^1.0.2"
+    "@melloware/coloris" "0.21.0"
 
 json-parse-even-better-errors@^2.3.1:
   version "2.3.1"

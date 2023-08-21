@@ -26,6 +26,12 @@ export interface InitialSvgDataRequest {
 	type: 'getInitialData',
 }
 
+export enum ToolbarType {
+	Default = 0,
+	Sidebar = 1,
+	Dropdown = 2,
+}
+
 export type WebViewMessage =
 	SaveMessage | ShowCloseButtonRequest | HideCloseButtonRequest | ResumeEditingMessage | InitialSvgDataRequest | AutosaveRequest;
 
@@ -35,7 +41,10 @@ export interface InitialDataResponse {
 
 	initialData: string|undefined;
 	autosaveIntervalMS: number;
+	toolbarType: ToolbarType;
 }
 
 export type WebViewMessageResponse =
 	InitialDataResponse | null;
+
+

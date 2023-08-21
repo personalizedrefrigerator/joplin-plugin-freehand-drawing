@@ -7,6 +7,7 @@ import TemporaryDirectory from './TemporaryDirectory';
 import waitFor from './util/waitFor';
 import DrawingDialog from './dialog/DrawingDialog';
 import { pluginPrefix } from './constants';
+import { ToolbarType } from './types';
 
 // While learning how to use the Joplin plugin API,
 // * https://github.com/herdsothom/joplin-insert-date/blob/main/src/index.ts
@@ -38,6 +39,7 @@ const registerAndApplySettings = async (drawingDialog: DrawingDialog) => {
 	// Joplin adds a prefix to the setting in settings.json for us.
 	const editorFillsWindowKey = 'disable-editor-fills-window';
 	const autosaveIntervalKey = 'autosave-interval-minutes';
+	const toolbarTypeKey = 'toolbar-type';
 
 	const applySettings = async () => {
 		const fullscreenDisabled = await joplin.settings.value(editorFillsWindowKey);
@@ -51,6 +53,9 @@ const registerAndApplySettings = async (drawingDialog: DrawingDialog) => {
 		}
 
 		await drawingDialog.setAutosaveInterval(autosaveIntervalMinutes * 60 * 1000);
+
+		const toolbarType = await joplin.settings.value(toolbarTypeKey) as ToolbarType;
+		await drawingDialog.setToolbarType(toolbarType);
 	};
 
 	const jsDrawSectionName = 'js-draw';
@@ -62,6 +67,22 @@ const registerAndApplySettings = async (drawingDialog: DrawingDialog) => {
 
 	// Editor fullscreen setting
 	await joplin.settings.registerSettings({
+		[toolbarTypeKey]: {
+			public: true,
+			section: 'js-draw',
+
+			label: localization.toolbarTypeLabel,
+
+			isEnum: true,
+			type: SettingItemType.Int,
+			value: 0,
+
+			options: {
+				0: localization.toolbarTypeDefault,
+				1: localization.toolbarTypeSidebar,
+				2: localization.toolbarTypeDropdown,
+			},
+		},
 		[editorFillsWindowKey]: {
 			public: true,
 			section: 'js-draw',

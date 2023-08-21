@@ -1,5 +1,5 @@
 
-.imageEditorContainer {
+:root .imageEditorContainer {
 	height: 100vh;
 	width: 100vw;
 }
@@ -30,10 +30,13 @@ body, :root {
 }
 
 :root .imageEditorContainer {
-	--primary-background-color: var(--joplin-background-color);
-	--primary-background-color-transparent: var(--joplin-background-color-transparent);
-	--secondary-background-color: var(--joplin-background-color2);
-	--primary-foreground-color: var(--joplin-color);
-	--secondary-foreground-color: var(--joplin-color2);
-	--primary-shadow-color: var(--joplin-background-color2);
+	--background-color-1: var(--joplin-background-color);
+	--foreground-color-1: var(--joplin-color);
+	--background-color-2: var(--joplin-background-color3);
+	--foreground-color-2: var(--joplin-color3);
+	--background-color-3: var(--joplin-raised-background-color);
+	--foreground-color-3: var(--joplin-raised-color);
+	--selection-background-color: var(--joplin-selected-color);
+	--selection-foreground-color: var(--joplin-color);
+	--primary-action-foreground-color: var(--joplin-color4);
 }
