@@ -1,3 +1,8 @@
+# 2.1.2
+ * [Updates `js-draw`](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#121)
+   * Fix low-contrast colors in Joplin ≤ v2.11
+   * Fix edge toolbar open/closing animations in Joplin ≤ v2.11
+
 # 2.1.0, 2.1.1
  * Fix incorrect `manifest.json` version number.
  * Adjust default color theme for higher contrast.

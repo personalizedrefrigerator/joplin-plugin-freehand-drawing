@@ -67,15 +67,15 @@
     "@jridgewell/resolve-uri" "3.1.0"
     "@jridgewell/sourcemap-codec" "1.4.14"
 
-"@js-draw/material-icons@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@js-draw/material-icons/-/material-icons-1.1.0.tgz#30fdf270406fda15aa510c176c7564c41fa02f37"
-  integrity sha512-2eKmxOsh3ziatLekUiWFNpgwbMBiroYLaIHxpbR0S2uzrrsOxZQ/QNxmxVakMdVv0B/rGPq+Ltr6+iTEDiGblA==
+"@js-draw/material-icons@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@js-draw/material-icons/-/material-icons-1.2.1.tgz#032dfb9ad69a5da29a1cb58263401b2c5662bdfe"
+  integrity sha512-uE/gvmIBPFfvrMxfNTdcMHEJDUtwaW9BSDiosH9+pcPdfUebk+3FBNlHDnLQLJFEZfV9AdVo9ZP7QQyPjboXQw==
 
-"@js-draw/math@^1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@js-draw/math/-/math-1.0.2.tgz#311fc9a4a1c6fc1c7bc672132e1ad4e2758bdc28"
-  integrity sha512-pwlDo1s6zYsx3Q2ZVba1U3AnbaHmqE3xrAXZzLdaEWxftthr/fGMFGIc/CLV9vPiy0wT+bDtBgsTI+CYqxqy3Q==
+"@js-draw/math@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@js-draw/math/-/math-1.2.1.tgz#ec44e7ed925693a7c5e0a64606dfa5adc9b9136e"
+  integrity sha512-2bnsTm+lamxfm+ZPnlKiU5tJRx3co6m8oooCg4zbG/1QhomKcagiilyJziViYQtKkOHSrVEskVIqvjaFRoXqiw==
   dependencies:
     bezier-js "6.1.3"
 
@@ -839,12 +839,12 @@ jest-worker@^27.4.5:
     merge-stream "^2.0.0"
     supports-color "^8.0.0"
 
-js-draw@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/js-draw/-/js-draw-1.1.0.tgz#e53ba5455cda3f7d9ec8247ae02a25bcfffafe7f"
-  integrity sha512-z8RqupfICQmoPTpsI//xZAk32wo2zHPxZreeBjU9rJnJxIdvD8KD1CLnTxBcMCZ8csHtaUHsazS4tbG5yw+QYw==
+js-draw@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/js-draw/-/js-draw-1.2.1.tgz#cdb07d4a0da2402e91762d2633f03b07aff4494c"
+  integrity sha512-/TYccUgS8vTJwXnosau0UY1UNGXB2miP0KJo+PZZxs8eOiiz+2bI03Zgh4g5D1uVjFGwU5dpoQafh5dWQLlpLQ==
   dependencies:
-    "@js-draw/math" "^1.0.2"
+    "@js-draw/math" "^1.2.1"
     "@melloware/coloris" "0.21.0"
 
 json-parse-even-better-errors@^2.3.1:

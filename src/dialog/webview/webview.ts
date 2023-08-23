@@ -1,10 +1,9 @@
-import Editor, { EditorEventType, AbstractComponent, BackgroundComponent, Vec2, Rect2, Erase, makeEdgeToolbar, makeDropdownToolbar } from 'js-draw';
+import Editor, { EditorEventType, AbstractComponent, BackgroundComponent, Vec2, Rect2, Erase, makeEdgeToolbar, makeDropdownToolbar, adjustEditorThemeForContrast } from 'js-draw';
 import { MaterialIconProvider } from '@js-draw/material-icons';
 import 'js-draw/bundledStyles';
 import localization from '../../localization';
 import { escapeHtml } from '../../util/htmlUtil';
 import { ShowCloseButtonRequest, HideCloseButtonRequest, InitialSvgDataRequest, SaveMessage, WebViewMessage, WebViewMessageResponse, ToolbarType, EditorStyle } from '../../types';
-import updateThemeColorsForContrast from './updateThemeColorsForContrast';
 
 declare const webviewApi: any;
 
@@ -19,8 +18,7 @@ const lastEditorStyleKey = 'jsdraw-last-editor-style';
 // Apply the last theme to the editor to prevent flickering on startup.
 const lastEditorStyle = localStorage.getItem(lastEditorStyleKey) ?? EditorStyle.MatchJoplin;
 editor.getRootElement().classList.add(lastEditorStyle);
-updateThemeColorsForContrast(editor);
-
+adjustEditorThemeForContrast(editor);
 
 const templateKey = 'jsdraw-image-template';
 
@@ -271,7 +269,7 @@ webviewApi.postMessage(loadedMessage).then(async (result: WebViewMessageResponse
 		editor.getRootElement().classList.remove(lastEditorStyle);
 		editor.getRootElement().classList.add(result.styleMode);
 		localStorage.setItem(lastEditorStyleKey, result.styleMode);
-		updateThemeColorsForContrast(editor);
+		adjustEditorThemeForContrast(editor);
 
 		setupToolbar(result.toolbarType);
 
