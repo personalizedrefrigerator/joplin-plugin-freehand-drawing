@@ -1,5 +1,5 @@
 # `joplin-plugin-freehand-drawing`
-[On GitHub](https://github.com/personalizedrefrigerator/joplin-plugin-freehand-drawing) | [On the Joplin Forum](https://discourse.joplinapp.org/t/plugin-js-draw-integration/27114) | [Online Demo](https://personalizedrefrigerator.github.io/js-draw/example/index.html)
+[On GitHub](https://github.com/personalizedrefrigerator/joplin-plugin-freehand-drawing) | [On the Joplin Forum](https://discourse.joplinapp.org/t/plugin-js-draw-integration/27114) | [Online Demo](https://personalizedrefrigerator.github.io/js-draw/example/index.html) | [Installing](https://github.com/personalizedrefrigerator/joplin-plugin-freehand-drawing#installing)
 
 A Joplin plugin for creating and editing freehand drawings using [js-draw](https://github.com/personalizedrefrigerator/js-draw).
 
@@ -17,7 +17,6 @@ Existing drawings can be edited by hovering over the drawing in the markdown pre
 
 # Notes
  * This plugin uses [js-draw](https://github.com/personalizedrefrigerator/js-draw) to edit/create freehand drawings. Bugs related to `js-draw` can be reported using its [issue tracker](https://github.com/personalizedrefrigerator/js-draw/issues).
- * At present, the plugin's icon in the rich text editor is a gear: ![image](https://user-images.githubusercontent.com/46334387/220479210-5f54bef6-a690-4ae1-9d7c-2d675c8f76ea.png). [See the upstream bug report](https://github.com/laurent22/joplin/issues/6876)
 
 
 # Development
