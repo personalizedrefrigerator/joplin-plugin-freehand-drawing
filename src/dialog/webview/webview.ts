@@ -42,6 +42,7 @@ const updateTemplateData = () => {
 	const template = JSON.stringify({
 		backgroundData: editorBackgroundData,
 		imageSize: [ imageSize.x, imageSize.y ],
+		autoresize: editor.image.getAutoresizeEnabled(),
 	});
 	localStorage.setItem(templateKey, template);
 };
@@ -52,6 +53,7 @@ const initFromTemplate = async () => {
 	try {
 		const defaultData = `{
 			"imageSize": [ 500, 500 ],
+			"autoresize": true,
 			"backgroundData": {
 				"name":"image-background",
 				"zIndex":0,
@@ -94,7 +96,10 @@ const initFromTemplate = async () => {
 			const background = AbstractComponent.deserialize(data.backgroundData);
 			const addToHistory = false;
 			await editor.dispatchNoAnnounce(editor.image.addElement(background), addToHistory);
-			console.log('background data', data.backgroundData)
+		}
+
+		if ('autoresize' in data && typeof data.autoresize === 'boolean') {
+			await editor.dispatchNoAnnounce(editor.image.setAutoresizeEnabled(data.autoresize), false);
 		}
 	} catch(e) {
 		console.warn('Error initializing js-draw from template: ', e);
