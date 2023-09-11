@@ -153,11 +153,10 @@ const insertText = async (textToInsert: string, richTextEditorSelectionMarker?: 
 		await waitFor(100);
 
 		// Jump to the rich text editor selection
-		const selectPlaceholderResult = await joplin.commands.execute('editor.execCommand', {
+		await joplin.commands.execute('editor.execCommand', {
 			name: 'js-draw--cmSelectAndDelete',
 			args: [ richTextEditorSelectionMarker ],
 		});
-		console.log('js-draw: CodeMirror select placeholder result', selectPlaceholderResult);
 	}
 
 	await joplin.commands.execute('insertText', textToInsert);
@@ -226,7 +225,7 @@ joplin.plugins.register({
 
 				// If selecting a resource URL, edit that. Else, insert a new drawing.
 				if (selection && /^\:\/[a-zA-Z0-9]+$/.exec(selection)) {
-					console.log('Attemptint to edit selected resource,', selection);
+					console.log('Attempting to edit selected resource,', selection);
 
 					// TODO: Update the cache-breaker for the resource.
 					await editDrawing(selection);
