@@ -1,3 +1,9 @@
+# 2.2.0
+ * [Updates `js-draw`](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#130)
+   - Adds support for drawings that automatically resize to fit their content on save.
+   - Adds scrollbars (read-only for now)
+   - Bug fixes and performance improvements.
+
 # 2.1.2
  * [Updates `js-draw`](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#121)
    * Fix low-contrast colors in Joplin ≤ v2.11
