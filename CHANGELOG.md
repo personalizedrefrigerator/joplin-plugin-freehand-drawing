@@ -1,3 +1,8 @@
+# 2.2.1
+ * [Updates `js-draw`](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#131)
+   - Fixes text/images moving when created at roughly ≥ 10⁷× zoom.
+   - Fixes grid lines vanishing at high zoom levels.
+
 # 2.2.0
  * [Updates `js-draw`](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#130)
    - Adds support for drawings that automatically resize to fit their content on save.
