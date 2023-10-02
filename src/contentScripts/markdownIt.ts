@@ -40,10 +40,33 @@ const editImage = (contentScriptId: string, container: HTMLElement, svgId: strin
 	imageElem.classList.add(imageElemClass);
 
 	try {
-		const postMessage = webviewApi.postMessage;
+		let postMessage;
+		
+		try {
+			postMessage = webviewApi.postMessage;
+		} catch (_error) { }
+
+		if (!postMessage) {
+			// TODO:
+			//  This is a hack to workaround the lack of a webviewApi in the rich text editor
+			//  webview.
+			//  As top.require **should not work** at some point in the future, this will fail.
+			const PluginService = (top! as any).require('@joplin/lib/services/plugins/PluginService').default;
+
+			postMessage = (contentScriptId: string, message: string) => {
+				const pluginService = PluginService.instance();
+				const pluginId = pluginService.pluginIdByContentScriptId(contentScriptId);
+				return pluginService.pluginById(pluginId).emitContentScriptMessage(contentScriptId, message);
+			};
+		}
+
 		postMessage(contentScriptId, message).then((resourceId: string|null) => {
 			// Update all matching
-			const toRefresh = document.querySelectorAll(`img[data-resource-id="${resourceId}"]`);
+			const toRefresh = document.querySelectorAll(`
+				img[data-resource-id="${resourceId}"],
+				img[data-mce-src*="/${resourceId}.svg"]
+			`);
+
 			for (const elem of toRefresh) {
 				const imageElem = elem as HTMLImageElement;
 				imageElem.src = updateCachebreaker(imageElem.src);
@@ -53,7 +76,6 @@ const editImage = (contentScriptId: string, container: HTMLElement, svgId: strin
 		});
 	} catch (err) {
 		console.warn('Error posting message', err);
-		console.log('Retrying...');
 	}
 };
 
@@ -69,8 +91,10 @@ const onImgLoad = (container: HTMLElement, buttonId: string) => {
 	if (!button) {
 		button = document.querySelector(`#${buttonId}`);
 
+		// In the rich text editor, an image might be reloading when the button has already
+		// been removed:
 		if (!button) {
-			throw new Error(`js-draw editor: Unable to find the image editor button with ID ${buttonId}`);
+			return;
 		}
 
 		button.remove();
@@ -100,8 +124,7 @@ const onImgLoad = (container: HTMLElement, buttonId: string) => {
 		// Note: We can't just check window.webviewApi because webviewApi seems not to be
 		//       a property on window.
 		haveWebviewApi = typeof webviewApi.postMessage === 'function';
-	} catch (e) {
-		console.error(e);
+	} catch (_err) {
 		haveWebviewApi = false;
 	}
 
@@ -139,14 +162,18 @@ export default (context: { contentScriptId: string }) => {
 				const svgId = `io-github-personalizedrefrigerator-js-draw-editable-svg-${idCounter}`;
 				idCounter++;
 
-				const htmlWithOnload = defaultHtml.replace('<img ', `<img id="${svgId}" onload="(${onImgLoadFnString})(this.parentElement, '${buttonId}')" `);
+				const editCallbackJs = `(${editImageFnString})('${editSvgCommandIdentifier}', this.parentElement, '${svgId}')`;
+
+				const htmlWithOnload = defaultHtml.replace(
+					'<img ', `<img id="${svgId}" ondblclick="${editCallbackJs}" onload="(${onImgLoadFnString})(this.parentElement, '${buttonId}')" `
+				);
 
 				return `
 				<span class='jsdraw--svgWrapper' contentEditable='false'>
 					${htmlWithOnload}
 					<button
 						class='jsdraw--editButton'
-						onclick="(${editImageFnString})('${editSvgCommandIdentifier}', this.parentElement, '${svgId}')"
+						onclick="${editCallbackJs}"
 						id="${buttonId}"
 					>
 						${localization.edit} 🖊️
