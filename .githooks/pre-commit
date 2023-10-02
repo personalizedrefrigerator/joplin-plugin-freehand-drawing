@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+
+# Runs lint-staged just before comitting
+# This script is based on that found in the
+# js-draw repository.
+yarn lint-staged
