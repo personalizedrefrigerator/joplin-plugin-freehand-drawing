@@ -5,7 +5,7 @@
 		"dist": "webpack --env joplin-plugin-config=buildMain && webpack --env joplin-plugin-config=buildExtraScripts && webpack --env joplin-plugin-config=createArchive",
 		"prepare": "yarn dist",
 		"update": "npm install -g generator-joplin && yo joplin --update",
-		"preinstall": "git config core.githookspath .githooks",
+		"preinstall": "git config core.hookspath .githooks",
 		"lint-staged": "lint-staged",
 		"lint": "eslint --fix . && prettier --ignore-path .eslintignore --write ."
 	},

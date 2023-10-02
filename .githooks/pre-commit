@@ -3,4 +3,4 @@
 # Runs lint-staged just before comitting
 # This script is based on that found in the
 # js-draw repository.
-yarn lint-staged
+yarn run lint-staged
