@@ -1,4 +1,4 @@
-import CodeMirror = require("codemirror");
+import CodeMirror = require('codemirror');
 
 export default (_context: { contentScriptId: string }) => {
 	return {
@@ -11,9 +11,9 @@ export default (_context: { contentScriptId: string }) => {
 			// text.
 			// This is useful for inserting text in one editor mode, then deleting that text
 			// to sync the cursor position.
-			codeMirror.defineExtension('js-draw--cmSelectAndDelete', function(target: string) {
+			codeMirror.defineExtension('js-draw--cmSelectAndDelete', function (target: string) {
 				const searchCursor = this.getSearchCursor(target, 0, {
-					multiline: 'disable'
+					multiline: 'disable',
 				});
 				const foundNext = searchCursor.findNext();
 				const targetCursorLoc = searchCursor.from();
@@ -24,12 +24,12 @@ export default (_context: { contentScriptId: string }) => {
 
 				searchCursor.replace('');
 
-				const selectionRanges = [ { anchor: targetCursorLoc, head: targetCursorLoc } ];
+				const selectionRanges = [{ anchor: targetCursorLoc, head: targetCursorLoc }];
 				this.setSelections(selectionRanges, 0);
 
 				return foundNext;
 			});
 		},
 		codeMirrorResources: ['addon/search/searchcursor.js'],
-	}
+	};
 };

@@ -1,4 +1,3 @@
-
 import joplin from 'api';
 import { tmpdir } from 'os';
 import * as path from 'path';
@@ -10,9 +9,7 @@ const appTmpDirectories: TemporaryDirectory[] = [];
 
 export default class TemporaryDirectory {
 	private fileIdCounter: number;
-	private constructor(
-		private path: string|null,
-	) {
+	private constructor(private path: string | null) {
 		this.fileIdCounter = 0;
 		appTmpDirectories.push(this);
 	}
@@ -46,9 +43,7 @@ export default class TemporaryDirectory {
 
 	public static async create(): Promise<TemporaryDirectory> {
 		const prefix = 'joplin-js-draw';
-		const directoryPath = await fs.mkdtemp(
-			path.join(tmpdir(), prefix)
-		);
+		const directoryPath = await fs.mkdtemp(path.join(tmpdir(), prefix));
 		return new TemporaryDirectory(directoryPath);
 	}
 }

@@ -1,4 +1,3 @@
-
 export const escapeHtml = (html: string): string => {
 	// Reference: https://stackoverflow.com/questions/7381974/which-characters-need-to-be-escaped-in-html
 	return html

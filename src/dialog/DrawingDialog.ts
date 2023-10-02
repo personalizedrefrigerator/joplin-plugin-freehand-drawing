@@ -106,7 +106,7 @@ export default class DrawingDialog {
 
 	/**
 	 * Displays a dialog that allows the user to insert a drawing.
-	 * 
+	 *
 	 * @returns the saved drawing or `null` if the action was canceled by the user.
 	 */
 	public async promptForDrawing(initialData?: string): Promise<[string, SaveOptionType] | null> {
@@ -114,44 +114,52 @@ export default class DrawingDialog {
 
 		const result = new Promise<[string, SaveOptionType] | null>((resolve, reject) => {
 			let saveData: string | null = null;
-			joplin.views.panels.onMessage(this.handle, (message: WebViewMessage): WebViewMessageResponse => {
-				if (message.type === 'saveSVG') {
-					saveData = message.data;
+			joplin.views.panels.onMessage(
+				this.handle,
+				(message: WebViewMessage): WebViewMessageResponse => {
+					if (message.type === 'saveSVG') {
+						saveData = message.data;
 
-					this.setDialogButtons([{
-						id: 'ok',
-					}]);
-				} else if (message.type === 'getInitialData') {
-					// The drawing dialog has loaded -- we don't need the exit button.
-					this.setDialogButtons([]);
+						this.setDialogButtons([
+							{
+								id: 'ok',
+							},
+						]);
+					} else if (message.type === 'getInitialData') {
+						// The drawing dialog has loaded -- we don't need the exit button.
+						this.setDialogButtons([]);
 
-					return {
-						type: 'initialDataResponse',
+						return {
+							type: 'initialDataResponse',
 
-						autosaveIntervalMS: this.autosaveInterval,
-						toolbarType: this.toolbarType,
-						initialData,
-						styleMode: this.styleMode,
-					};
-				} else if (message.type === 'showCloseUnsavedBtn') {
-					this.setDialogButtons([{
-						id: 'cancel',
-						title: localization.discardChanges,
-					}]);
-				} else if (message.type === 'hideCloseUnsavedBtn') {
-					this.setDialogButtons([]);
-				} else if (message.type === 'autosave') {
-					void clearAutosave().then(() => {
-						void autosave(message.data);
-					});
-				}
+							autosaveIntervalMS: this.autosaveInterval,
+							toolbarType: this.toolbarType,
+							initialData,
+							styleMode: this.styleMode,
+						};
+					} else if (message.type === 'showCloseUnsavedBtn') {
+						this.setDialogButtons([
+							{
+								id: 'cancel',
+								title: localization.discardChanges,
+							},
+						]);
+					} else if (message.type === 'hideCloseUnsavedBtn') {
+						this.setDialogButtons([]);
+					} else if (message.type === 'autosave') {
+						void clearAutosave().then(() => {
+							void autosave(message.data);
+						});
+					}
 
-				return null;
-			});
+					return null;
+				},
+			);
 
 			dialogs.open(this.handle).then((result: DialogResult) => {
 				if (saveData && result.id === 'ok') {
-					const saveOption: SaveOptionType = result.formData?.saveOptions?.saveOption ?? 'saveAsCopy';
+					const saveOption: SaveOptionType =
+						result.formData?.saveOptions?.saveOption ?? 'saveAsCopy';
 					resolve([saveData, saveOption]);
 				} else if (result.id === 'cancel') {
 					resolve(null);

@@ -4,7 +4,6 @@ about: Report an issue with the plugin
 title: ''
 labels: bug
 assignees: ''
-
 ---
 
 <!--
@@ -20,6 +19,7 @@ A clear and concise description of what the bug is.
 
 **To Reproduce**
 Steps to reproduce the behavior:
+
 1. Go to '...'
 2. Click on '....'
 3. Scroll down to '....'
@@ -32,10 +32,10 @@ A clear and concise description of what you expected to happen.
 If applicable, add screenshots to help explain your problem.
 
 **Platform:**
- - OS: [e.g. Windows]
- - Plugin Version: [e.g. 1.0.13]
- - Joplin Version: [e.g. 2.8.8]
 
+- OS: [e.g. Windows]
+- Plugin Version: [e.g. 1.0.13]
+- Joplin Version: [e.g. 2.8.8]
 
 **Additional context**
 Add any other context about the problem here.

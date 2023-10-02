@@ -1,9 +1,29 @@
-import Editor, { BackgroundComponentBackgroundType, EditorEventType, AbstractComponent, BackgroundComponent, Vec2, Rect2, Erase, makeEdgeToolbar, makeDropdownToolbar, adjustEditorThemeForContrast } from 'js-draw';
+import Editor, {
+	BackgroundComponentBackgroundType,
+	EditorEventType,
+	AbstractComponent,
+	BackgroundComponent,
+	Vec2,
+	Rect2,
+	Erase,
+	makeEdgeToolbar,
+	makeDropdownToolbar,
+	adjustEditorThemeForContrast,
+} from 'js-draw';
 import { MaterialIconProvider } from '@js-draw/material-icons';
 import 'js-draw/bundledStyles';
 import localization from '../../localization';
 import { escapeHtml } from '../../util/htmlUtil';
-import { ShowCloseButtonRequest, HideCloseButtonRequest, InitialSvgDataRequest, SaveMessage, WebViewMessage, WebViewMessageResponse, ToolbarType, EditorStyle } from '../../types';
+import {
+	ShowCloseButtonRequest,
+	HideCloseButtonRequest,
+	InitialSvgDataRequest,
+	SaveMessage,
+	WebViewMessage,
+	WebViewMessageResponse,
+	ToolbarType,
+	EditorStyle,
+} from '../../types';
 
 declare const webviewApi: any;
 
@@ -25,7 +45,7 @@ const templateKey = 'jsdraw-image-template';
 // Update the template for new images based on the current state of the editor
 const updateTemplateData = () => {
 	// Find the topmost background component.
-	let topmostBackgroundComponent: BackgroundComponent|null = null;
+	let topmostBackgroundComponent: BackgroundComponent | null = null;
 	for (const elem of editor.image.getBackgroundComponents()) {
 		if (elem instanceof BackgroundComponent) {
 			topmostBackgroundComponent = elem;
@@ -41,7 +61,7 @@ const updateTemplateData = () => {
 
 	const template = JSON.stringify({
 		backgroundData: editorBackgroundData,
-		imageSize: [ imageSize.x, imageSize.y ],
+		imageSize: [imageSize.x, imageSize.y],
 		autoresize: editor.image.getAutoresizeEnabled(),
 	});
 	localStorage.setItem(templateKey, template);
@@ -52,7 +72,7 @@ const updateTemplateData = () => {
 const initFromTemplate = async () => {
 	try {
 		const defaultData = {
-			imageSize: [ 500, 500 ],
+			imageSize: [500, 500],
 			autoresize: true,
 			backgroundData: {
 				name: 'image-background',
@@ -67,11 +87,11 @@ const initFromTemplate = async () => {
 		const data = savedTemplateString ? JSON.parse(savedTemplateString) : defaultData;
 
 		if (
-			'imageSize' in data
-			&& typeof data['imageSize'][0] === 'number'
-			&& typeof data['imageSize'][1] === 'number'
-			&& isFinite(data['imageSize'][0])
-			&& isFinite(data['imageSize'][1])
+			'imageSize' in data &&
+			typeof data['imageSize'][0] === 'number' &&
+			typeof data['imageSize'][1] === 'number' &&
+			isFinite(data['imageSize'][0]) &&
+			isFinite(data['imageSize'][1])
 		) {
 			let width = data.imageSize[0];
 			let height = data.imageSize[1];
@@ -85,10 +105,7 @@ const initFromTemplate = async () => {
 			const imageSize = Vec2.of(width, height);
 			const importExportRect = new Rect2(0, 0, imageSize.x, imageSize.y);
 			const addToHistory = false;
-			await editor.dispatchNoAnnounce(
-				editor.setImportExportRect(importExportRect),
-				addToHistory,
-			);
+			await editor.dispatchNoAnnounce(editor.setImportExportRect(importExportRect), addToHistory);
 		}
 
 		if ('backgroundData' in data) {
@@ -100,7 +117,7 @@ const initFromTemplate = async () => {
 		if ('autoresize' in data && typeof data.autoresize === 'boolean') {
 			await editor.dispatchNoAnnounce(editor.image.setAutoresizeEnabled(data.autoresize), false);
 		}
-	} catch(e) {
+	} catch (e) {
 		console.warn('Error initializing js-draw from template: ', e);
 	}
 };
@@ -145,13 +162,11 @@ const showSaveScreen = () => {
 		addSaveOption(localization.overwriteExisting, 'overwrite', true);
 		addSaveOption(localization.saveAsNewDrawing, 'saveAsCopy');
 	}
-	
+
 	const messageElem = document.createElement('div');
 	messageElem.innerText = localization.clickOkToContinue;
 
-	doneMessageContainer.replaceChildren(
-		messageElem, saveOptionsContainer
-	);
+	doneMessageContainer.replaceChildren(messageElem, saveOptionsContainer);
 
 	document.body.appendChild(doneMessageContainer);
 };
@@ -180,7 +195,6 @@ const showCloseScreen = () => {
 	confirmationDialog.replaceChildren(message, resumeEditingBtn);
 	document.body.appendChild(confirmationDialog);
 };
-
 
 const toSVG = () => {
 	const svgElem = editor.toSVG();
@@ -228,7 +242,7 @@ const setupToolbar = (toolbarType: ToolbarType) => {
 			if (toolbarState) {
 				toolbar.deserializeState(toolbarState);
 			}
-		} catch(e) {
+		} catch (e) {
 			console.warn('Error restoring toolbar state!', e);
 		}
 	};
@@ -245,7 +259,7 @@ webviewApi.onMessage((message: WebViewMessage) => {
 	}
 });
 
-let autosaveInterval: any|null = null;
+let autosaveInterval: any | null = null;
 const startAutosaveLoop = (delayBetweenInMS: number) => {
 	if (autosaveInterval !== null) {
 		clearInterval(autosaveInterval);
@@ -279,7 +293,10 @@ webviewApi.postMessage(loadedMessage).then(async (result: WebViewMessageResponse
 
 		// Zoom to the preview region (loadFromSVG, if called, will zoom to the new region)
 		const addToHistory = false;
-		await editor.dispatchNoAnnounce(editor.viewport.zoomTo(editor.getImportExportRect()), addToHistory);
+		await editor.dispatchNoAnnounce(
+			editor.viewport.zoomTo(editor.getImportExportRect()),
+			addToHistory,
+		);
 
 		// If given initial data,
 		if (result.initialData) {
@@ -288,7 +305,10 @@ webviewApi.postMessage(loadedMessage).then(async (result: WebViewMessageResponse
 
 			// Clear the background
 			const addToHistory = false;
-			await editor.dispatchNoAnnounce(new Erase(editor.image.getBackgroundComponents()), addToHistory);
+			await editor.dispatchNoAnnounce(
+				new Erase(editor.image.getBackgroundComponents()),
+				addToHistory,
+			);
 
 			await editor.loadFromSVG(result.initialData);
 		}
@@ -297,4 +317,3 @@ webviewApi.postMessage(loadedMessage).then(async (result: WebViewMessageResponse
 		startAutosaveLoop(result.autosaveIntervalMS);
 	}
 });
-

@@ -13,7 +13,7 @@ const getAutosaveDir = async () => {
 const makeAutosaveDir = async () => {
 	const autosavePath = await getAutosaveDir();
 	if (!(await fs.pathExists(autosavePath))) {
-	   await fs.mkdir(autosavePath);
+		await fs.mkdir(autosavePath);
 	}
 	return autosavePath;
 };
@@ -27,14 +27,14 @@ export const autosave = async (data: string) => {
 export const clearAutosave = async () => {
 	const autosavePath = await getAutosaveDir();
 	if (await fs.pathExists(autosavePath)) {
-	   await fs.remove(autosavePath);
+		await fs.remove(autosavePath);
 	}
 };
 
 export const hasAutosave = async () => {
 	const autosavePath = await getAutosaveDir();
 	if (await fs.pathExists(path.join(autosavePath, autosaveFilename))) {
-	   return true;
+		return true;
 	}
 
 	return false;
@@ -42,10 +42,10 @@ export const hasAutosave = async () => {
 
 export const getAutosave = async (): Promise<string | null> => {
 	if (await hasAutosave()) {
-	   const autosavePath = await getAutosaveDir();
+		const autosavePath = await getAutosaveDir();
 
-	   const data = await fs.readFile(path.join(autosavePath, autosaveFilename), 'utf-8');
-	   return data;
+		const data = await fs.readFile(path.join(autosavePath, autosaveFilename), 'utf-8');
+		return data;
 	}
 	return null;
 };

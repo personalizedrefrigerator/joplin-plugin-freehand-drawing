@@ -8,8 +8,8 @@
 	"author": "Henry Heino",
 	"homepage_url": "https://github.com/personalizedrefrigerator/joplin-draw",
 	"repository_url": "https://github.com/personalizedrefrigerator/joplin-draw",
-	"keywords": [ "drawing", "freehand-drawing", "freehand", "handwriting" ],
-	"categories": [ "editor" ],
+	"keywords": ["drawing", "freehand-drawing", "freehand", "handwriting"],
+	"categories": ["editor"],
 	"screenshots": [
 		{ "src": "../screenshots/editor-lightdark-fullscreen.png" },
 		{ "src": "../screenshots/editorview-light-1.png" },

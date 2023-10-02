@@ -1,4 +1,3 @@
-
 interface AppLocalization {
 	insertDrawing: string;
 	restoreFromAutosave: string;
@@ -6,7 +5,6 @@ interface AppLocalization {
 	noSuchAutosaveExists: string;
 	discardChanges: string;
 	defaultImageTitle: string;
-
 
 	edit: string;
 	close: string;
@@ -34,7 +32,7 @@ interface AppLocalization {
 	styleJsDrawLight: string;
 	styleJsDrawDark: string;
 
-	notAnEditableImage: (resourceId: string, resourceType: string)=> void;
+	notAnEditableImage: (resourceId: string, resourceType: string) => void;
 }
 
 const defaultStrings: AppLocalization = {
@@ -92,9 +90,9 @@ const localizations: Record<string, AppLocalization> = {
 		clickOkToContinue: 'Fertig! Klicke auf „Ok“ um fortzufahen.',
 		discardUnsavedChanges: 'Ungespeicherte Änderungen verwerfen?',
 		resumeEditing: 'Bearbeiten fortfahren',
-		
+
 		notAnEditableImage: (resourceId: string, resourceType: string) =>
-		`Die Ressource ${resourceId} ist kein bearbeitbares Bild. Ressource vom Typ ${resourceType} kann nicht bearbeitet werden.`,
+			`Die Ressource ${resourceId} ist kein bearbeitbares Bild. Ressource vom Typ ${resourceType} kann nicht bearbeitet werden.`,
 	},
 	en: defaultStrings,
 	es: {
@@ -115,10 +113,10 @@ const localizations: Record<string, AppLocalization> = {
 		clickOkToContinue: 'Guardado. Ponga «ok» para continuar.',
 		discardUnsavedChanges: '¿Descartar cambios no guardados?',
 		resumeEditing: 'Continuar editando',
-	}
+	},
 };
 
-let localization: AppLocalization|undefined;
+let localization: AppLocalization | undefined;
 
 const languages = [...navigator.languages];
 for (const language of navigator.languages) {

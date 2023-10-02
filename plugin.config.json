@@ -1,5 +1,7 @@
 {
 	"extraScripts": [
-		"dialog/webview/webview.ts", "contentScripts/markdownIt.ts", "contentScripts/codeMirror.ts"
+		"dialog/webview/webview.ts",
+		"contentScripts/markdownIt.ts",
+		"contentScripts/codeMirror.ts"
 	]
 }

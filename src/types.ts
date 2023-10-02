@@ -1,34 +1,37 @@
-
 export interface SaveMessage {
-	type: 'saveSVG',
-	data: string,
+	type: 'saveSVG';
+	data: string;
 }
 
 export interface AutosaveRequest {
-	type: 'autosave',
-	data: string,
+	type: 'autosave';
+	data: string;
 }
 
 // Show the "discard changes" button
 export interface ShowCloseButtonRequest {
-	type: 'showCloseUnsavedBtn',
+	type: 'showCloseUnsavedBtn';
 }
 
 export interface HideCloseButtonRequest {
-	type: 'hideCloseUnsavedBtn',
+	type: 'hideCloseUnsavedBtn';
 }
 
 export interface ResumeEditingMessage {
-	type: 'resumeEditing',
+	type: 'resumeEditing';
 }
 
 export interface InitialSvgDataRequest {
-	type: 'getInitialData',
+	type: 'getInitialData';
 }
 
 export type WebViewMessage =
-	SaveMessage | ShowCloseButtonRequest | HideCloseButtonRequest | ResumeEditingMessage | InitialSvgDataRequest | AutosaveRequest;
-
+	| SaveMessage
+	| ShowCloseButtonRequest
+	| HideCloseButtonRequest
+	| ResumeEditingMessage
+	| InitialSvgDataRequest
+	| AutosaveRequest;
 
 export enum ToolbarType {
 	Default = 0,
@@ -45,13 +48,10 @@ export enum EditorStyle {
 export interface InitialDataResponse {
 	type: 'initialDataResponse';
 
-	initialData: string|undefined;
+	initialData: string | undefined;
 	autosaveIntervalMS: number;
 	toolbarType: ToolbarType;
 	styleMode: EditorStyle;
 }
 
-export type WebViewMessageResponse =
-	InitialDataResponse | null;
-
-
+export type WebViewMessageResponse = InitialDataResponse | null;

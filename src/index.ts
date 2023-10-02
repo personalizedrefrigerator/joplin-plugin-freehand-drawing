@@ -1,5 +1,11 @@
 import joplin from 'api';
-import { ContentScriptType, MenuItemLocation, SettingItemType, SettingStorage, ToolbarButtonLocation } from 'api/types';
+import {
+	ContentScriptType,
+	MenuItemLocation,
+	SettingItemType,
+	SettingStorage,
+	ToolbarButtonLocation,
+} from 'api/types';
 import { clearAutosave, getAutosave } from './autosave';
 import localization from './localization';
 import Resource from './Resource';
@@ -16,9 +22,11 @@ import { EditorStyle, ToolbarType } from './types';
 
 // Returns true if the CodeMirror editor is active.
 const isMarkdownEditor = async () => {
-	return await joplin.commands.execute('editor.execCommand', {
-		name: 'js-draw--isCodeMirrorActive',
-	}) === 'active';
+	return (
+		(await joplin.commands.execute('editor.execCommand', {
+			name: 'js-draw--isCodeMirrorActive',
+		})) === 'active'
+	);
 };
 
 const saveRichTextEditorSelection = async () => {
@@ -55,10 +63,10 @@ const registerAndApplySettings = async (drawingDialog: DrawingDialog) => {
 
 		await drawingDialog.setAutosaveInterval(autosaveIntervalMinutes * 60 * 1000);
 
-		const toolbarType = await joplin.settings.value(toolbarTypeKey) as ToolbarType;
+		const toolbarType = (await joplin.settings.value(toolbarTypeKey)) as ToolbarType;
 		drawingDialog.setToolbarType(toolbarType);
 
-		const styleMode = await joplin.settings.value(styleModeKey) as EditorStyle;
+		const styleMode = (await joplin.settings.value(styleModeKey)) as EditorStyle;
 		drawingDialog.setStyleMode(styleMode);
 	};
 
@@ -122,10 +130,10 @@ const registerAndApplySettings = async (drawingDialog: DrawingDialog) => {
 
 			type: SettingItemType.Int,
 			value: 2,
-		}
+		},
 	});
 
-	await joplin.settings.onChange(_event => {
+	await joplin.settings.onChange((_event) => {
 		void applySettings();
 	});
 
@@ -136,7 +144,7 @@ const registerAndApplySettings = async (drawingDialog: DrawingDialog) => {
  * Inserts `textToInsert` at the point of current selection, **or**, if `richTextEditorSelectionMarker`
  * is given and the rich text editor is currently open, replaces `richTextEditorSelectionMarker` with
  * `textToInsert`.
- * 
+ *
  * `richTextEditorSelectionMarker` works around a bug in the rich text editor. See
  * https://github.com/laurent22/joplin/issues/7547
  */
@@ -155,7 +163,7 @@ const insertText = async (textToInsert: string, richTextEditorSelectionMarker?: 
 		// Jump to the rich text editor selection
 		await joplin.commands.execute('editor.execCommand', {
 			name: 'js-draw--cmSelectAndDelete',
-			args: [ richTextEditorSelectionMarker ],
+			args: [richTextEditorSelectionMarker],
 		});
 	}
 
@@ -168,20 +176,25 @@ const insertText = async (textToInsert: string, richTextEditorSelectionMarker?: 
 };
 
 joplin.plugins.register({
-	onStart: async function() {
+	onStart: async function () {
 		const drawingDialog = await DrawingDialog.getInstance();
 		const tmpdir = await TemporaryDirectory.create();
 
 		await registerAndApplySettings(drawingDialog);
 
 		const insertNewDrawing = async (svgData: string, richTextEditorSelectionData?: string) => {
-			const resource = await Resource.ofData(tmpdir, svgData, localization.defaultImageTitle, '.svg');
+			const resource = await Resource.ofData(
+				tmpdir,
+				svgData,
+				localization.defaultImageTitle,
+				'.svg',
+			);
 
 			const textToInsert = `![${resource.htmlSafeTitle()}](:/${resource.resourceId})`;
 			await insertText(textToInsert, richTextEditorSelectionData);
 		};
 
-		const editDrawing = async (resourceUrl: string): Promise<Resource|null> => {
+		const editDrawing = async (resourceUrl: string): Promise<Resource | null> => {
 			const expectedMime = 'image/svg+xml';
 			const resource = await Resource.fromURL(tmpdir, resourceUrl, '.svg', expectedMime);
 
@@ -201,7 +214,7 @@ joplin.plugins.register({
 				return null;
 			}
 
-			const [ updatedData, saveOption ] = drawingData;
+			const [updatedData, saveOption] = drawingData;
 
 			if (saveOption === 'overwrite') {
 				console.log('Image editor: Overwriting resource...');
@@ -224,7 +237,7 @@ joplin.plugins.register({
 				const selection = await joplin.commands.execute('selectedText');
 
 				// If selecting a resource URL, edit that. Else, insert a new drawing.
-				if (selection && /^\:\/[a-zA-Z0-9]+$/.exec(selection)) {
+				if (selection && /^:\/[a-zA-Z0-9]+$/.exec(selection)) {
 					console.log('Attempting to edit selected resource,', selection);
 
 					// TODO: Update the cache-breaker for the resource.
@@ -243,19 +256,25 @@ joplin.plugins.register({
 						return;
 					}
 
-					const [ svgData, _saveOption ] = drawingData;
+					const [svgData, _saveOption] = drawingData;
 					await insertNewDrawing(svgData, selectionData);
 				}
 			},
 		});
 
 		await joplin.views.toolbarButtons.create(
-			toolbuttonCommand, toolbuttonCommand, ToolbarButtonLocation.EditorToolbar
+			toolbuttonCommand,
+			toolbuttonCommand,
+			ToolbarButtonLocation.EditorToolbar,
 		);
 
 		// Add to the edit menu. This allows users to assign a custom keyboard shortcut to the action.
 		const toolMenuInsertDrawingButtonId = `${pluginPrefix}insertDrawingToolMenuBtn`;
-		await joplin.views.menuItems.create(toolMenuInsertDrawingButtonId, toolbuttonCommand, MenuItemLocation.Edit);
+		await joplin.views.menuItems.create(
+			toolMenuInsertDrawingButtonId,
+			toolbuttonCommand,
+			MenuItemLocation.Edit,
+		);
 
 		const restoreAutosaveCommand = `${pluginPrefix}restoreAutosave`;
 		const deleteAutosaveCommand = `${pluginPrefix}deleteAutosave`;
@@ -267,9 +286,7 @@ joplin.plugins.register({
 				const svgData = await getAutosave();
 
 				if (!svgData) {
-					await joplin.views.dialogs.showMessageBox(
-						localization.noSuchAutosaveExists,
-					);
+					await joplin.views.dialogs.showMessageBox(localization.noSuchAutosaveExists);
 					return;
 				}
 
@@ -296,10 +313,13 @@ joplin.plugins.register({
 		await joplin.contentScripts.register(
 			ContentScriptType.CodeMirrorPlugin,
 			codeMirrorContentScriptId,
-			'./contentScripts/codeMirror.js'
+			'./contentScripts/codeMirror.js',
 		);
-		await joplin.contentScripts.onMessage(markdownItContentScriptId, async (resourceUrl: string) => {
-			return (await editDrawing(resourceUrl))?.resourceId;
-		});
+		await joplin.contentScripts.onMessage(
+			markdownItContentScriptId,
+			async (resourceUrl: string) => {
+				return (await editDrawing(resourceUrl))?.resourceId;
+			},
+		);
 	},
 });

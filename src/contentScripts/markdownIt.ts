@@ -1,13 +1,16 @@
-import type MarkdownIt = require("markdown-it");
-import type Renderer = require("markdown-it/lib/renderer");
-import type Token = require("markdown-it/lib/token");
-import localization from "../localization";
+import type MarkdownIt = require('markdown-it');
+import type Renderer = require('markdown-it/lib/renderer');
+import type Token = require('markdown-it/lib/token');
+import localization from '../localization';
 
 declare const webviewApi: any;
 
 // We need to pass [editSvgCommandIdentifier] as an argument because we're converting
 // editImage to a string.
 const editImage = (contentScriptId: string, container: HTMLElement, svgId: string) => {
+	// Don't declare as a toplevel constant -- editImage is stringified.
+	const debug = false;
+
 	const imageElem = container.querySelector('img') ?? document.querySelector(`img#${svgId}`);
 
 	if (!imageElem?.src) {
@@ -20,7 +23,7 @@ const editImage = (contentScriptId: string, container: HTMLElement, svgId: strin
 		const fileUrl = cachebreakerMatch ? cachebreakerMatch[1] : initialSrc;
 
 		const oldCachebreaker = cachebreakerMatch ? parseInt(cachebreakerMatch[2]) : 0;
-		const newCachebreaker = (new Date()).getTime();
+		const newCachebreaker = new Date().getTime();
 
 		// Add the cachebreaker to the global list -- we may need to change cachebreakers
 		// on future rerenders.
@@ -36,44 +39,55 @@ const editImage = (contentScriptId: string, container: HTMLElement, svgId: strin
 	// The webview api is different if we're running in the TinyMce editor vs if we're running
 	// in the preview pane.
 	const message = imageElem.src;
-	const imageElemClass = `imageelem-${(new Date()).getTime()}`;
+	const imageElemClass = `imageelem-${new Date().getTime()}`;
 	imageElem.classList.add(imageElemClass);
 
 	try {
 		let postMessage;
-		
+
 		try {
 			postMessage = webviewApi.postMessage;
-		} catch (_error) { }
+		} catch (error) {
+			// Don't log by default
+			if (debug) {
+				console.error('Unable to access webviewApi.postMessage: ', error);
+			}
+		}
 
 		if (!postMessage) {
 			// TODO:
 			//  This is a hack to workaround the lack of a webviewApi in the rich text editor
 			//  webview.
 			//  As top.require **should not work** at some point in the future, this will fail.
-			const PluginService = (top! as any).require('@joplin/lib/services/plugins/PluginService').default;
+			const PluginService = (top! as any).require(
+				'@joplin/lib/services/plugins/PluginService',
+			).default;
 
 			postMessage = (contentScriptId: string, message: string) => {
 				const pluginService = PluginService.instance();
 				const pluginId = pluginService.pluginIdByContentScriptId(contentScriptId);
-				return pluginService.pluginById(pluginId).emitContentScriptMessage(contentScriptId, message);
+				return pluginService
+					.pluginById(pluginId)
+					.emitContentScriptMessage(contentScriptId, message);
 			};
 		}
 
-		postMessage(contentScriptId, message).then((resourceId: string|null) => {
-			// Update all matching
-			const toRefresh = document.querySelectorAll(`
+		postMessage(contentScriptId, message)
+			.then((resourceId: string | null) => {
+				// Update all matching
+				const toRefresh = document.querySelectorAll(`
 				img[data-resource-id="${resourceId}"],
 				img[data-mce-src*="/${resourceId}.svg"]
 			`);
 
-			for (const elem of toRefresh) {
-				const imageElem = elem as HTMLImageElement;
-				imageElem.src = updateCachebreaker(imageElem.src);
-			}
-		}).catch((err: any) => {
-			console.error('Error posting message!', err, '\nMessage: ', message);
-		});
+				for (const elem of toRefresh) {
+					const imageElem = elem as HTMLImageElement;
+					imageElem.src = updateCachebreaker(imageElem.src);
+				}
+			})
+			.catch((err: any) => {
+				console.error('Error posting message!', err, '\nMessage: ', message);
+			});
 	} catch (err) {
 		console.warn('Error posting message', err);
 	}
@@ -98,13 +112,13 @@ const onImgLoad = (container: HTMLElement, buttonId: string) => {
 		}
 
 		button.remove();
-		container.appendChild(button);	
+		container.appendChild(button);
 	}
 	container.classList.add('jsdraw--svgWrapper');
 
 	const outOfDateCacheBreakers = (window as any)['outOfDateCacheBreakers'] ?? {};
 	const imageSrcMatch = /^(.*)\?t=(\d+)$/.exec(imageElem.src);
-	
+
 	if (!imageSrcMatch) {
 		throw new Error(`${imageElem?.src} doesn't have a cachebreaker! Unable to update it.`);
 	}
@@ -116,7 +130,6 @@ const onImgLoad = (container: HTMLElement, buttonId: string) => {
 	if (isNaN(cachebreaker) || cachebreaker <= badCachebreaker?.outdated) {
 		imageElem.src = `${fileUrl}?t=${badCachebreaker.suggested}`;
 	}
-
 
 	let haveWebviewApi = true;
 	try {
@@ -130,7 +143,7 @@ const onImgLoad = (container: HTMLElement, buttonId: string) => {
 
 	if (!haveWebviewApi) {
 		console.log(
-			'The webview library either doesn\'t exist or lacks a postMessage function. Unable to display an edit button.'
+			"The webview library either doesn't exist or lacks a postMessage function. Unable to display an edit button.",
 		);
 		button?.remove();
 	}
@@ -149,7 +162,11 @@ export default (context: { contentScriptId: string }) => {
 			// and the joplin-drawio plugin
 			const originalRenderer = markdownIt.renderer.rules.image;
 			markdownIt.renderer.rules.image = (
-				tokens: Token[], idx: number, options: MarkdownIt.Options, env: any, self: Renderer
+				tokens: Token[],
+				idx: number,
+				options: MarkdownIt.Options,
+				env: any,
+				self: Renderer,
 			): string => {
 				const defaultHtml = originalRenderer?.(tokens, idx, options, env, self) ?? '';
 
@@ -165,7 +182,8 @@ export default (context: { contentScriptId: string }) => {
 				const editCallbackJs = `(${editImageFnString})('${editSvgCommandIdentifier}', this.parentElement, '${svgId}')`;
 
 				const htmlWithOnload = defaultHtml.replace(
-					'<img ', `<img id="${svgId}" ondblclick="${editCallbackJs}" onload="(${onImgLoadFnString})(this.parentElement, '${buttonId}')" `
+					'<img ',
+					`<img id="${svgId}" ondblclick="${editCallbackJs}" onload="(${onImgLoadFnString})(this.parentElement, '${buttonId}')" `,
 				);
 
 				return `
@@ -183,9 +201,7 @@ export default (context: { contentScriptId: string }) => {
 			};
 		},
 		assets: () => {
-			return [
-				{ name: 'markdownIt.css' }
-			]
+			return [{ name: 'markdownIt.css' }];
 		},
-	}
-}
+	};
+};

@@ -1,8 +1,6 @@
-
-
 /* Makes the main drawing dialog take up only part of the entire screen */
-iframe[id$="js-draw-jop-freehand-drawing-jsdraw-plugin-jsDrawDialog"] {
-    position: relative;
-    width: 100%;
-    height: 100%;
+iframe[id$='js-draw-jop-freehand-drawing-jsdraw-plugin-jsDrawDialog'] {
+	position: relative;
+	width: 100%;
+	height: 100%;
 }

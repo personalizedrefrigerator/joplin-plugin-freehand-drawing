@@ -1,5 +1,5 @@
-import joplin from "api";
-import TemporaryDirectory from "./TemporaryDirectory";
+import joplin from 'api';
+import TemporaryDirectory from './TemporaryDirectory';
 
 import type FsExtra = require('fs-extra');
 const fs = joplin.require('fs-extra') as typeof FsExtra;
@@ -12,14 +12,14 @@ const fs = joplin.require('fs-extra') as typeof FsExtra;
 //      https://joplinapp.org/api/references/rest_api/
 
 interface ResourceInitializer {
-	readonly tmpdir: TemporaryDirectory,
+	readonly tmpdir: TemporaryDirectory;
 
-	resourceId: string,
-	mime: string,
-	title: string,
+	resourceId: string;
+	mime: string;
+	title: string;
 
-	fileExt?: string,
-	tempfilePath?: string,
+	fileExt?: string;
+	tempfilePath?: string;
 }
 
 export class Resource {
@@ -28,8 +28,8 @@ export class Resource {
 	public readonly mime: string;
 	public readonly title: string;
 
-	private readonly fileExt: string|undefined;
-	private tempfilePath: string|null;
+	private readonly fileExt: string | undefined;
+	private tempfilePath: string | null;
 
 	private constructor(props: ResourceInitializer) {
 		this.tmpdir = props.tmpdir;
@@ -55,7 +55,7 @@ export class Resource {
 		}
 
 		const tempfilePath = await this.tmpdir.newFile(data, this.fileExt);
-		const fileData = [ { path: tempfilePath } ];
+		const fileData = [{ path: tempfilePath }];
 		const query = null;
 		const metadata = {
 			mime: this.mime,
@@ -81,19 +81,22 @@ export class Resource {
 
 	// Given a URL in the form
 	// file://.../resourceuuid#dataHere?dataHere
-	// or 
+	// or
 	// :/resourceuuid
 	// returns a Resource representing the content
 	// of that URL, **if the resource already exists**.
 	// [fileExt] should include the leading '.'.
 	public static async fromURL(
-		tmpdir: TemporaryDirectory, url: string, fileExt: string, mimeType: string
-	): Promise<Resource|null> {
+		tmpdir: TemporaryDirectory,
+		url: string,
+		fileExt: string,
+		mimeType: string,
+	): Promise<Resource | null> {
 		// Extract the ID
 		const fileURLMatch = /^file:\/\/.*\/([a-zA-Z0-9]+)[.]\w+(?:[?#]|$)/.exec(url);
 		const resourceLinkMatch = /^:\/([a-zA-Z0-9]+)$/.exec(url);
 
-		let resourceId: string|null = null;
+		let resourceId: string | null = null;
 		if (fileURLMatch) {
 			resourceId = fileURLMatch[1];
 		} else if (resourceLinkMatch) {
@@ -124,7 +127,10 @@ export class Resource {
 	}
 
 	public static async ofData(
-		tmpdir: TemporaryDirectory, data: string, title: string, fileExtension: string
+		tmpdir: TemporaryDirectory,
+		data: string,
+		title: string,
+		fileExtension: string,
 	): Promise<Resource> {
 		const query = null;
 		const metadata = {
