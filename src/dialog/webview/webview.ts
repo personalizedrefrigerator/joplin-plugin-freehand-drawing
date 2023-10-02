@@ -1,4 +1,4 @@
-import Editor, { EditorEventType, AbstractComponent, BackgroundComponent, Vec2, Rect2, Erase, makeEdgeToolbar, makeDropdownToolbar, adjustEditorThemeForContrast } from 'js-draw';
+import Editor, { BackgroundComponentBackgroundType, EditorEventType, AbstractComponent, BackgroundComponent, Vec2, Rect2, Erase, makeEdgeToolbar, makeDropdownToolbar, adjustEditorThemeForContrast } from 'js-draw';
 import { MaterialIconProvider } from '@js-draw/material-icons';
 import 'js-draw/bundledStyles';
 import localization from '../../localization';
@@ -51,21 +51,20 @@ const updateTemplateData = () => {
 // This must be done in a way that can be overwritten by editor.loadFrom.
 const initFromTemplate = async () => {
 	try {
-		const defaultData = `{
-			"imageSize": [ 500, 500 ],
-			"autoresize": true,
-			"backgroundData": {
-				"name":"image-background",
-				"zIndex":0,
-				"data": {
-					"mainColor": "#ffffff",
-					"backgroundType": 1,
-					"gridSize": 25,
-					"gridStrokeWidth": 0.7
-				}
-			}
-		}`;
-		const data = JSON.parse(localStorage.getItem(templateKey) ?? defaultData);
+		const defaultData = {
+			imageSize: [ 500, 500 ],
+			autoresize: true,
+			backgroundData: {
+				name: 'image-background',
+				zIndex: 0,
+				data: {
+					mainColor: '#ffffff',
+					backgroundType: BackgroundComponentBackgroundType.SolidColor,
+				},
+			},
+		};
+		const savedTemplateString = localStorage.getItem(templateKey);
+		const data = savedTemplateString ? JSON.parse(savedTemplateString) : defaultData;
 
 		if (
 			'imageSize' in data
