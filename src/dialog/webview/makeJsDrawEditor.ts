@@ -1,5 +1,5 @@
 import MaterialIconProvider from '@js-draw/material-icons';
-import Editor, { Erase, adjustEditorThemeForContrast } from 'js-draw';
+import Editor, { Erase, RenderingMode, adjustEditorThemeForContrast } from 'js-draw';
 import { EditorSaveExitCallbacks } from './types';
 import { EditorStyle, ToolbarType } from '../../types';
 import loadTemplate from './template/loadTemplate';
@@ -17,9 +17,15 @@ export interface EditorControl {
 const makeJsDrawEditor = async (
 	settingControl: SettingControl,
 	callbacks: EditorSaveExitCallbacks,
+
+	// For testing (allows running with jsdom)
+	disableRenderer?: boolean,
 ) => {
 	const editor = new Editor(document.body, {
 		iconProvider: new MaterialIconProvider(),
+
+		// Disable the renderer to hide jsdom warnings when testing.
+		renderingMode: disableRenderer ? RenderingMode.DummyRenderer : undefined,
 	});
 	editor.focus();
 
@@ -49,6 +55,7 @@ const makeJsDrawEditor = async (
 	const saveDrawing = async () => {
 		saveStateAsTemplate(editor, settingControl);
 		callbacks.onSave();
+		toolbarControl.setSaved();
 	};
 
 	const exitEditor = () => {
@@ -81,6 +88,7 @@ const makeJsDrawEditor = async (
 			await editor.loadFromSVG(svgData);
 
 			toolbarControl.setLoading(false);
+			toolbarControl.setSaved();
 		},
 	};
 };

@@ -25,6 +25,13 @@ const setupToolbar = (editor: Editor, callbacks: ToolbarCallbacks, settings: Set
 		saveButton.setDisabled(isSaveUpToDate || isLoading);
 	};
 
+	const toolbarStateKey = 'jsdraw-toolbarState';
+	editor.notifier.on(EditorEventType.ToolUpdated, () => {
+		if (toolbar) {
+			settings.updateSetting(toolbarStateKey, toolbar.serializeState());
+		}
+	});
+
 	let lastKind: ToolbarType | null = null;
 	const changeToolbarType = (kind: ToolbarType) => {
 		if (kind === lastKind) {
@@ -61,13 +68,6 @@ const setupToolbar = (editor: Editor, callbacks: ToolbarCallbacks, settings: Set
 	};
 
 	changeToolbarType(ToolbarType.Default);
-
-	const toolbarStateKey = 'jsdraw-toolbarState';
-	editor.notifier.on(EditorEventType.ToolUpdated, () => {
-		if (toolbar) {
-			settings.updateSetting(toolbarStateKey, toolbar.serializeState());
-		}
-	});
 
 	editor.notifier.on(EditorEventType.UndoRedoStackUpdated, () => {
 		isSaveUpToDate = false;

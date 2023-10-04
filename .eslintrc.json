@@ -30,14 +30,20 @@
 				]
 			}
 		],
-		"linebreak-style": ["error", "unix"],
-		"quotes": ["error", "single"],
-		"semi": ["error", "always"],
-		"no-trailing-spaces": "error",
+
+		"no-constant-condition": [
+			"error",
+			{
+				"checkLoops": false
+			}
+		],
+
+		// prefer-const doesn't allow forward declarations with
+		// let.
+		"prefer-const": "off",
 
 		// Disable the non-TypeScript no-unused-vars
 		"no-unused-vars": "off",
-
 		"@typescript-eslint/no-unused-vars": [
 			"error",
 			{
