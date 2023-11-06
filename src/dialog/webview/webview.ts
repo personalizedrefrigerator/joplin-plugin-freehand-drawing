@@ -1,12 +1,14 @@
 import 'js-draw/bundledStyles';
 import localization from '../../localization';
 import {
-	HideCloseButtonRequest,
 	InitialSvgDataRequest,
 	SaveMessage,
 	WebViewMessage,
 	WebViewMessageResponse,
 	InitialDataResponse,
+	MessageType,
+	ResponseType,
+	SaveMethod,
 } from '../../types';
 import svgElementToString from './svgElementToString';
 import startAutosaveLoop from './startAutosaveLoop';
@@ -14,33 +16,60 @@ import { PostMessageCallback } from './types';
 import makeJsDrawEditor, { EditorControl } from './makeJsDrawEditor';
 import localStorageSettingControl from './settings/localStorageSettingControl';
 
-declare const webviewApi: any;
-const postWebviewMessage: PostMessageCallback = webviewApi.postMessage;
+type OnMessageCallback = (info: { message: WebViewMessage }) => void;
+declare const webviewApi: {
+	postMessage: PostMessageCallback;
+	onMessage: (onMessage: OnMessageCallback) => void;
+};
 
 let haveLoadedFromSvg = false;
 
 let editorControl: EditorControl | null = null;
 
-const showSaveScreen = () => {
+// Returns false if save screen is shown, true if saved
+// without the need for a screen.
+const showSaveScreen = async () => {
 	if (!editorControl) {
 		return;
 	}
 
 	const editor = editorControl.editor;
 	const saveMessage: SaveMessage = {
-		type: 'saveSVG',
+		type: MessageType.SaveSVG,
 		data: svgElementToString(editor.toSVG()),
 	};
-	webviewApi.postMessage(saveMessage);
-	editor.getRootElement().remove();
+	const response = await webviewApi.postMessage({ ...saveMessage });
+	if (response !== true && response.type === ResponseType.SaveResponse) {
+		// If already saved, exit!
+		if (!response.waitingForSaveType) {
+			return true;
+		}
+	} else {
+		throw new Error('Invalid response ' + response);
+	}
 
-	const doneMessageContainer = document.createElement('form');
-	doneMessageContainer.className = 'exitOptionsDialog';
-	doneMessageContainer.name = 'saveOptions';
+	editor.getRootElement().style.display = 'none';
+
+	const dialogContainer = document.createElement('form');
+	dialogContainer.className = 'save-or-exit-dialog';
+	dialogContainer.name = 'saveOptions';
+
+	const hideSaveScreen = async () => {
+		editor.getRootElement().style.display = '';
+		dialogContainer.remove();
+		await webviewApi.postMessage({ type: MessageType.HideButtons });
+	};
+
+	const resumeEditingButton = document.createElement('button');
+	resumeEditingButton.innerText = localization.resumeEditing;
+	resumeEditingButton.onclick = async () => {
+		await hideSaveScreen();
+		await webviewApi.postMessage({ ...saveMessage });
+	};
 
 	const saveOptionsContainer = document.createElement('div');
 	let idCounter = 0;
-	const addSaveOption = (label: string, value: string, checked: boolean = false) => {
+	const addSaveOption = (label: string, value: SaveMethod, checked: boolean = false) => {
 		const saveOptionRow = document.createElement('div');
 		const labelElem = document.createElement('label');
 		const inputElem = document.createElement('input');
@@ -57,20 +86,37 @@ const showSaveScreen = () => {
 
 		saveOptionRow.replaceChildren(inputElem, labelElem);
 		saveOptionsContainer.appendChild(saveOptionRow);
+
+		const onUpdate = async () => {
+			if (inputElem.checked) {
+				await webviewApi.postMessage({
+					type: MessageType.SetSaveMethod,
+					method: value,
+				});
+			}
+		};
+
+		onUpdate();
+		inputElem.oninput = onUpdate;
 	};
 
 	// We can only overwrite the resource if we loaded the SVG from a resource.
 	if (haveLoadedFromSvg) {
-		addSaveOption(localization.overwriteExisting, 'overwrite', true);
-		addSaveOption(localization.saveAsNewDrawing, 'saveAsCopy');
+		addSaveOption(localization.overwriteExisting, SaveMethod.Overwrite, true);
+		addSaveOption(localization.saveAsNewDrawing, SaveMethod.SaveAsNew);
 	}
 
 	const messageElem = document.createElement('div');
 	messageElem.innerText = localization.clickOkToContinue;
 
-	doneMessageContainer.replaceChildren(messageElem, saveOptionsContainer);
+	const buttonContainer = document.createElement('div');
+	buttonContainer.classList.add('button-container');
+	buttonContainer.replaceChildren(resumeEditingButton);
 
-	document.body.appendChild(doneMessageContainer);
+	dialogContainer.replaceChildren(messageElem, saveOptionsContainer, buttonContainer);
+
+	document.body.appendChild(dialogContainer);
+	return false;
 };
 
 const showCloseScreen = () => {
@@ -79,28 +125,63 @@ const showCloseScreen = () => {
 	}
 
 	const editor = editorControl.editor;
-	postWebviewMessage({ type: 'showCloseUnsavedBtn' });
+	webviewApi.postMessage({
+		type: MessageType.ShowCloseButton,
+		isSaved: !editorControl.hasUnsavedChanges(),
+	});
 
-	const originalDisplay = editor.getRootElement().style.display;
 	editor.getRootElement().style.display = 'none';
 
-	const confirmationDialog = document.createElement('div');
-	confirmationDialog.className = 'exitOptionsDialog';
+	const dialogContainer = document.createElement('div');
+	dialogContainer.classList.add('save-or-exit-dialog');
+
+	const hideExitScreen = async () => {
+		await webviewApi.postMessage({ type: MessageType.HideButtons });
+		editor.getRootElement().style.display = '';
+		dialogContainer.remove();
+	};
 
 	const message = document.createElement('div');
-	message.innerText = localization.discardUnsavedChanges;
+
+	if (editorControl.hasUnsavedChanges()) {
+		dialogContainer.classList.add('has-unsaved-changes');
+		message.innerText = localization.discardUnsavedChanges;
+	} else {
+		message.innerText = localization.exitInstructions;
+	}
 
 	const resumeEditingBtn = document.createElement('button');
 	resumeEditingBtn.innerText = localization.resumeEditing;
 
 	resumeEditingBtn.onclick = () => {
-		webviewApi.postMessage({ type: 'hideCloseUnsavedBtn' } as HideCloseButtonRequest);
-		editor.getRootElement().style.display = originalDisplay;
-		confirmationDialog.remove();
+		void hideExitScreen();
 	};
 
-	confirmationDialog.replaceChildren(message, resumeEditingBtn);
-	document.body.appendChild(confirmationDialog);
+	const saveChangesButton = document.createElement('button');
+	saveChangesButton.innerText = localization.saveChanges;
+	saveChangesButton.classList.add('save-changes-button');
+
+	saveChangesButton.onclick = async () => {
+		dialogContainer.style.display = 'none';
+		const saved = await showSaveScreen();
+		if (saved) {
+			dialogContainer.classList.remove('has-unsaved-changes');
+			saveChangesButton.remove();
+			message.innerText = localization.exitInstructions;
+			dialogContainer.style.display = '';
+		}
+	};
+
+	const buttonContainer = document.createElement('div');
+	buttonContainer.classList.add('button-container');
+	buttonContainer.replaceChildren(resumeEditingBtn, saveChangesButton);
+
+	dialogContainer.replaceChildren(message, buttonContainer);
+	document.body.appendChild(dialogContainer);
+
+	return {
+		close: hideExitScreen,
+	};
 };
 
 let editorInitializationData: InitialDataResponse | null = null;
@@ -121,10 +202,8 @@ const initializeEditor = (
 	}
 
 	// Set the autosave interval
-	startAutosaveLoop(
-		editorControl.editor,
-		initializationData.autosaveIntervalMS,
-		postWebviewMessage,
+	startAutosaveLoop(editorControl.editor, initializationData.autosaveIntervalMS, (message) =>
+		webviewApi.postMessage(message),
 	);
 };
 
@@ -139,11 +218,9 @@ void (async () => {
 	}
 })();
 
-webviewApi.onMessage((message: WebViewMessage) => {
-	if (message.type === 'resumeEditing') {
-		if (editorControl) {
-			editorControl.editor.getRootElement().style.visibility = 'unset';
-		}
+webviewApi.onMessage(({ message }) => {
+	if (message.type === MessageType.SaveCompleted) {
+		editorControl?.onSaved();
 	} else {
 		console.log('unknown message', message);
 	}
@@ -151,11 +228,11 @@ webviewApi.onMessage((message: WebViewMessage) => {
 
 // Get initial data and app settings
 const loadedMessage: InitialSvgDataRequest = {
-	type: 'getInitialData',
+	type: MessageType.GetInitialData,
 };
-postWebviewMessage(loadedMessage).then(async (result: WebViewMessageResponse) => {
-	// Don't load the image multiple times.
-	if (result?.type === 'initialDataResponse' && !haveLoadedFromSvg) {
+
+webviewApi.postMessage(loadedMessage).then(async (result: WebViewMessageResponse) => {
+	if (result !== true && result.type === ResponseType.InitialDataResponse && !haveLoadedFromSvg) {
 		if (editorControl) {
 			initializeEditor(editorControl, result);
 		} else {

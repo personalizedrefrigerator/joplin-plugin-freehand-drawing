@@ -1,37 +1,90 @@
+export enum MessageType {
+	GetInitialData = 'getInitialData',
+	SaveSVG = 'saveSVG',
+	SaveCompleted = 'saveCompleted',
+	AutosaveSVG = 'autosaveSVG',
+	SetSaveMethod = 'setSaveMethod',
+	ResumeEditing = 'resumeEditing',
+	ShowSaveAndCloseButton = 'showSaveAndCloseButton',
+	ShowCloseButton = 'showCloseButton',
+	HideButtons = 'removeButtons',
+}
+
+export enum SaveMethod {
+	SaveAsNew = 'saveAsNew',
+	Overwrite = 'overwrite',
+}
+
 export interface SaveMessage {
-	type: 'saveSVG';
+	type: MessageType.SaveSVG;
 	data: string;
 }
 
-export interface AutosaveRequest {
-	type: 'autosave';
+export interface SaveCompletedMessage {
+	type: MessageType.SaveCompleted;
+}
+
+export interface AutosaveMesssage {
+	type: MessageType.AutosaveSVG;
 	data: string;
+}
+
+export interface SetSaveMethodMessage {
+	type: MessageType.SetSaveMethod;
+	method: SaveMethod;
 }
 
 // Show the "discard changes" button
-export interface ShowCloseButtonRequest {
-	type: 'showCloseUnsavedBtn';
+export interface ShowSaveAndCloseButtonMessage {
+	type: MessageType.ShowSaveAndCloseButton;
+	saveData: string;
 }
 
-export interface HideCloseButtonRequest {
-	type: 'hideCloseUnsavedBtn';
+export interface ShowCloseButtonMessage {
+	type: MessageType.ShowCloseButton;
+	isSaved: boolean;
 }
 
-export interface ResumeEditingMessage {
-	type: 'resumeEditing';
+export interface HideButtonsMessage {
+	type: MessageType.HideButtons;
 }
 
 export interface InitialSvgDataRequest {
-	type: 'getInitialData';
+	type: MessageType.GetInitialData;
 }
 
 export type WebViewMessage =
 	| SaveMessage
-	| ShowCloseButtonRequest
-	| HideCloseButtonRequest
-	| ResumeEditingMessage
-	| InitialSvgDataRequest
-	| AutosaveRequest;
+	| AutosaveMesssage
+	| SetSaveMethodMessage
+	| SaveCompletedMessage
+	| ShowSaveAndCloseButtonMessage
+	| ShowCloseButtonMessage
+	| HideButtonsMessage
+	| InitialSvgDataRequest;
+
+export enum ResponseType {
+	InitialDataResponse = 'initialDataResponse',
+	SaveResponse = 'saveResponse',
+}
+
+export interface InitialDataResponse {
+	type: ResponseType.InitialDataResponse;
+
+	initialData: string | undefined;
+	autosaveIntervalMS: number;
+	toolbarType: ToolbarType;
+	styleMode: EditorStyle;
+}
+
+// Response to a save request
+export interface SaveResponse {
+	type: ResponseType.SaveResponse;
+
+	waitingForSaveType: boolean;
+}
+
+export type WebViewMessageResponse = InitialDataResponse | SaveResponse | true;
 
 export enum ToolbarType {
 	Default = 0,
@@ -44,14 +97,3 @@ export enum EditorStyle {
 	JsDrawLight = 'js-draw-default-light',
 	JsDrawDark = 'js-draw-default-dark',
 }
-
-export interface InitialDataResponse {
-	type: 'initialDataResponse';
-
-	initialData: string | undefined;
-	autosaveIntervalMS: number;
-	toolbarType: ToolbarType;
-	styleMode: EditorStyle;
-}
-
-export type WebViewMessageResponse = InitialDataResponse | null;

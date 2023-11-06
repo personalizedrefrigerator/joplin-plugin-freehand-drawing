@@ -12,6 +12,8 @@ export interface EditorControl {
 	applyStyle(style: EditorStyle): void;
 	setToolbarMode(mode: ToolbarType): void;
 	loadInitialImage(data: string): Promise<void>;
+	hasUnsavedChanges(): boolean;
+	onSaved(): void;
 }
 
 const makeJsDrawEditor = async (
@@ -55,7 +57,6 @@ const makeJsDrawEditor = async (
 	const saveDrawing = async () => {
 		saveStateAsTemplate(editor, settingControl);
 		callbacks.onSave();
-		toolbarControl.setSaved();
 	};
 
 	const exitEditor = () => {
@@ -90,6 +91,8 @@ const makeJsDrawEditor = async (
 			toolbarControl.setLoading(false);
 			toolbarControl.setSaved();
 		},
+		hasUnsavedChanges: () => toolbarControl.hasUnsavedChanges(),
+		onSaved: () => toolbarControl.setSaved(),
 	};
 };
 

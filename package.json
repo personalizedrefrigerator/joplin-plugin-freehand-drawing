@@ -3,7 +3,7 @@
 	"version": "2.2.1",
 	"scripts": {
 		"dist": "webpack --env joplin-plugin-config=buildMain && webpack --env joplin-plugin-config=buildExtraScripts && webpack --env joplin-plugin-config=createArchive",
-		"prepare": "yarn dist",
+		"prepare": "npm run dist",
 		"update": "npm install -g generator-joplin && yo joplin --update",
 		"preinstall": "git config core.hookspath .githooks",
 		"lint-staged": "lint-staged",
@@ -44,7 +44,7 @@
 		"lint-staged": "14.0.1"
 	},
 	"dependencies": {
-		"@js-draw/material-icons": "^1.9.1",
-		"js-draw": "^1.9.1"
+		"@js-draw/material-icons": "^1.10.0",
+		"js-draw": "^1.10.0"
 	}
 }

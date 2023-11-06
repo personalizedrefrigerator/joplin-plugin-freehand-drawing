@@ -1,5 +1,6 @@
 import Editor from 'js-draw';
-import { PostMessageCallback } from './types';
+import type { PostMessageCallback } from './types';
+import { MessageType } from '../../types';
 import svgElementToString from './svgElementToString';
 
 const startAutosaveLoop = async (
@@ -14,7 +15,7 @@ const startAutosaveLoop = async (
 
 		const savedImage = await editor.toSVGAsync();
 		await postMessage({
-			type: 'autosave',
+			type: MessageType.AutosaveSVG,
 			data: svgElementToString(savedImage),
 		});
 	}

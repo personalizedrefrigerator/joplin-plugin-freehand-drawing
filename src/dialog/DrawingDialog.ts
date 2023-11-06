@@ -3,10 +3,34 @@ import { ButtonSpec, DialogResult } from 'api/types';
 import { autosave, clearAutosave } from '../autosave';
 import { pluginPrefix } from '../constants';
 import localization from '../localization';
-import { EditorStyle, ToolbarType, WebViewMessage, WebViewMessageResponse } from '../types';
+import {
+	EditorStyle,
+	MessageType,
+	ResponseType,
+	SaveCompletedMessage,
+	SaveMethod,
+	ToolbarType,
+	WebViewMessage,
+	WebViewMessageResponse,
+} from '../types';
 
 const dialogs = joplin.views.dialogs;
-export type SaveOptionType = 'saveAsCopy' | 'overwrite';
+
+type SaveCallback = (svgData: string) => void | Promise<void>;
+type SaveCallbacks =
+	| {
+			saveAsNew: SaveCallback;
+			overwrite?: undefined;
+	  }
+	| {
+			saveAsNew: SaveCallback;
+			overwrite: SaveCallback;
+	  };
+
+export interface InsertDrawingOptions {
+	initialData: string | undefined;
+	saveCallbacks: SaveCallbacks;
+}
 
 export default class DrawingDialog {
 	private static instance: DrawingDialog;
@@ -107,62 +131,108 @@ export default class DrawingDialog {
 	/**
 	 * Displays a dialog that allows the user to insert a drawing.
 	 *
-	 * @returns the saved drawing or `null` if the action was canceled by the user.
+	 * @returns true if the drawing was saved at least once.
 	 */
-	public async promptForDrawing(initialData?: string): Promise<[string, SaveOptionType] | null> {
+	public async promptForDrawing(options: InsertDrawingOptions): Promise<boolean> {
 		await this.initializeDialog();
 
-		const result = new Promise<[string, SaveOptionType] | null>((resolve, reject) => {
+		let saveOption: SaveMethod | null = null;
+
+		if (!options.saveCallbacks.overwrite) {
+			saveOption = SaveMethod.SaveAsNew;
+		}
+
+		const save = async (data: string) => {
+			try {
+				if (saveOption === SaveMethod.SaveAsNew) {
+					await options.saveCallbacks.saveAsNew(data);
+				} else if (saveOption === SaveMethod.Overwrite) {
+					if (options.saveCallbacks.overwrite) {
+						await options.saveCallbacks.overwrite(data);
+					} else {
+						throw new Error('overwrite save callback not defined');
+					}
+				} else {
+					throw new Error('saveOption must be either saveAsNew or overwrite');
+				}
+
+				joplin.views.panels.postMessage(this.handle, {
+					type: MessageType.SaveCompleted,
+				} as SaveCompletedMessage);
+			} catch (error) {
+				console.error('js-draw', error);
+				alert('Not saved: ' + error);
+			}
+		};
+
+		const result = new Promise<boolean>((resolve, reject) => {
 			let saveData: string | null = null;
 			joplin.views.panels.onMessage(
 				this.handle,
 				(message: WebViewMessage): WebViewMessageResponse => {
-					if (message.type === 'saveSVG') {
+					if (message.type === 'saveSVG' && !saveOption) {
 						saveData = message.data;
 
 						this.setDialogButtons([
 							{
 								id: 'ok',
+								title: 'Save and close',
 							},
 						]);
-					} else if (message.type === 'getInitialData') {
+
+						return {
+							type: ResponseType.SaveResponse,
+							waitingForSaveType: true,
+						};
+					} else if (message.type === 'saveSVG' && saveOption) {
+						void save(message.data);
+						saveData = null;
+
+						return {
+							type: ResponseType.SaveResponse,
+							waitingForSaveType: false,
+						};
+					} else if (message.type === MessageType.SetSaveMethod) {
+						saveOption = message.method;
+					} else if (message.type === MessageType.GetInitialData) {
 						// The drawing dialog has loaded -- we don't need the exit button.
 						this.setDialogButtons([]);
 
 						return {
-							type: 'initialDataResponse',
+							type: ResponseType.InitialDataResponse,
 
 							autosaveIntervalMS: this.autosaveInterval,
 							toolbarType: this.toolbarType,
-							initialData,
+							initialData: options.initialData,
 							styleMode: this.styleMode,
 						};
-					} else if (message.type === 'showCloseUnsavedBtn') {
+					} else if (message.type === MessageType.ShowCloseButton) {
 						this.setDialogButtons([
 							{
 								id: 'cancel',
-								title: localization.discardChanges,
+								title: message.isSaved ? localization.close : localization.discardChanges,
 							},
 						]);
-					} else if (message.type === 'hideCloseUnsavedBtn') {
+					} else if (message.type === MessageType.HideButtons) {
 						this.setDialogButtons([]);
-					} else if (message.type === 'autosave') {
+						saveData = null;
+					} else if (message.type === MessageType.AutosaveSVG) {
 						void clearAutosave().then(() => {
 							void autosave(message.data);
 						});
 					}
 
-					return null;
+					return true;
 				},
 			);
 
-			dialogs.open(this.handle).then((result: DialogResult) => {
+			dialogs.open(this.handle).then(async (result: DialogResult) => {
 				if (saveData && result.id === 'ok') {
-					const saveOption: SaveOptionType =
-						result.formData?.saveOptions?.saveOption ?? 'saveAsCopy';
-					resolve([saveData, saveOption]);
+					saveOption ??= result.formData?.saveOptions?.saveOption ?? SaveMethod.SaveAsNew;
+					await save(saveData);
+					resolve(true);
 				} else if (result.id === 'cancel') {
-					resolve(null);
+					resolve(false);
 				} else {
 					reject(`Unknown button ID ${result.id}`);
 				}

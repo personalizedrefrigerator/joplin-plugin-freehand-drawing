@@ -10,7 +10,16 @@ body,
 	font-size: 11pt;
 }
 
-.exitOptionsDialog {
+button {
+	color: var(--joplin-color4);
+	background-color: var(--joplin-background-color4);
+	border: 1px solid rgba(100, 100, 100, 0.5);
+	border-radius: 3px;
+	padding: 8px;
+	cursor: pointer;
+}
+
+.save-or-exit-dialog {
 	width: 100vw;
 	height: 100vh;
 	font-size: 2em;
@@ -21,12 +30,26 @@ body,
 	justify-content: center;
 }
 
-.exitOptionsDialog button {
+.save-or-exit-dialog.has-unsaved-changes button {
 	font-size: 2em;
 }
 
-.exitOptionsDialog input[type='radio'] {
+.save-or-exit-dialog:not(.has-unsaved-changes) .save-changes-button {
+	display: none;
+}
+
+.save-or-exit-dialog .save-changes-button.save-changes-button {
+	font-size: 1rem;
+}
+
+.save-or-exit-dialog input[type='radio'] {
 	min-width: 20px;
+}
+
+.save-or-exit-dialog .button-container {
+	position: absolute;
+	bottom: 0;
+	right: 0;
 }
 
 :root .imageEditorContainer.match-joplin-theme {

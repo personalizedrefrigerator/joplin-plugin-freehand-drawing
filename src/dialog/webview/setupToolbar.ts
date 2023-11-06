@@ -84,6 +84,7 @@ const setupToolbar = (editor: Editor, callbacks: ToolbarCallbacks, settings: Set
 			isLoading = loading;
 			updateSaveButtonDisabled();
 		},
+		hasUnsavedChanges: () => !isSaveUpToDate,
 	};
 };
 

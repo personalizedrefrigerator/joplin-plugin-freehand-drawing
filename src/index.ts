@@ -207,24 +207,21 @@ joplin.plugins.register({
 				return null;
 			}
 
-			const drawingData = await drawingDialog.promptForDrawing(await resource.getDataAsString());
+			const saved = await drawingDialog.promptForDrawing({
+				initialData: await resource.getDataAsString(),
+				saveCallbacks: {
+					overwrite: async (data) => {
+						console.log('Image editor: Overwriting resource...');
+						await resource.updateData(data);
+					},
+					saveAsNew: async (data) => {
+						console.log('Image editor: Inserting new drawing...');
+						await insertNewDrawing(data);
+					},
+				},
+			});
 
-			// Action canceled by the user.
-			if (drawingData === null) {
-				return null;
-			}
-
-			const [updatedData, saveOption] = drawingData;
-
-			if (saveOption === 'overwrite') {
-				console.log('Image editor: Overwriting resource...');
-				await resource.updateData(updatedData);
-			} else {
-				console.log('Image editor: Inserting new drawing...');
-				await insertNewDrawing(updatedData);
-			}
-
-			return resource;
+			return saved ? resource : null;
 		};
 
 		const toolbuttonCommand = `${pluginPrefix}insertDrawing`;
@@ -244,10 +241,17 @@ joplin.plugins.register({
 					await editDrawing(selection);
 				} else {
 					const selectionData = await saveRichTextEditorSelection();
-					const drawingData = await drawingDialog.promptForDrawing();
+					const saved = await drawingDialog.promptForDrawing({
+						initialData: undefined,
+						saveCallbacks: {
+							saveAsNew: async (svgData) => {
+								await insertNewDrawing(svgData, selectionData);
+							},
+						},
+					});
 
 					// If the user canceled the drawing,
-					if (!drawingData) {
+					if (!saved) {
 						// Clear the selection marker, if it exists.
 						if (selectionData) {
 							await insertText('', selectionData);
@@ -255,9 +259,6 @@ joplin.plugins.register({
 
 						return;
 					}
-
-					const [svgData, _saveOption] = drawingData;
-					await insertNewDrawing(svgData, selectionData);
 				}
 			},
 		});

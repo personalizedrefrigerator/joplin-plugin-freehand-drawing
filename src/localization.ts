@@ -15,6 +15,8 @@ interface AppLocalization {
 	clickOkToContinue: string;
 	discardUnsavedChanges: string;
 	resumeEditing: string;
+	saveChanges: string;
+	exitInstructions: string;
 
 	settingsPaneDescription: string;
 	fullScreenDisabledSettingLabel: string;
@@ -52,6 +54,8 @@ const defaultStrings: AppLocalization = {
 	clickOkToContinue: 'Done! Click “Ok” to continue.',
 	discardUnsavedChanges: 'Discard unsaved changes?',
 	resumeEditing: 'Resume editing',
+	saveChanges: 'Save changes',
+	exitInstructions: 'All changes saved! Click below to exit.',
 
 	settingsPaneDescription: 'Settings for the js-draw image editor',
 	fullScreenDisabledSettingLabel: 'Disable editor dialog filling the entire Joplin window.',
