@@ -180,7 +180,7 @@ export default class DrawingDialog {
 						this.setDialogButtons([
 							{
 								id: 'ok',
-								title: 'Save and close',
+								title: localization.saveAndClose,
 							},
 						]);
 
@@ -214,7 +214,7 @@ export default class DrawingDialog {
 					} else if (message.type === MessageType.ShowCloseButton) {
 						this.setDialogButtons([
 							{
-								id: 'cancel',
+								id: message.isSaved ? 'ok' : 'cancel',
 								title: message.isSaved ? localization.close : localization.discardChanges,
 							},
 						]);
@@ -236,7 +236,7 @@ export default class DrawingDialog {
 					saveOption ??= result.formData?.saveOptions?.saveOption ?? SaveMethod.SaveAsNew;
 					await save(saveData);
 					resolve(true);
-				} else if (result.id === 'cancel') {
+				} else if (!saveData || result.id === 'cancel') {
 					resolve(didSave);
 				} else {
 					reject(`Unknown button ID ${result.id}`);

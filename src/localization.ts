@@ -8,7 +8,7 @@ interface AppLocalization {
 
 	edit: string;
 	close: string;
-	save: string;
+	saveAndClose: string;
 
 	overwriteExisting: string;
 	saveAsNewDrawing: string;
@@ -51,7 +51,7 @@ const defaultStrings: AppLocalization = {
 
 	edit: 'Edit',
 	close: 'Close',
-	save: 'Save',
+	saveAndClose: 'Save and close',
 
 	overwriteExisting: 'Overwrite existing',
 	saveAsNewDrawing: 'Save as a new drawing',
@@ -94,7 +94,6 @@ const localizations: Record<string, AppLocalization> = {
 
 		edit: 'Bearbeiten',
 		close: 'Schließen',
-		save: 'Speichern',
 
 		overwriteExisting: 'Existierende Zeichnung überschreiben',
 		saveAsNewDrawing: 'Als neue Zeichnung speichern',
@@ -117,7 +116,7 @@ const localizations: Record<string, AppLocalization> = {
 
 		edit: 'Editar',
 		close: 'Cerrar',
-		save: 'Guardar',
+		saveAndClose: 'Guardar y cerrar',
 
 		overwriteExisting: 'Sobrescribir existente',
 		saveAsNewDrawing: 'Guardar como dibujo nuevo',
