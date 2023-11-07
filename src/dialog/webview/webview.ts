@@ -24,6 +24,7 @@ declare const webviewApi: {
 
 let haveLoadedFromSvg = false;
 
+let saveCompletedListeners: Array<() => void> = [];
 let editorControl: EditorControl | null = null;
 
 // Returns false if save screen is shown, true if saved
@@ -136,9 +137,9 @@ const showCloseScreen = () => {
 	dialogContainer.classList.add('save-or-exit-dialog');
 
 	const hideExitScreen = async () => {
-		await webviewApi.postMessage({ type: MessageType.HideButtons });
 		editor.getRootElement().style.display = '';
 		dialogContainer.remove();
+		await webviewApi.postMessage({ type: MessageType.HideButtons });
 	};
 
 	const message = document.createElement('div');
@@ -162,13 +163,16 @@ const showCloseScreen = () => {
 	saveChangesButton.classList.add('save-changes-button');
 
 	saveChangesButton.onclick = async () => {
-		dialogContainer.style.display = 'none';
+		await hideExitScreen();
+
+		const saveCompletedListener = new Promise<void>((resolve) => {
+			saveCompletedListeners.push(() => resolve());
+		});
 		const saved = await showSaveScreen();
+
 		if (saved) {
-			dialogContainer.classList.remove('has-unsaved-changes');
-			saveChangesButton.remove();
-			message.innerText = localization.exitInstructions;
-			dialogContainer.style.display = '';
+			await saveCompletedListener;
+			showCloseScreen();
 		}
 	};
 
@@ -178,10 +182,6 @@ const showCloseScreen = () => {
 
 	dialogContainer.replaceChildren(message, buttonContainer);
 	document.body.appendChild(dialogContainer);
-
-	return {
-		close: hideExitScreen,
-	};
 };
 
 let editorInitializationData: InitialDataResponse | null = null;
@@ -221,6 +221,10 @@ void (async () => {
 webviewApi.onMessage(({ message }) => {
 	if (message.type === MessageType.SaveCompleted) {
 		editorControl?.onSaved();
+		for (const listener of saveCompletedListeners) {
+			listener();
+		}
+		saveCompletedListeners = [];
 	} else {
 		console.log('unknown message', message);
 	}
