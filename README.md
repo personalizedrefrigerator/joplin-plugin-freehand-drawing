@@ -53,6 +53,18 @@ Pen/mouse-only drawing can be enabled under the "Pan" tool's menu by **enabling 
 
 ![screenshot: Arrow points to pan tool, another arrow points to the "Touchscreen panning" toggle button](https://github.com/personalizedrefrigerator/joplin-plugin-freehand-drawing/assets/46334387/682a40ab-0c0f-4dc8-ba49-463dcb06256a)
 
+## Joplin closed while editing a drawing. How do I recover the unsaved changes?
+
+`joplin-plugin-freehand-drawing` autosaves every two minutes. The last autosave can be recovered by
+1. Switching to the markdown editor
+2. pressing <kbd>Ctrl</kbd>-<kbd>Shift</kbd>-<kbd>P</kbd> (<kbd>Cmd</kbd>-<kbd>Shift</kbd>-<kbd>P</kbd>),
+3. typing `:restore autosave`, then
+4. clicking "Restore from autosaved drawing"
+
+![screenshot: Command palette shows :restore autosave as search query, second result "Restore from autosaved drawing" is highlighted.](https://github.com/personalizedrefrigerator/joplin-plugin-freehand-drawing/assets/46334387/dadaed12-95b5-4c3f-a5cc-f322ad41476d)
+
+This should add a copy of the autosaved drawing to the current note.
+
 ## How do I report a bug related to the image editor?
 
 This plugin uses [js-draw](https://github.com/personalizedrefrigerator/js-draw) to edit/create freehand drawings. Bugs related to `js-draw` can be reported using its [issue tracker](https://github.com/personalizedrefrigerator/js-draw/issues).
