@@ -75,6 +75,7 @@ export interface InitialDataResponse {
 	autosaveIntervalMS: number;
 	toolbarType: ToolbarType;
 	styleMode: EditorStyle;
+	keyboardShortcuts: KeybindingRecord;
 }
 
 // Response to a save request
@@ -97,3 +98,5 @@ export enum EditorStyle {
 	JsDrawLight = 'js-draw-default-light',
 	JsDrawDark = 'js-draw-default-dark',
 }
+
+export type KeybindingRecord = Record<string, string[]>;

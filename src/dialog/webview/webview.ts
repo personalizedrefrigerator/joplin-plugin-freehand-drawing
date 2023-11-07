@@ -184,6 +184,8 @@ const showCloseScreen = () => {
 
 	dialogContainer.replaceChildren(message, buttonContainer);
 	document.body.appendChild(dialogContainer);
+
+	saveChangesButton.focus();
 };
 
 let editorInitializationData: InitialDataResponse | null = null;
@@ -194,6 +196,7 @@ const initializeEditor = (
 ) => {
 	editorControl.setToolbarMode(initializationData.toolbarType);
 	editorControl.applyStyle(initializationData.styleMode);
+	editorControl.applyShortcutOverrides(initializationData.keyboardShortcuts);
 
 	// If given initial data,
 	if (initializationData.initialData) {

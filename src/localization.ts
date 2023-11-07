@@ -35,6 +35,9 @@ interface AppLocalization {
 	styleJsDrawLight: string;
 	styleJsDrawDark: string;
 
+	// Label for the keyboard shortcuts setting
+	keyboardShortcuts: string;
+
 	notAnEditableImage: (resourceId: string, resourceType: string) => void;
 }
 
@@ -72,6 +75,8 @@ const defaultStrings: AppLocalization = {
 	styleMatchJoplin: 'Match Joplin',
 	styleJsDrawLight: 'js-draw light',
 	styleJsDrawDark: 'js-draw dark',
+
+	keyboardShortcuts: 'Keyboard shortcuts',
 
 	notAnEditableImage: (resourceId: string, resourceType: string) =>
 		`Resource ${resourceId} is not an editable image. Unable to edit resource of type ${resourceType}.`,

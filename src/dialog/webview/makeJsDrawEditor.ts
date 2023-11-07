@@ -1,16 +1,18 @@
 import MaterialIconProvider from '@js-draw/material-icons';
 import Editor, { Erase, RenderingMode, adjustEditorThemeForContrast } from 'js-draw';
 import { EditorSaveExitCallbacks } from './types';
-import { EditorStyle, ToolbarType } from '../../types';
+import { EditorStyle, KeybindingRecord, ToolbarType } from '../../types';
 import loadTemplate from './template/loadTemplate';
 import { SettingControl } from './settings/types';
 import setupToolbar from './setupToolbar';
 import saveStateAsTemplate from './template/saveStateAsTemplate';
+import applyShortcutOverrides from './applyShortcutOverrides';
 
 export interface EditorControl {
 	editor: Editor;
 	applyStyle(style: EditorStyle): void;
 	setToolbarMode(mode: ToolbarType): void;
+	applyShortcutOverrides(shortcuts: KeybindingRecord): void;
 	loadInitialImage(data: string): Promise<void>;
 	hasUnsavedChanges(): boolean;
 	onSaved(): void;
@@ -76,6 +78,9 @@ const makeJsDrawEditor = async (
 		editor,
 		applyStyle,
 		setToolbarMode: toolbarControl.setToolbarMode,
+		applyShortcutOverrides: (overrides: KeybindingRecord) => {
+			applyShortcutOverrides(editor, overrides);
+		},
 		loadInitialImage: async (svgData: string) => {
 			toolbarControl.setLoading(true);
 

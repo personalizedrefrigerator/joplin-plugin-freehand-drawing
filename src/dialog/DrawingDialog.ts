@@ -5,6 +5,7 @@ import { pluginPrefix } from '../constants';
 import localization from '../localization';
 import {
 	EditorStyle,
+	KeybindingRecord,
 	MessageType,
 	ResponseType,
 	SaveCompletedMessage,
@@ -36,6 +37,7 @@ export default class DrawingDialog {
 	private autosaveInterval: number = 120 * 1000; // ms
 	private toolbarType: ToolbarType = ToolbarType.Default;
 	private styleMode: EditorStyle = EditorStyle.MatchJoplin;
+	private keybindings: KeybindingRecord = Object.create(null);
 
 	/** @returns a reference to the singleton instance of the DrawingDialog. */
 	public static async getInstance(): Promise<DrawingDialog> {
@@ -82,6 +84,13 @@ export default class DrawingDialog {
 	/** Changes the editor's style. Takes effect on the next launch of the editor. */
 	public setStyleMode(style: EditorStyle) {
 		this.styleMode = style;
+	}
+
+	/** Sets the keyboard shortcuts. Takes effect when the editor is next launched. */
+	public setKeyboardShortcuts(keybindings: KeybindingRecord) {
+		for (const id in keybindings) {
+			this.keybindings[id] = [...keybindings[id]];
+		}
 	}
 
 	/**
@@ -200,6 +209,7 @@ export default class DrawingDialog {
 							toolbarType: this.toolbarType,
 							initialData: options.initialData,
 							styleMode: this.styleMode,
+							keyboardShortcuts: this.keybindings,
 						};
 					} else if (message.type === MessageType.ShowCloseButton) {
 						this.setDialogButtons([

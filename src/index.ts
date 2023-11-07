@@ -49,6 +49,7 @@ const registerAndApplySettings = async (drawingDialog: DrawingDialog) => {
 	const autosaveIntervalKey = 'autosave-interval-minutes';
 	const toolbarTypeKey = 'toolbar-type';
 	const styleModeKey = 'style-mode';
+	const keyboardShortcutsKey = 'keyboard-shortcuts';
 
 	const applySettings = async () => {
 		const fullscreenDisabled = await joplin.settings.value(editorFillsWindowKey);
@@ -68,6 +69,8 @@ const registerAndApplySettings = async (drawingDialog: DrawingDialog) => {
 
 		const styleMode = (await joplin.settings.value(styleModeKey)) as EditorStyle;
 		drawingDialog.setStyleMode(styleMode);
+
+		drawingDialog.setKeyboardShortcuts(await joplin.settings.value(keyboardShortcutsKey));
 	};
 
 	const jsDrawSectionName = 'js-draw';
@@ -81,7 +84,7 @@ const registerAndApplySettings = async (drawingDialog: DrawingDialog) => {
 	await joplin.settings.registerSettings({
 		[toolbarTypeKey]: {
 			public: true,
-			section: 'js-draw',
+			section: jsDrawSectionName,
 
 			label: localization.toolbarTypeLabel,
 
@@ -97,7 +100,7 @@ const registerAndApplySettings = async (drawingDialog: DrawingDialog) => {
 		},
 		[styleModeKey]: {
 			public: true,
-			section: 'js-draw',
+			section: jsDrawSectionName,
 
 			label: localization.themeLabel,
 
@@ -113,7 +116,7 @@ const registerAndApplySettings = async (drawingDialog: DrawingDialog) => {
 		},
 		[editorFillsWindowKey]: {
 			public: true,
-			section: 'js-draw',
+			section: jsDrawSectionName,
 
 			label: localization.fullScreenDisabledSettingLabel,
 			storage: SettingStorage.File,
@@ -123,13 +126,23 @@ const registerAndApplySettings = async (drawingDialog: DrawingDialog) => {
 		},
 		[autosaveIntervalKey]: {
 			public: false,
-			section: 'js-draw',
+			section: jsDrawSectionName,
 
 			label: localization.autosaveIntervalSettingLabel,
 			storage: SettingStorage.File,
 
 			type: SettingItemType.Int,
 			value: 2,
+		},
+		[keyboardShortcutsKey]: {
+			public: false,
+			section: jsDrawSectionName,
+
+			label: localization.keyboardShortcuts,
+			storage: SettingStorage.File,
+
+			type: SettingItemType.Object,
+			value: {},
 		},
 	});
 
@@ -149,7 +162,7 @@ const registerAndApplySettings = async (drawingDialog: DrawingDialog) => {
  * https://github.com/laurent22/joplin/issues/7547
  */
 const insertText = async (textToInsert: string, richTextEditorSelectionMarker?: string) => {
-	const wasMarkdownEditor = await isMarkdownEditor();
+	const wasMarkdownEditor = (await isMarkdownEditor()) || true;
 
 	// MCE or Joplin has a bug where inserting markdown code for an SVG image removes
 	// the image data. See https://github.com/laurent22/joplin/issues/7547.
