@@ -1,3 +1,8 @@
+# 2.3.1
+
+- Bug fixes
+  - Fix saving new images multiple times continues creating new images.
+
 # 2.3.0
 
 - UI changes
