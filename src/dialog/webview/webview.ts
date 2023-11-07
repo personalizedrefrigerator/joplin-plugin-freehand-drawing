@@ -66,6 +66,7 @@ const showSaveScreen = async () => {
 	resumeEditingButton.onclick = async () => {
 		await hideSaveScreen();
 		await webviewApi.postMessage({ ...saveMessage });
+		editor.focus();
 	};
 
 	const saveOptionsContainer = document.createElement('div');
@@ -154,8 +155,9 @@ const showCloseScreen = () => {
 	const resumeEditingBtn = document.createElement('button');
 	resumeEditingBtn.innerText = localization.resumeEditing;
 
-	resumeEditingBtn.onclick = () => {
-		void hideExitScreen();
+	resumeEditingBtn.onclick = async () => {
+		await hideExitScreen();
+		editor.focus();
 	};
 
 	const saveChangesButton = document.createElement('button');
