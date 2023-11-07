@@ -87,7 +87,7 @@ const showSaveScreen = async (
 	addSaveOption(localization.saveAsNewDrawing, SaveMethod.SaveAsNew);
 
 	const messageElem = document.createElement('div');
-	messageElem.innerText = localization.clickOkToContinue;
+	messageElem.innerText = localization.clickBelowToContinue;
 
 	const buttonContainer = document.createElement('div');
 	buttonContainer.classList.add('button-container');

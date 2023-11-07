@@ -12,7 +12,7 @@ interface AppLocalization {
 
 	overwriteExisting: string;
 	saveAsNewDrawing: string;
-	clickOkToContinue: string;
+	clickBelowToContinue: string;
 	discardUnsavedChanges: string;
 	resumeEditing: string;
 	saveAndResumeEditing: string;
@@ -55,7 +55,7 @@ const defaultStrings: AppLocalization = {
 
 	overwriteExisting: 'Overwrite existing',
 	saveAsNewDrawing: 'Save as a new drawing',
-	clickOkToContinue: 'Done! Click “Ok” to continue.',
+	clickBelowToContinue: 'Done! Click below to continue.',
 	discardUnsavedChanges: 'Discard unsaved changes?',
 	resumeEditing: 'Resume editing',
 	saveAndResumeEditing: 'Save and resume editing',
@@ -97,7 +97,7 @@ const localizations: Record<string, AppLocalization> = {
 
 		overwriteExisting: 'Existierende Zeichnung überschreiben',
 		saveAsNewDrawing: 'Als neue Zeichnung speichern',
-		clickOkToContinue: 'Fertig! Klicke auf „Ok“ um fortzufahen.',
+		clickBelowToContinue: 'Fertig! Klicke auf „Ok“ um fortzufahen.',
 		discardUnsavedChanges: 'Ungespeicherte Änderungen verwerfen?',
 		resumeEditing: 'Bearbeiten fortfahren',
 
@@ -120,7 +120,7 @@ const localizations: Record<string, AppLocalization> = {
 
 		overwriteExisting: 'Sobrescribir existente',
 		saveAsNewDrawing: 'Guardar como dibujo nuevo',
-		clickOkToContinue: 'Guardado. Ponga «ok» para continuar.',
+		clickBelowToContinue: 'Guardado. Ponga «ok» para continuar.',
 		discardUnsavedChanges: '¿Descartar cambios no guardados?',
 		resumeEditing: 'Continuar editando',
 		saveAndResumeEditing: 'Guardar y continuar editando',
