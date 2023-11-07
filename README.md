@@ -27,8 +27,7 @@ Existing drawings can be edited by hovering over the drawing in the markdown pre
 
 > **Warning**
 >
-> To insert drawings in the rich text editor, this plugin works around [this Joplin bug](https://github.com/laurent22/joplin/issues/7547) by **briefly switching to the markdown editor** and back to the rich text editor. This clears the rich text editor's undo history. This should only **apply to new drawings.** 
-> 
+> To insert drawings in the rich text editor, this plugin works around [this Joplin bug](https://github.com/laurent22/joplin/issues/7547) by **briefly switching to the markdown editor** and back to the rich text editor. This clears the rich text editor's undo history. This should only **apply to new drawings.**
 
 ## I only use the markdown editor (no viewer). How do I edit drawings?
 
@@ -44,7 +43,7 @@ Next, click the "Insert Image" button in the toolbar.
 2. Click on "Keyboard Shortcuts"
 3. Search for "Insert Drawing"
 4. Click "_Disabled_"
-    ![screenshot: Arrow pointing to "disabled" in the second column of the keyboard shortcuts table](https://github.com/personalizedrefrigerator/joplin-plugin-freehand-drawing/assets/46334387/44be3c8a-ac9a-4427-a91d-bcb5a21d7281)
+   ![screenshot: Arrow pointing to "disabled" in the second column of the keyboard shortcuts table](https://github.com/personalizedrefrigerator/joplin-plugin-freehand-drawing/assets/46334387/44be3c8a-ac9a-4427-a91d-bcb5a21d7281)
 5. Entering a new key combination (e.g. <kbd>Ctrl</kbd>-<kbd>Shift</kbd>-<kbd>D</kbd>).
 
 ## How do I disable drawing with touch?
@@ -56,6 +55,7 @@ Pen/mouse-only drawing can be enabled under the "Pan" tool's menu by **enabling 
 ## Joplin closed while editing a drawing. How do I recover the unsaved changes?
 
 `joplin-plugin-freehand-drawing` autosaves every two minutes. The last autosave can be recovered by
+
 1. Switching to the markdown editor
 2. pressing <kbd>Ctrl</kbd>-<kbd>Shift</kbd>-<kbd>P</kbd> (<kbd>Cmd</kbd>-<kbd>Shift</kbd>-<kbd>P</kbd>),
 3. typing `:restore autosave`, then
@@ -64,6 +64,55 @@ Pen/mouse-only drawing can be enabled under the "Pan" tool's menu by **enabling 
 ![screenshot: Command palette shows :restore autosave as search query, second result "Restore from autosaved drawing" is highlighted.](https://github.com/personalizedrefrigerator/joplin-plugin-freehand-drawing/assets/46334387/dadaed12-95b5-4c3f-a5cc-f322ad41476d)
 
 This should add a copy of the autosaved drawing to the current note.
+
+## How do I customize the image editor's keyboard shortcuts?
+
+The procedure to do this is currently very complicated, as there is no GUI for this. (Making this simpler is planned!).
+
+<details><summary>Customizing keyboard shortcuts</summary>
+
+First, open Joplin's profile directory ("Help" > "Open profile directory").
+
+Next, open `settings.json` in a text editor.
+
+Near the end, there should be a line similar to this:
+
+```json
+    "plugin-io.github.personalizedrefrigerator.js-draw.keyboard-shortcuts": { }
+```
+
+Shortcuts can be added between the `{` and the `}`. For example,
+
+```json
+	"plugin-io.github.personalizedrefrigerator.js-draw.keyboard-shortcuts": {
+		"jsdraw.toolbar.ExitActionWidget.exit": [
+			"ctrlOrMeta-w",
+			"alt-q"
+		],
+		"jsdraw.toolbar.SaveActionWidget.save": [
+			"ctrlOrMeta-s",
+			"ctrlOrMeta-shift-s"
+		],
+		"jsdraw.toolbar.PenTool.select-pen-1": [
+			"CtrlOrMeta-1",
+			"alt-1"
+		],
+		"jsdraw.toolbar.SelectionTool.resizeImageToSelection": [
+			"ctrlOrMeta-r",
+			"m"
+		]
+	}
+```
+
+adds additional shortcuts for exiting, selecting pen style 1, and resizing the visible region to the selection.
+
+After changing the shortcuts, Joplin should be restarted.
+
+> **Note**
+>
+> Additional keyboard shortcut IDs can be found [in js-draw's source code](https://github.com/personalizedrefrigerator/js-draw/blob/main/packages/js-draw/src/tools/keybindings.ts).
+
+</details>
 
 ## How do I report a bug related to the image editor?
 

@@ -1,3 +1,14 @@
+# 2.4.0
+
+- Bug fixes
+  - Fixes pressing <kbd>Ctrl</kbd>+<kbd>R</kbd> (resize to selection) also brings a selection to the top.
+- Features
+  - Pressing <kbd>End</kbd> when there is a selection now sends the selection to the back.
+  - Pressing <kbd>Alt</kbd>+<kbd>q</kbd> is now equivalent to pressing "Exit".
+  - Initial support for customizing keyboard shortcuts within the editor.
+    - Keyboard shortcuts can be added to Joplin's `settings.json`.
+    - This is currently difficult to do, as there is no UI for this.
+
 # 2.3.1
 
 - Bug fixes
