@@ -1,3 +1,13 @@
+# 2.3.0
+
+- UI changes
+  - Support for editing existing drawings in the rich text editor. Double-click on a drawing to edit.
+  - Clicking "save" gives the user the option to continue editing (if user input is required) or saves without presenting a dialog (if no input is required).
+- [Updates `js-draw`](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#1100)
+  - See the [`js-draw` changelog](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#1100) for the full list of changes (previous version was 1.3.1).
+- Bug fixes
+  - Fixes `updated_time` not changed when updating drawings. This may fix sync issues in some Joplin pre-release versions.
+
 # 2.2.1
 
 - [Updates `js-draw`](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#131)
