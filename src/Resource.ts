@@ -60,6 +60,8 @@ export class Resource {
 		const metadata = {
 			mime: this.mime,
 			title: this.title,
+			updated_time: Date.now(),
+			user_updated_time: Date.now(),
 
 			// Remove the leading '.'
 			file_extension: this.fileExt ? /^[.]?(.*)$/.exec(this.fileExt)![1] : null,
