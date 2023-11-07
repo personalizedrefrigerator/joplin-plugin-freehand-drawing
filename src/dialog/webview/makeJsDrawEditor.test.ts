@@ -45,7 +45,12 @@ describe('makeJsDrawEditor', () => {
 
 		// After clicking save (or using the keyboard shortcut in this case),
 		// should be up-to-date.
+		saveCallback.mockReset();
 		editor.sendKeyboardEvent(InputEvtType.KeyPressEvent, 's', true);
+
+		// In the application, the editorControl will be notified after a successful save.
+		expect(saveCallback).toHaveBeenCalled();
+		editorControl.onSaved();
 
 		// Should be saved
 		expect(saveButton.matches('.disabled')).toBe(true);
