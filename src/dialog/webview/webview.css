@@ -31,7 +31,7 @@ button {
 }
 
 .save-or-exit-dialog.has-unsaved-changes button {
-	font-size: 2em;
+	font-size: 1.1rem;
 }
 
 .save-or-exit-dialog:not(.has-unsaved-changes) .save-changes-button {
@@ -50,6 +50,14 @@ button {
 	position: absolute;
 	bottom: 0;
 	right: 0;
+
+	display: flex;
+	flex-direction: column;
+	align-items: end;
+}
+
+.save-or-exit-dialog .button-container button {
+	margin-top: 12px;
 }
 
 :root .imageEditorContainer.match-joplin-theme {

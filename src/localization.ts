@@ -60,7 +60,7 @@ const defaultStrings: AppLocalization = {
 	exitInstructions: 'All changes saved! Click below to exit.',
 
 	settingsPaneDescription: 'Settings for the js-draw image editor',
-	fullScreenDisabledSettingLabel: 'Disable editor dialog filling the entire Joplin window.',
+	fullScreenDisabledSettingLabel: 'Disable editor dialog fills entire window.',
 	autosaveIntervalSettingLabel: 'Autosave interval (minutes)',
 	themeLabel: 'Theme',
 	toolbarTypeLabel: 'Toolbar type',
