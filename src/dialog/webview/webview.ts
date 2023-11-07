@@ -61,7 +61,7 @@ const showSaveScreen = async () => {
 	};
 
 	const resumeEditingButton = document.createElement('button');
-	resumeEditingButton.innerText = localization.resumeEditing;
+	resumeEditingButton.innerText = localization.saveAndResumeEditing;
 	resumeEditingButton.onclick = async () => {
 		await hideSaveScreen();
 		await webviewApi.postMessage({ ...saveMessage });

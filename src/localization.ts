@@ -15,6 +15,7 @@ interface AppLocalization {
 	clickOkToContinue: string;
 	discardUnsavedChanges: string;
 	resumeEditing: string;
+	saveAndResumeEditing: string;
 	saveChanges: string;
 	exitInstructions: string;
 
@@ -54,6 +55,7 @@ const defaultStrings: AppLocalization = {
 	clickOkToContinue: 'Done! Click “Ok” to continue.',
 	discardUnsavedChanges: 'Discard unsaved changes?',
 	resumeEditing: 'Resume editing',
+	saveAndResumeEditing: 'Save and resume editing',
 	saveChanges: 'Save changes',
 	exitInstructions: 'All changes saved! Click below to exit.',
 
@@ -117,6 +119,7 @@ const localizations: Record<string, AppLocalization> = {
 		clickOkToContinue: 'Guardado. Ponga «ok» para continuar.',
 		discardUnsavedChanges: '¿Descartar cambios no guardados?',
 		resumeEditing: 'Continuar editando',
+		saveAndResumeEditing: 'Guardar y continuar editando',
 	},
 };
 
