@@ -221,6 +221,14 @@ void (async () => {
 webviewApi.onMessage(({ message }) => {
 	if (message.type === MessageType.SaveCompleted) {
 		editorControl?.onSaved();
+
+		// After saving as a new drawing once, we should update the new
+		// drawing.
+		webviewApi.postMessage({
+			type: MessageType.SetSaveMethod,
+			method: SaveMethod.Overwrite,
+		});
+
 		for (const listener of saveCompletedListeners) {
 			listener();
 		}

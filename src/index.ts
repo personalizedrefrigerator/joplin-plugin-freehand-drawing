@@ -13,7 +13,7 @@ import TemporaryDirectory from './TemporaryDirectory';
 import waitFor from './util/waitFor';
 import DrawingDialog from './dialog/DrawingDialog';
 import { pluginPrefix } from './constants';
-import { EditorStyle, ToolbarType } from './types';
+import { EditorStyle, SaveMethod, ToolbarType } from './types';
 
 // While learning how to use the Joplin plugin API,
 // * https://github.com/herdsothom/joplin-insert-date/blob/main/src/index.ts
@@ -192,6 +192,7 @@ joplin.plugins.register({
 
 			const textToInsert = `![${resource.htmlSafeTitle()}](:/${resource.resourceId})`;
 			await insertText(textToInsert, richTextEditorSelectionData);
+			return resource;
 		};
 
 		const editDrawing = async (resourceUrl: string): Promise<Resource | null> => {
@@ -241,13 +242,24 @@ joplin.plugins.register({
 					await editDrawing(selection);
 				} else {
 					const selectionData = await saveRichTextEditorSelection();
+					let savedResource: Resource | null = null;
 					const saved = await drawingDialog.promptForDrawing({
 						initialData: undefined,
 						saveCallbacks: {
 							saveAsNew: async (svgData) => {
-								await insertNewDrawing(svgData, selectionData);
+								savedResource = await insertNewDrawing(svgData, selectionData);
+							},
+							overwrite: async (svgData) => {
+								if (!savedResource) {
+									throw new Error('A new drawing must be saved once before it can be overwritten');
+								}
+
+								await savedResource.updateData(svgData);
 							},
 						},
+
+						// Save as new without a prompt (can't overwrite at first)
+						initialSaveMethod: SaveMethod.SaveAsNew,
 					});
 
 					// If the user canceled the drawing,

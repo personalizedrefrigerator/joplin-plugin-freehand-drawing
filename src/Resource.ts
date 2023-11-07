@@ -137,17 +137,21 @@ export class Resource {
 		const query = null;
 		const metadata = {
 			title: title.endsWith(fileExtension) ? title : `${title}${fileExtension}`,
+			created_time: Date.now(),
+			updated_time: Date.now(),
+			file_extension: fileExtension,
 		};
 		const filePath = await tmpdir.newFile(data, fileExtension);
 		const fileData = [{ path: filePath }];
 		const result = await joplin.data.post(['resources'], query, metadata, fileData);
-		return new Resource({
+		const resource = new Resource({
 			tmpdir: tmpdir,
 			resourceId: result.id,
 			mime: result.mime,
 			title: result.title,
 			fileExt: fileExtension,
 		});
+		return resource;
 	}
 }
 

@@ -17,19 +17,15 @@ import {
 const dialogs = joplin.views.dialogs;
 
 type SaveCallback = (svgData: string) => void | Promise<void>;
-type SaveCallbacks =
-	| {
-			saveAsNew: SaveCallback;
-			overwrite?: undefined;
-	  }
-	| {
-			saveAsNew: SaveCallback;
-			overwrite: SaveCallback;
-	  };
+type SaveCallbacks = {
+	saveAsNew: SaveCallback;
+	overwrite: SaveCallback;
+};
 
 export interface InsertDrawingOptions {
 	initialData: string | undefined;
 	saveCallbacks: SaveCallbacks;
+	initialSaveMethod?: SaveMethod;
 }
 
 export default class DrawingDialog {
@@ -136,11 +132,8 @@ export default class DrawingDialog {
 	public async promptForDrawing(options: InsertDrawingOptions): Promise<boolean> {
 		await this.initializeDialog();
 
-		let saveOption: SaveMethod | null = null;
-
-		if (!options.saveCallbacks.overwrite) {
-			saveOption = SaveMethod.SaveAsNew;
-		}
+		let saveOption: SaveMethod | null = options.initialSaveMethod ?? null;
+		let didSave = false;
 
 		const save = async (data: string) => {
 			try {
@@ -159,6 +152,8 @@ export default class DrawingDialog {
 				joplin.views.panels.postMessage(this.handle, {
 					type: MessageType.SaveCompleted,
 				} as SaveCompletedMessage);
+
+				didSave = true;
 			} catch (error) {
 				console.error('js-draw', error);
 				alert('Not saved: ' + error);
@@ -232,7 +227,7 @@ export default class DrawingDialog {
 					await save(saveData);
 					resolve(true);
 				} else if (result.id === 'cancel') {
-					resolve(false);
+					resolve(didSave);
 				} else {
 					reject(`Unknown button ID ${result.id}`);
 				}
