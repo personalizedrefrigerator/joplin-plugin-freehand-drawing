@@ -18,10 +18,15 @@ import {
 const dialogs = joplin.views.dialogs;
 
 type SaveCallback = (svgData: string) => void | Promise<void>;
-type SaveCallbacks = {
-	saveAsNew: SaveCallback;
-	overwrite: SaveCallback;
-};
+type SaveCallbacks =
+	| {
+			saveAsNew: SaveCallback;
+			overwrite: SaveCallback;
+	  }
+	| {
+			saveAsNew: null;
+			overwrite: SaveCallback;
+	  };
 
 export interface InsertDrawingOptions {
 	initialData: string | undefined;
@@ -144,16 +149,20 @@ export default class DrawingDialog {
 		let saveOption: SaveMethod | null = options.initialSaveMethod ?? null;
 		let didSave = false;
 
+		if (!options.saveCallbacks.saveAsNew) {
+			saveOption = SaveMethod.Overwrite;
+		}
+
 		const save = async (data: string) => {
 			try {
 				if (saveOption === SaveMethod.SaveAsNew) {
-					await options.saveCallbacks.saveAsNew(data);
-				} else if (saveOption === SaveMethod.Overwrite) {
-					if (options.saveCallbacks.overwrite) {
-						await options.saveCallbacks.overwrite(data);
+					if (options.saveCallbacks.saveAsNew) {
+						await options.saveCallbacks.saveAsNew(data);
 					} else {
-						throw new Error('overwrite save callback not defined');
+						throw new Error('saveAsNew save callback not defined');
 					}
+				} else if (saveOption === SaveMethod.Overwrite) {
+					await options.saveCallbacks.overwrite(data);
 				} else {
 					throw new Error('saveOption must be either saveAsNew or overwrite');
 				}

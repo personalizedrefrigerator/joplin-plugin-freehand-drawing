@@ -208,7 +208,10 @@ joplin.plugins.register({
 			return resource;
 		};
 
-		const editDrawing = async (resourceUrl: string): Promise<Resource | null> => {
+		const editDrawing = async (
+			resourceUrl: string,
+			allowSaveAsCopy: boolean = true,
+		): Promise<Resource | null> => {
 			const expectedMime = 'image/svg+xml';
 			const originalResource = await Resource.fromURL(tmpdir, resourceUrl, '.svg', expectedMime);
 
@@ -222,6 +225,11 @@ joplin.plugins.register({
 			}
 
 			let resource = originalResource;
+			const saveAsNewCallback = async (data: string) => {
+				console.log('Image editor: Inserting new drawing...');
+				resource = await insertNewDrawing(data);
+			};
+
 			const saved = await drawingDialog.promptForDrawing({
 				initialData: await resource.getDataAsString(),
 				saveCallbacks: {
@@ -229,10 +237,7 @@ joplin.plugins.register({
 						console.log('Image editor: Overwriting resource...');
 						await resource.updateData(data);
 					},
-					saveAsNew: async (data) => {
-						console.log('Image editor: Inserting new drawing...');
-						resource = await insertNewDrawing(data);
-					},
+					saveAsNew: allowSaveAsCopy ? saveAsNewCallback : null,
 				},
 			});
 
@@ -253,7 +258,7 @@ joplin.plugins.register({
 					console.log('Attempting to edit selected resource,', selection);
 
 					// TODO: Update the cache-breaker for the resource.
-					await editDrawing(selection);
+					await editDrawing(selection, false);
 				} else {
 					const selectionData = await saveRichTextEditorSelection();
 					let savedResource: Resource | null = null;
