@@ -1,3 +1,10 @@
+# 2.4.1
+
+- Bug fixes
+  - Disallow save as copy when the drawing dialog was opened by selecting a resource URL.
+    - Previously, the copy of the resource would replace the URL.
+  - Fix saves after "save as copy" save to the wrong image.
+
 # 2.4.0
 
 - Bug fixes
