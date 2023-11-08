@@ -210,17 +210,18 @@ joplin.plugins.register({
 
 		const editDrawing = async (resourceUrl: string): Promise<Resource | null> => {
 			const expectedMime = 'image/svg+xml';
-			const resource = await Resource.fromURL(tmpdir, resourceUrl, '.svg', expectedMime);
+			const originalResource = await Resource.fromURL(tmpdir, resourceUrl, '.svg', expectedMime);
 
-			if (!resource) {
+			if (!originalResource) {
 				throw new Error('Invalid resource URL!');
 			}
 
-			if (resource.mime !== expectedMime) {
-				alert(localization.notAnEditableImage(resourceUrl, resource.mime));
+			if (originalResource.mime !== expectedMime) {
+				alert(localization.notAnEditableImage(resourceUrl, originalResource.mime));
 				return null;
 			}
 
+			let resource = originalResource;
 			const saved = await drawingDialog.promptForDrawing({
 				initialData: await resource.getDataAsString(),
 				saveCallbacks: {
@@ -230,7 +231,7 @@ joplin.plugins.register({
 					},
 					saveAsNew: async (data) => {
 						console.log('Image editor: Inserting new drawing...');
-						await insertNewDrawing(data);
+						resource = await insertNewDrawing(data);
 					},
 				},
 			});
