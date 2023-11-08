@@ -104,9 +104,9 @@ Shortcuts can be added between the `{` and the `}`. For example,
 	}
 ```
 
-adds additional shortcuts for exiting, selecting pen style 1, and resizing the visible region to the selection.
+The above adds additional shortcuts for exiting, selecting pen style 1, and resizing the visible region to the selection.
 
-After changing the shortcuts, Joplin should be restarted.
+Joplin must be restarted for the changes to be applied.
 
 > **Note**
 >
