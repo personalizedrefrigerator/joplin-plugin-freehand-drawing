@@ -1,3 +1,8 @@
+# 2.4.2
+
+- [Updates `js-draw` to v1.11.2](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#1112)
+  - Fixes using shift+drag to lock a selection's motion to either the horizontal or vertical axis.
+
 # 2.4.1
 
 - Bug fixes
