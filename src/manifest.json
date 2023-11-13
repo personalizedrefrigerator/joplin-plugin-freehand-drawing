@@ -11,9 +11,9 @@
 	"keywords": ["drawing", "freehand-drawing", "freehand", "handwriting"],
 	"categories": ["editor"],
 	"screenshots": [
-		{ "src": "../screenshots/editor-lightdark-fullscreen.png" },
-		{ "src": "../screenshots/editorview-light-1.png" },
-		{ "src": "../screenshots/editorview-light-2.png" },
-		{ "src": "../screenshots/editorview-dark.png" }
+		{ "src": "screenshots/editor-lightdark-fullscreen.png" },
+		{ "src": "screenshots/editorview-light-1.png" },
+		{ "src": "screenshots/editorview-light-2.png" },
+		{ "src": "screenshots/editorview-dark.png" }
 	]
 }
