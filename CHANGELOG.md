@@ -1,7 +1,8 @@
-# 2.4.2
+# 2.5.0
 
-- [Updates `js-draw` to v1.11.2](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#1112)
+- [Updates `js-draw` to v1.12.0](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#1120)
   - Fixes using shift+drag to lock a selection's motion to either the horizontal or vertical axis.
+  - Adjusts how curve fitting works.
 
 # 2.4.1
 
