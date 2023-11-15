@@ -14,6 +14,7 @@ import waitFor from './util/waitFor';
 import DrawingDialog from './dialog/DrawingDialog';
 import { pluginPrefix } from './constants';
 import { EditorStyle, SaveMethod, ToolbarType } from './types';
+import isVersionGreater from './util/isVersionGreater';
 
 // While learning how to use the Joplin plugin API,
 // * https://github.com/herdsothom/joplin-insert-date/blob/main/src/index.ts
@@ -153,6 +154,13 @@ const registerAndApplySettings = async (drawingDialog: DrawingDialog) => {
 	await applySettings();
 };
 
+const needsToSwitchEditorsBeforeInsertingText = async () => {
+	// Newer versions of Joplin don't have the bug that required switching editors
+	// before inserting text.
+	const version = await joplin.versionInfo();
+	return !isVersionGreater(version.version, '2.13.4') && !(await isMarkdownEditor());
+};
+
 /**
  * Inserts `textToInsert` at the point of current selection, **or**, if `richTextEditorSelectionMarker`
  * is given and the rich text editor is currently open, replaces `richTextEditorSelectionMarker` with
@@ -162,11 +170,11 @@ const registerAndApplySettings = async (drawingDialog: DrawingDialog) => {
  * https://github.com/laurent22/joplin/issues/7547
  */
 const insertText = async (textToInsert: string, richTextEditorSelectionMarker?: string) => {
-	const wasMarkdownEditor = (await isMarkdownEditor()) || true;
+	const needsEditorSwitch = await needsToSwitchEditorsBeforeInsertingText();
 
 	// MCE or Joplin has a bug where inserting markdown code for an SVG image removes
 	// the image data. See https://github.com/laurent22/joplin/issues/7547.
-	if (!wasMarkdownEditor) {
+	if (needsEditorSwitch) {
 		// Switch to the markdown editor.
 		await joplin.commands.execute('toggleEditors');
 
@@ -183,7 +191,7 @@ const insertText = async (textToInsert: string, richTextEditorSelectionMarker?: 
 	await joplin.commands.execute('insertText', textToInsert);
 
 	// Try to switch back to the original editor
-	if (!wasMarkdownEditor) {
+	if (needsEditorSwitch) {
 		await joplin.commands.execute('toggleEditors');
 	}
 };
@@ -260,13 +268,17 @@ joplin.plugins.register({
 					// TODO: Update the cache-breaker for the resource.
 					await editDrawing(selection, false);
 				} else {
-					const selectionData = await saveRichTextEditorSelection();
+					let savedSelection: string | undefined = undefined;
+					if (await needsToSwitchEditorsBeforeInsertingText()) {
+						savedSelection = await saveRichTextEditorSelection();
+					}
+
 					let savedResource: Resource | null = null;
 					const saved = await drawingDialog.promptForDrawing({
 						initialData: undefined,
 						saveCallbacks: {
 							saveAsNew: async (svgData) => {
-								savedResource = await insertNewDrawing(svgData, selectionData);
+								savedResource = await insertNewDrawing(svgData, savedSelection);
 							},
 							overwrite: async (svgData) => {
 								if (!savedResource) {
@@ -284,8 +296,8 @@ joplin.plugins.register({
 					// If the user canceled the drawing,
 					if (!saved) {
 						// Clear the selection marker, if it exists.
-						if (selectionData) {
-							await insertText('', selectionData);
+						if (savedSelection) {
+							await insertText('', savedSelection);
 						}
 
 						return;
