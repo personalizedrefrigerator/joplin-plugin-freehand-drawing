@@ -1,3 +1,9 @@
+# 2.6.0
+
+- [Updates `js-draw` to v1.15.0](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#1150)
+  - Find (with <kbd>ctrl</kbd>-<kbd>f</kbd>) now searches in image alt text, in addition to text blocks.
+  - Added help information to pen/selection/page dropdowns.
+
 # 2.5.0
 
 - [Updates `js-draw` to v1.12.0](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#1120)
