@@ -1,3 +1,10 @@
+# 2.7.0
+
+- [Updates `js-draw` to v1.16.0](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#1160)
+  - Snap zoom to powers of 10 when zooming with touch.
+  - Fix strokes flicker while rotating the screen.
+  - Prevent the selection rectangle from being incorrectly visible at the top left corner of the screen when starting a new selection.
+
 # 2.6.0
 
 - [Updates `js-draw` to v1.15.0](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#1150)
