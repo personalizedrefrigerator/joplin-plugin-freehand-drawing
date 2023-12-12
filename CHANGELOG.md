@@ -1,3 +1,8 @@
+# 2.7.1
+
+- [Updates `js-draw` to v1.16.1](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#1161)
+  - Fixes accessibility text could sometimes be selected and dropped into the editor. (https://github.com/personalizedrefrigerator/joplin-plugin-freehand-drawing/issues/8)
+
 # 2.7.0
 
 - [Updates `js-draw` to v1.16.0](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#1160)
