@@ -170,7 +170,8 @@ export default (context: { contentScriptId: string }) => {
 			): string => {
 				const defaultHtml = originalRenderer?.(tokens, idx, options, env, self) ?? '';
 
-				const svgUrlExp = /src\s*=\s*['"](file:[/][/])?[^'"]*[.]svg([?]t=\d+)?['"]/i;
+				const svgUrlExp =
+					/src\s*=\s*['"](file:[/][/]|jop[-a-zA-Z]+:[/][/])?[^'"]*[.]svg([?]t=\d+)?['"]/i;
 				if (!svgUrlExp.exec(defaultHtml ?? '')) {
 					return defaultHtml;
 				}

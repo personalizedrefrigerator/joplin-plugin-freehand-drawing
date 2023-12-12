@@ -95,7 +95,7 @@ export class Resource {
 		mimeType: string,
 	): Promise<Resource | null> {
 		// Extract the ID
-		const fileURLMatch = /^file:\/\/.*\/([a-zA-Z0-9]+)[.]\w+(?:[?#]|$)/.exec(url);
+		const fileURLMatch = /^(?:file|joplin[-a-z]+):\/\/.*\/([a-zA-Z0-9]+)[.]\w+(?:[?#]|$)/.exec(url);
 		const resourceLinkMatch = /^:\/([a-zA-Z0-9]+)$/.exec(url);
 
 		let resourceId: string | null = null;
