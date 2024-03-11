@@ -48,8 +48,18 @@ export default class TemporaryDirectory {
 	}
 }
 
-process.on('exit', () => {
+const cleanTempDirs = () => {
 	for (const dir of appTmpDirectories) {
 		dir.destroySync();
 	}
-});
+};
+
+if (typeof window !== 'undefined') {
+	window.addEventListener('beforeunload', () => {
+		cleanTempDirs();
+	});
+} else {
+	process.on('exit', () => {
+		cleanTempDirs();
+	});
+}
