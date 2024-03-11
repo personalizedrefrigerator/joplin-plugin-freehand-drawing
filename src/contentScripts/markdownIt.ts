@@ -56,7 +56,7 @@ const editImage = (contentScriptId: string, container: HTMLElement, svgId: strin
 
 		if (!postMessage) {
 			// TODO:
-			//  This is a hack to workaround the lack of a webviewApi in the rich text editor
+			//  This is a hack to work around the lack of a webviewApi in the rich text editor
 			//  webview.
 			//  As top.require **should not work** at some point in the future, this will fail.
 			const PluginService = (top! as any).require(
@@ -76,9 +76,9 @@ const editImage = (contentScriptId: string, container: HTMLElement, svgId: strin
 			.then((resourceId: string | null) => {
 				// Update all matching
 				const toRefresh = document.querySelectorAll(`
-				img[data-resource-id="${resourceId}"],
-				img[data-mce-src*="/${resourceId}.svg"]
-			`);
+					img[data-resource-id="${resourceId}"],
+					img[data-mce-src*="/${resourceId}.svg"]
+				`);
 
 				for (const elem of toRefresh) {
 					const imageElem = elem as HTMLImageElement;
