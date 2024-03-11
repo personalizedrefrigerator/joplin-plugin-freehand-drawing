@@ -68,6 +68,8 @@ export default class DrawingWindow extends AbstractDrawingView {
 		const installationDir = await joplin.plugins.installationDir();
 		const dialog = window.open(
 			`file://${posixPath.normalize(installationDir)}/dialog/window/index.html`,
+			'_blank',
+			'autoHideMenuBar=true',
 		)!;
 		this.win = dialog;
 
