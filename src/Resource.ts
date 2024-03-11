@@ -103,6 +103,8 @@ export class Resource {
 			resourceId = fileURLMatch[1];
 		} else if (resourceLinkMatch) {
 			resourceId = resourceLinkMatch[1];
+		} else if (/^[a-z0-9]{32}$/.exec(url)) {
+			resourceId = url;
 		}
 
 		if (resourceId === null) {

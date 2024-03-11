@@ -155,7 +155,7 @@ joplin.plugins.register({
 			const selection = await joplin.commands.execute('selectedText');
 
 			// If selecting a resource URL, edit that. Else, insert a new drawing.
-			if (selection && /^:\/[a-zA-Z0-9]+$/.exec(selection)) {
+			if (selection && (/^:\/[a-zA-Z0-9]+$/.exec(selection) || /^[a-z0-9]{32}$/.exec(selection))) {
 				console.log('Attempting to edit selected resource,', selection);
 
 				// TODO: Update the cache-breaker for the resource.
