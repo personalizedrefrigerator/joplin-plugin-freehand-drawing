@@ -1,3 +1,14 @@
+# 2.8.0
+
+- [Updates `js-draw` to v1.17.0](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#1170)
+  - Better copy/paste interop with other applications.
+- Features
+  - (Beta) Multi-window support.
+    - To edit a resource in a new window, select that resource's ID in the editor, press <kbd>ctrl</kbd>-<kbd>shift</kbd>-<kbd>p</kbd> (<kbd>cmd</kbd>-<kbd>shift</kbd>-<kbd>p</kbd> on Mac) and type `:insertDrawing__newWindow`. It may be necessary to switch notes for the drawing to update in the viewer.
+    - For now, avoid having the same drawing open in multiple different windows.
+- Bug fixes
+  - Fixed plugin temporary directories created by this plugin not removed when closing Joplin.
+
 # 2.7.1
 
 - [Updates `js-draw` to v1.16.1](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#1161)
