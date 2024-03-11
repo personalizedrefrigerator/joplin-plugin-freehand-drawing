@@ -1,5 +1,6 @@
 interface AppLocalization {
 	insertDrawing: string;
+	insertDrawingInNewWindow: string;
 	restoreFromAutosave: string;
 	deleteAutosave: string;
 	noSuchAutosaveExists: string;
@@ -43,6 +44,7 @@ interface AppLocalization {
 
 const defaultStrings: AppLocalization = {
 	insertDrawing: 'Insert Drawing',
+	insertDrawingInNewWindow: 'Insert drawing in new window',
 	restoreFromAutosave: 'Restore from autosaved drawing',
 	deleteAutosave: 'Delete all autosaved drawings',
 	noSuchAutosaveExists: 'No autosave exists',

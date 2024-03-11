@@ -1,11 +1,5 @@
 import joplin from 'api';
-import {
-	ContentScriptType,
-	MenuItemLocation,
-	SettingItemType,
-	SettingStorage,
-	ToolbarButtonLocation,
-} from 'api/types';
+import { ContentScriptType, MenuItemLocation, ToolbarButtonLocation } from 'api/types';
 import { clearAutosave, getAutosave } from './autosave';
 import localization from './localization';
 import Resource from './Resource';
@@ -13,8 +7,11 @@ import TemporaryDirectory from './TemporaryDirectory';
 import waitFor from './util/waitFor';
 import DrawingDialog from './dialog/DrawingDialog';
 import { pluginPrefix } from './constants';
-import { EditorStyle, SaveMethod, ToolbarType } from './types';
+import { SaveMethod } from './types';
 import isVersionGreater from './util/isVersionGreater';
+import DrawingWindow from './dialog/DrawingWindow';
+import AbstractDrawingView from './dialog/AbstractDrawingView';
+import { applySettingsTo, registerAndApplySettings } from './settings';
 
 // While learning how to use the Joplin plugin API,
 // * https://github.com/herdsothom/joplin-insert-date/blob/main/src/index.ts
@@ -42,116 +39,6 @@ const saveRichTextEditorSelection = async () => {
 	});
 
 	return selectionPointIdText;
-};
-
-const registerAndApplySettings = async (drawingDialog: DrawingDialog) => {
-	// Joplin adds a prefix to the setting in settings.json for us.
-	const editorFillsWindowKey = 'disable-editor-fills-window';
-	const autosaveIntervalKey = 'autosave-interval-minutes';
-	const toolbarTypeKey = 'toolbar-type';
-	const styleModeKey = 'style-mode';
-	const keyboardShortcutsKey = 'keyboard-shortcuts';
-
-	const applySettings = async () => {
-		const fullscreenDisabled = await joplin.settings.value(editorFillsWindowKey);
-		await drawingDialog.setCanFullscreen(!fullscreenDisabled);
-
-		let autosaveIntervalMinutes = await joplin.settings.value(autosaveIntervalKey);
-
-		// Default to two minutes.
-		if (!autosaveIntervalMinutes) {
-			autosaveIntervalMinutes = 2;
-		}
-
-		await drawingDialog.setAutosaveInterval(autosaveIntervalMinutes * 60 * 1000);
-
-		const toolbarType = (await joplin.settings.value(toolbarTypeKey)) as ToolbarType;
-		drawingDialog.setToolbarType(toolbarType);
-
-		const styleMode = (await joplin.settings.value(styleModeKey)) as EditorStyle;
-		drawingDialog.setStyleMode(styleMode);
-
-		drawingDialog.setKeyboardShortcuts(await joplin.settings.value(keyboardShortcutsKey));
-	};
-
-	const jsDrawSectionName = 'js-draw';
-	await joplin.settings.registerSection(jsDrawSectionName, {
-		label: 'Freehand Drawing',
-		iconName: 'fas fa-pen-alt',
-		description: localization.settingsPaneDescription,
-	});
-
-	// Editor fullscreen setting
-	await joplin.settings.registerSettings({
-		[toolbarTypeKey]: {
-			public: true,
-			section: jsDrawSectionName,
-
-			label: localization.toolbarTypeLabel,
-
-			isEnum: true,
-			type: SettingItemType.Int,
-			value: 0,
-
-			options: {
-				0: localization.toolbarTypeDefault,
-				1: localization.toolbarTypeSidebar,
-				2: localization.toolbarTypeDropdown,
-			},
-		},
-		[styleModeKey]: {
-			public: true,
-			section: jsDrawSectionName,
-
-			label: localization.themeLabel,
-
-			isEnum: true,
-			type: SettingItemType.String,
-			value: EditorStyle.MatchJoplin,
-
-			options: {
-				[EditorStyle.MatchJoplin]: localization.styleMatchJoplin,
-				[EditorStyle.JsDrawLight]: localization.styleJsDrawLight,
-				[EditorStyle.JsDrawDark]: localization.styleJsDrawDark,
-			},
-		},
-		[editorFillsWindowKey]: {
-			public: true,
-			section: jsDrawSectionName,
-
-			label: localization.fullScreenDisabledSettingLabel,
-			storage: SettingStorage.File,
-
-			type: SettingItemType.Bool,
-			value: false,
-		},
-		[autosaveIntervalKey]: {
-			public: false,
-			section: jsDrawSectionName,
-
-			label: localization.autosaveIntervalSettingLabel,
-			storage: SettingStorage.File,
-
-			type: SettingItemType.Int,
-			value: 2,
-		},
-		[keyboardShortcutsKey]: {
-			public: false,
-			section: jsDrawSectionName,
-
-			label: localization.keyboardShortcuts,
-			storage: SettingStorage.File,
-
-			type: SettingItemType.Object,
-			value: {},
-		},
-	});
-
-	await joplin.settings.onChange((_event) => {
-		void applySettings();
-	});
-
-	await applySettings();
 };
 
 const needsToSwitchEditorsBeforeInsertingText = async () => {
@@ -216,9 +103,20 @@ joplin.plugins.register({
 			return resource;
 		};
 
+		const getDialog = async (inNewWindow: boolean) => {
+			let dialog: AbstractDrawingView = drawingDialog;
+			if (inNewWindow) {
+				dialog = new DrawingWindow();
+				await applySettingsTo(dialog);
+			}
+
+			return dialog;
+		};
+
 		const editDrawing = async (
 			resourceUrl: string,
 			allowSaveAsCopy: boolean = true,
+			inNewWindow: boolean,
 		): Promise<Resource | null> => {
 			const expectedMime = 'image/svg+xml';
 			const originalResource = await Resource.fromURL(tmpdir, resourceUrl, '.svg', expectedMime);
@@ -238,7 +136,8 @@ joplin.plugins.register({
 				resource = await insertNewDrawing(data);
 			};
 
-			const saved = await drawingDialog.promptForDrawing({
+			const dialog = await getDialog(inNewWindow);
+			const saved = await dialog.promptForDrawing({
 				initialData: await resource.getDataAsString(),
 				saveCallbacks: {
 					overwrite: async (data) => {
@@ -252,63 +151,78 @@ joplin.plugins.register({
 			return saved ? resource : null;
 		};
 
-		const toolbuttonCommand = `${pluginPrefix}insertDrawing`;
+		const editOrInsertDrawing = async (inNewWindow: boolean) => {
+			const selection = await joplin.commands.execute('selectedText');
 
+			// If selecting a resource URL, edit that. Else, insert a new drawing.
+			if (selection && /^:\/[a-zA-Z0-9]+$/.exec(selection)) {
+				console.log('Attempting to edit selected resource,', selection);
+
+				// TODO: Update the cache-breaker for the resource.
+				await editDrawing(selection, false, inNewWindow);
+			} else {
+				let savedSelection: string | undefined = undefined;
+				if (await needsToSwitchEditorsBeforeInsertingText()) {
+					savedSelection = await saveRichTextEditorSelection();
+				}
+
+				const dialog = await getDialog(inNewWindow);
+
+				let savedResource: Resource | null = null;
+				const saved = await dialog.promptForDrawing({
+					initialData: undefined,
+					saveCallbacks: {
+						saveAsNew: async (svgData) => {
+							savedResource = await insertNewDrawing(svgData, savedSelection);
+						},
+						overwrite: async (svgData) => {
+							if (!savedResource) {
+								throw new Error('A new drawing must be saved once before it can be overwritten');
+							}
+
+							await savedResource.updateData(svgData);
+						},
+					},
+
+					// Save as new without a prompt (can't overwrite at first)
+					initialSaveMethod: SaveMethod.SaveAsNew,
+				});
+
+				// If the user canceled the drawing,
+				if (!saved) {
+					// Clear the selection marker, if it exists.
+					if (savedSelection) {
+						await insertText('', savedSelection);
+					}
+
+					return;
+				}
+			}
+		};
+
+		const editInSameWindowCommand = `${pluginPrefix}insertDrawing`;
 		await joplin.commands.register({
-			name: toolbuttonCommand,
+			name: editInSameWindowCommand,
 			label: localization.insertDrawing,
 			iconName: 'fas fa-pen-alt',
 			execute: async () => {
-				const selection = await joplin.commands.execute('selectedText');
+				await editOrInsertDrawing(false);
+			},
+		});
 
-				// If selecting a resource URL, edit that. Else, insert a new drawing.
-				if (selection && /^:\/[a-zA-Z0-9]+$/.exec(selection)) {
-					console.log('Attempting to edit selected resource,', selection);
-
-					// TODO: Update the cache-breaker for the resource.
-					await editDrawing(selection, false);
-				} else {
-					let savedSelection: string | undefined = undefined;
-					if (await needsToSwitchEditorsBeforeInsertingText()) {
-						savedSelection = await saveRichTextEditorSelection();
-					}
-
-					let savedResource: Resource | null = null;
-					const saved = await drawingDialog.promptForDrawing({
-						initialData: undefined,
-						saveCallbacks: {
-							saveAsNew: async (svgData) => {
-								savedResource = await insertNewDrawing(svgData, savedSelection);
-							},
-							overwrite: async (svgData) => {
-								if (!savedResource) {
-									throw new Error('A new drawing must be saved once before it can be overwritten');
-								}
-
-								await savedResource.updateData(svgData);
-							},
-						},
-
-						// Save as new without a prompt (can't overwrite at first)
-						initialSaveMethod: SaveMethod.SaveAsNew,
-					});
-
-					// If the user canceled the drawing,
-					if (!saved) {
-						// Clear the selection marker, if it exists.
-						if (savedSelection) {
-							await insertText('', savedSelection);
-						}
-
-						return;
-					}
-				}
+		const editInNewWindowCommand = `${pluginPrefix}insertDrawing__newWindow`;
+		await joplin.commands.register({
+			name: editInNewWindowCommand,
+			label: localization.insertDrawingInNewWindow,
+			iconName: 'fas fa-pen-alt',
+			execute: async () => {
+				await editOrInsertDrawing(true);
 			},
 		});
 
 		await joplin.views.toolbarButtons.create(
-			toolbuttonCommand,
-			toolbuttonCommand,
+			editInSameWindowCommand,
+			editInSameWindowCommand,
 			ToolbarButtonLocation.EditorToolbar,
 		);
 
@@ -316,7 +230,7 @@ joplin.plugins.register({
 		const toolMenuInsertDrawingButtonId = `${pluginPrefix}insertDrawingToolMenuBtn`;
 		await joplin.views.menuItems.create(
 			toolMenuInsertDrawingButtonId,
-			toolbuttonCommand,
+			editInSameWindowCommand,
 			MenuItemLocation.Edit,
 		);
 
@@ -362,7 +276,7 @@ joplin.plugins.register({
 		await joplin.contentScripts.onMessage(
 			markdownItContentScriptId,
 			async (resourceUrl: string) => {
-				return (await editDrawing(resourceUrl))?.resourceId;
+				return (await editDrawing(resourceUrl, true, false))?.resourceId;
 			},
 		);
 	},
