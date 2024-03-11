@@ -49,9 +49,14 @@ window.onmessage = (event) => {
 			};
 			buttonElements.push(buttonElement);
 		}
-		const buttonContainer = document.getElementById('button-container');
-		if (!buttonContainer) throw new Error('Unable to find element with ID #button-container');
+
+		// Replace the button container
+		let buttonContainer = document.querySelector('.button-container');
+		if (buttonContainer) buttonContainer.remove();
+		buttonContainer = document.createElement('div');
+		buttonContainer.classList.add('button-container');
 		buttonContainer.replaceChildren(...buttonElements);
+		document.body.appendChild(buttonContainer);
 	} else {
 		pluginMessageListeners.forEach((l) => l(event));
 	}

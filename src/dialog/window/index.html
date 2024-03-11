@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html class="new-window-editor">
 	<head>
 		<meta charset="utf-8"/>
 		<script>
@@ -9,12 +9,21 @@
 		<script src="./window.js"></script>
 		<style>
 			:root {
-				overflow: hidden;
+				font-family: sans-serif;
+			}
+
+			:root::-webkit-scrollbar {
+				width: 5px;
+			}
+
+			.button-container {
+				display: flex;
+				flex-direction: row;
+				justify-content: end;
 			}
 		</style>
 	</head>
 	<body>
 		<div id="log-container"></div>
-		<div id="button-container"></div>
 	</body>
 </html>

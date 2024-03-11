@@ -34,6 +34,10 @@ button:focus-visible {
 	justify-content: center;
 }
 
+:root.new-window-editor .save-or-exit-dialog {
+	height: calc(100vh - 4em);
+}
+
 .save-or-exit-dialog.has-unsaved-changes button {
 	font-size: 1.1rem;
 }
@@ -64,7 +68,7 @@ button:focus-visible {
 	margin-top: 12px;
 }
 
-:root .imageEditorContainer.match-joplin-theme {
+:root:not(.new-window-editor) .imageEditorContainer.match-joplin-theme {
 	--background-color-1: var(--joplin-background-color);
 	--foreground-color-1: var(--joplin-color);
 	--background-color-2: var(--joplin-background-color3);
