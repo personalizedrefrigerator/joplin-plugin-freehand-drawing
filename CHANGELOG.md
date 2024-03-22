@@ -1,4 +1,4 @@
-# 2.9.0
+# 2.9.0 and 2.9.1
 
 - [Updates `js-draw` to v1.18.0](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#1180)
   - New pen type.
