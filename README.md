@@ -25,10 +25,6 @@ Existing drawings can be edited by hovering over the drawing in the markdown pre
 
 **Adding a new drawing**: Click either the ![pen](https://github.com/personalizedrefrigerator/joplin-plugin-freehand-drawing/assets/46334387/f3a60f00-f1e3-4a8c-9ab7-b0e7c7fea336) toolbar button or "Insert Drawing" from the `Edit` menu.
 
-> **Warning**
->
-> To insert drawings in the rich text editor, this plugin works around [this Joplin bug](https://github.com/laurent22/joplin/issues/7547) by **briefly switching to the markdown editor** and back to the rich text editor. This clears the rich text editor's undo history. This should only **apply to new drawings.**
-
 ## I only use the markdown editor (no viewer). How do I edit drawings?
 
 First, select the full resource URL for an image created with this plugin
@@ -51,6 +47,20 @@ Next, click the "Insert Image" button in the toolbar.
 Pen/mouse-only drawing can be enabled under the "Pan" tool's menu by **enabling "Touchscreen panning"**:
 
 ![screenshot: Arrow points to pan tool, another arrow points to the "Touchscreen panning" toggle button](https://github.com/personalizedrefrigerator/joplin-plugin-freehand-drawing/assets/46334387/682a40ab-0c0f-4dc8-ba49-463dcb06256a)
+
+## How do I open a drawing in a new window?
+
+This feature is still in beta and is currently difficult to access. [Issue reports](https://github.com/personalizedrefrigerator/joplin-plugin-freehand-drawing/issues/new/choose) are welcome!
+
+1. Open the markdown editor.
+2. Select the drawing's ID:
+   ![screenshot: Drawing ID selected](https://github.com/personalizedrefrigerator/joplin-plugin-freehand-drawing/assets/46334387/e72507f9-e556-4e09-8275-07d07e36ceea)
+3. Open the Command Pallete
+   - On Windows and Linux, the keyboard shortcut for this is <kbd>ctrl</kbd>-<kbd>shift</kbd>-<kbd>p</kbd>.
+   - On MacOS, the keyboard shortcut is <kbd>cmd</kbd>-<kbd>shift</kbd>-<kbd>p</kbd>.
+4. Type "insertDrawing" and select the "insert drawing in a new window" option.
+   ![screenshot: Second option in the command palette selected](https://github.com/personalizedrefrigerator/joplin-plugin-freehand-drawing/assets/46334387/789d6126-3fd7-422c-8272-733b83081ba8)
+
 
 ## Joplin closed while editing a drawing. How do I recover the unsaved changes?
 
@@ -108,7 +118,7 @@ The above adds additional shortcuts for exiting, selecting pen style 1, and resi
 
 Joplin must be restarted for the changes to be applied.
 
-> **Note**
+> [!NOTE]
 >
 > Additional keyboard shortcut IDs can be found [in js-draw's source code](https://github.com/personalizedrefrigerator/js-draw/blob/main/packages/js-draw/src/tools/keybindings.ts).
 
