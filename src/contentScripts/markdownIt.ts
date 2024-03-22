@@ -141,11 +141,10 @@ const onImgLoad = (container: HTMLElement, buttonId: string) => {
 		haveWebviewApi = false;
 	}
 
-	if (!haveWebviewApi) {
-		console.log(
-			"The webview library either doesn't exist or lacks a postMessage function. Unable to display an edit button.",
-		);
+	const isRichTextEditor = !haveWebviewApi || document.body?.id === 'tinymce';
+	if (isRichTextEditor) {
 		button?.remove();
+		imageElem.style.cursor = 'pointer';
 	}
 };
 
