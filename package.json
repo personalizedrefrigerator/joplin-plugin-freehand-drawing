@@ -17,6 +17,9 @@
 	"files": [
 		"publish"
 	],
+	"repository": {
+		"url": "https://github.com/personalizedrefrigerator/joplin-plugin-freehand-drawing.git"
+	},
 	"devDependencies": {
 		"@types/codemirror": "5.60.8",
 		"@types/fs-extra": "^11.0.1",
