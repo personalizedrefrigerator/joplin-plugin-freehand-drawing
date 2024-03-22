@@ -1,3 +1,11 @@
+# 2.9.0
+
+- [Updates `js-draw` to v1.18.0](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#1180)
+  - New pen type.
+  - Partial stroke eraser.
+- Bug fixes
+  - Fixed "Edit" button incorrectly shown in the Rich Text Editor in Joplin 3.0.
+
 # 2.8.0
 
 - [Updates `js-draw` to v1.17.0](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#1170)
