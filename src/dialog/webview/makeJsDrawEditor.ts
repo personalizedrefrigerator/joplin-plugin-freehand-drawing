@@ -36,6 +36,7 @@ const makeJsDrawEditor = async (
 				const imageTask = await callbacks.showImagePicker();
 				setOnCancelCallback(() => {
 					imageTask.cancel();
+					imageTask.cleanUp();
 				});
 				const images = await imageTask.images;
 				if (!images) return null;
@@ -50,6 +51,9 @@ const makeJsDrawEditor = async (
 						}),
 					);
 				}
+
+				imageTask.cleanUp();
+
 				return files;
 			},
 		},

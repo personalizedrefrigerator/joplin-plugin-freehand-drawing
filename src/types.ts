@@ -8,9 +8,11 @@ export enum MessageType {
 	ShowSaveAndCloseButton = 'showSaveAndCloseButton',
 	ShowCloseButton = 'showCloseButton',
 	HideButtons = 'removeButtons',
+
 	ShowImagePicker = 'showImagePicker',
 	GetImagePickerResult = 'getImagePicker',
 	CancelImagePicker = 'cancelImagePicker',
+	CleanUpImagePickerResult = 'cleanUpImagePicker',
 }
 
 export enum SaveMethod {
@@ -65,8 +67,8 @@ export interface GetImagePickerResultRequest {
 	taskId: number;
 }
 
-export interface CancelPickImagesRequest {
-	type: MessageType.CancelImagePicker;
+export interface CleanUpOrCancelPickImagesRequest {
+	type: MessageType.CancelImagePicker | MessageType.CleanUpImagePickerResult;
 	taskId: number;
 }
 
@@ -81,7 +83,7 @@ export type WebViewMessage =
 	| InitialSvgDataRequest
 	| PickImagesRequest
 	| GetImagePickerResultRequest
-	| CancelPickImagesRequest;
+	| CleanUpOrCancelPickImagesRequest;
 
 export enum ResponseType {
 	InitialDataResponse = 'initialDataResponse',

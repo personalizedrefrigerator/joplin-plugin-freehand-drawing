@@ -83,6 +83,12 @@ const showImagePicker = async (): Promise<LoadImageTask> => {
 		cancel: () => {
 			webviewApi.postMessage({ type: MessageType.CancelImagePicker, taskId: response.taskId });
 		},
+		cleanUp: () => {
+			webviewApi.postMessage({
+				type: MessageType.CleanUpImagePickerResult,
+				taskId: response.taskId,
+			});
+		},
 	};
 };
 

@@ -4,6 +4,7 @@ export type PostMessageCallback = (message: WebViewMessage) => Promise<WebViewMe
 
 export type LoadImageTask = {
 	cancel: () => void;
+	cleanUp: () => void;
 	images: Promise<TransferableImageData[] | null>;
 };
 

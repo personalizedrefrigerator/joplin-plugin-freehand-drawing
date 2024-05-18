@@ -4,6 +4,7 @@ import TemporaryDirectory from '../TemporaryDirectory';
 import type { TransferableImageData } from '../types';
 import localization from '../localization';
 import isVersionGreater from './isVersionGreater';
+const { remove } = joplin.require('fs-extra');
 
 type TaskRecord = {
 	id: number;
@@ -13,6 +14,7 @@ type TaskRecord = {
 
 let nextTaskId = 0;
 const runningTasks = new Map<number, TaskRecord>();
+const cleanUpTaskResultCallbacks = new Map<number, () => void>();
 
 const shouldLoadLargePdf = async (pageCount: number) => {
 	if (pageCount < 20) return true;
@@ -25,7 +27,7 @@ const shouldLoadLargePdf = async (pageCount: number) => {
 };
 
 const getFilters = async () => {
-	const filters = [{ name: 'Images', extensions: ['jpeg', 'jpg', 'png', 'gif'] }];
+	const filters = [{ name: localization.images, extensions: ['jpeg', 'jpg', 'png', 'gif'] }];
 
 	const supportsPdf = isVersionGreater((await joplin.versionInfo())?.version, '3.0.2');
 	if (supportsPdf) {
@@ -33,6 +35,8 @@ const getFilters = async () => {
 	}
 
 	filters.push({ name: 'All Files', extensions: ['*'] });
+
+	return filters;
 };
 
 export const promptForImages = (tempDir: TemporaryDirectory) => {
@@ -44,6 +48,8 @@ export const promptForImages = (tempDir: TemporaryDirectory) => {
 			cancelled = true;
 		},
 		task: (async () => {
+			const cleanUpTasks: (() => Promise<void>)[] = [];
+
 			try {
 				const filePaths: string[] = await joplin.views.dialogs.showOpenDialog({
 					properties: ['openFile', 'multiSelections'],
@@ -86,6 +92,10 @@ export const promptForImages = (tempDir: TemporaryDirectory) => {
 								name: basename(pdfPagePath),
 								mime: 'image/jpeg',
 							});
+							cleanUpTasks.push(async () => {
+								await remove(pdfPagePath);
+								console.info('clean up: removed', pdfPagePath);
+							});
 						}
 					} else {
 						images.push({ path, name: basename(path) });
@@ -94,6 +104,11 @@ export const promptForImages = (tempDir: TemporaryDirectory) => {
 				return images;
 			} finally {
 				runningTasks.delete(taskId);
+				cleanUpTaskResultCallbacks.set(taskId, () => {
+					for (const task of cleanUpTasks) {
+						void task();
+					}
+				});
 			}
 		})(),
 	};
@@ -104,6 +119,14 @@ export const promptForImages = (tempDir: TemporaryDirectory) => {
 
 export const taskById = (id: number) => {
 	return runningTasks.get(id);
+};
+
+export const cleanUpTaskResult = (taskId: number) => {
+	const cleanUpCallback = cleanUpTaskResultCallbacks.get(taskId);
+	if (cleanUpCallback) {
+		cleanUpCallback();
+		cleanUpTaskResultCallbacks.delete(taskId);
+	}
 };
 
 export default promptForImages;

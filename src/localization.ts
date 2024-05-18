@@ -39,6 +39,11 @@ interface AppLocalization {
 	// Label for the keyboard shortcuts setting
 	keyboardShortcuts: string;
 
+	// File picker labels
+	images: string;
+	pdfs: string;
+	allFiles: string;
+
 	loadLargePdf: (pageCount: number) => string;
 	notAnEditableImage: (resourceId: string, resourceType: string) => void;
 }
@@ -80,6 +85,10 @@ const defaultStrings: AppLocalization = {
 	styleJsDrawDark: 'js-draw dark',
 
 	keyboardShortcuts: 'Keyboard shortcuts',
+
+	images: 'Images',
+	pdfs: 'PDFs',
+	allFiles: 'All Files',
 
 	loadLargePdf: (pageCount: number) =>
 		`A selected file is a large PDF (${pageCount} pages). Loading it may take some time. Continue?`,

@@ -13,7 +13,10 @@ import {
 	WebViewMessageResponse,
 } from '../types';
 import TemporaryDirectory from '../TemporaryDirectory';
-import promptForImages, { taskById as imagePickerTaskById } from '../util/promptForImages';
+import promptForImages, {
+	cleanUpTaskResult,
+	taskById as imagePickerTaskById,
+} from '../util/promptForImages';
 
 export type SaveCallback = (svgData: string) => void | Promise<void>;
 export type SaveCallbacks =
@@ -204,6 +207,9 @@ export default abstract class AbstractDrawingView {
 						throw new Error(`No such task: ${message.taskId}`);
 					}
 
+					return true;
+				} else if (message.type === MessageType.CleanUpImagePickerResult) {
+					cleanUpTaskResult(message.taskId);
 					return true;
 				}
 
