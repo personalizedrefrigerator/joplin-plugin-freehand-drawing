@@ -12,6 +12,8 @@ import {
 	WebViewMessage,
 	WebViewMessageResponse,
 } from '../types';
+import TemporaryDirectory from '../TemporaryDirectory';
+import promptForImages, { taskById as imagePickerTaskById } from '../util/promptForImages';
 
 export type SaveCallback = (svgData: string) => void | Promise<void>;
 export type SaveCallbacks =
@@ -35,18 +37,20 @@ export interface InsertDrawingOptions {
 	initialSaveMethod?: SaveMethod;
 }
 
+export type OnWebViewMessageHandler = (message: WebViewMessage) => Promise<WebViewMessageResponse>;
+
 export default abstract class AbstractDrawingView {
 	private autosaveInterval: number = 120 * 1000; // ms
 	private toolbarType: ToolbarType = ToolbarType.Default;
 	private styleMode: EditorStyle = EditorStyle.MatchJoplin;
 	private keybindings: KeybindingRecord = Object.create(null);
 
+	public constructor(private tempDir: TemporaryDirectory) {}
+
 	protected abstract addScript(path: string): Promise<void>;
 	protected abstract setDialogButtons(buttons: ButtonRecord[]): Promise<void>;
 	protected abstract postMessage(message: WebViewMessage): void;
-	protected abstract onMessage(
-		onMessageHandler: (message: WebViewMessage) => WebViewMessageResponse,
-	): void;
+	protected abstract onMessage(onMessageHandler: OnWebViewMessageHandler): void;
 	protected abstract showDialog(): Promise<DialogResult>;
 
 	/** Resets the dialog prior to use. This can be called multiple times. */
@@ -124,7 +128,7 @@ export default abstract class AbstractDrawingView {
 
 		const result = new Promise<boolean>((resolve, reject) => {
 			let saveData: string | null = null;
-			this.onMessage((message: WebViewMessage): WebViewMessageResponse => {
+			this.onMessage(async (message: WebViewMessage): Promise<WebViewMessageResponse> => {
 				if (message.type === 'saveSVG' && !saveOption) {
 					saveData = message.data;
 
@@ -176,6 +180,31 @@ export default abstract class AbstractDrawingView {
 					void clearAutosave().then(() => {
 						void autosave(message.data);
 					});
+				} else if (message.type === MessageType.ShowImagePicker) {
+					const task = promptForImages(this.tempDir);
+
+					return {
+						type: ResponseType.ImagePickerTaskResponse,
+						taskId: task.id,
+					};
+				} else if (message.type === MessageType.CancelImagePicker) {
+					const task = imagePickerTaskById(message.taskId);
+					if (task) task.cancel();
+
+					return true;
+				} else if (message.type === MessageType.GetImagePickerResult) {
+					const task = imagePickerTaskById(message.taskId);
+					if (task) {
+						const images = await task.task;
+						return {
+							type: ResponseType.ImagePickerResponse,
+							images,
+						};
+					} else {
+						throw new Error(`No such task: ${message.taskId}`);
+					}
+
+					return true;
 				}
 
 				return true;

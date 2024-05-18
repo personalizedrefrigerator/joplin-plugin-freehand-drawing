@@ -1,8 +1,9 @@
 import joplin from 'api';
 import { ButtonSpec, DialogResult } from 'api/types';
 import { pluginPrefix } from '../constants';
-import { SaveMethod, WebViewMessage, WebViewMessageResponse } from '../types';
-import AbstractDrawingView from './AbstractDrawingView';
+import { SaveMethod, WebViewMessage } from '../types';
+import AbstractDrawingView, { OnWebViewMessageHandler } from './AbstractDrawingView';
+import TemporaryDirectory from '../TemporaryDirectory';
 
 const dialogs = joplin.views.dialogs;
 
@@ -30,9 +31,9 @@ export default class DrawingDialog extends AbstractDrawingView {
 	private isFullscreen: boolean = false;
 
 	/** @returns a reference to the singleton instance of the DrawingDialog. */
-	public static async getInstance(): Promise<DrawingDialog> {
+	public static async getInstance(tempDir: TemporaryDirectory): Promise<DrawingDialog> {
 		if (!DrawingDialog.instance) {
-			DrawingDialog.instance = new DrawingDialog();
+			DrawingDialog.instance = new DrawingDialog(tempDir);
 
 			DrawingDialog.instance.handle = await dialogs.create(`${pluginPrefix}jsDrawDialog`);
 			await DrawingDialog.instance.initializeDialog();
@@ -97,9 +98,7 @@ export default class DrawingDialog extends AbstractDrawingView {
 		joplin.views.panels.postMessage(this.handle, message);
 	}
 
-	protected override onMessage(
-		onMessageHandler: (message: WebViewMessage) => WebViewMessageResponse,
-	): void {
+	protected override onMessage(onMessageHandler: OnWebViewMessageHandler) {
 		joplin.views.panels.onMessage(this.handle, onMessageHandler);
 	}
 

@@ -8,6 +8,9 @@ export enum MessageType {
 	ShowSaveAndCloseButton = 'showSaveAndCloseButton',
 	ShowCloseButton = 'showCloseButton',
 	HideButtons = 'removeButtons',
+	ShowImagePicker = 'showImagePicker',
+	GetImagePickerResult = 'getImagePicker',
+	CancelImagePicker = 'cancelImagePicker',
 }
 
 export enum SaveMethod {
@@ -53,6 +56,20 @@ export interface InitialSvgDataRequest {
 	type: MessageType.GetInitialData;
 }
 
+export interface PickImagesRequest {
+	type: MessageType.ShowImagePicker;
+}
+
+export interface GetImagePickerResultRequest {
+	type: MessageType.GetImagePickerResult;
+	taskId: number;
+}
+
+export interface CancelPickImagesRequest {
+	type: MessageType.CancelImagePicker;
+	taskId: number;
+}
+
 export type WebViewMessage =
 	| SaveMessage
 	| AutosaveMesssage
@@ -61,11 +78,16 @@ export type WebViewMessage =
 	| ShowSaveAndCloseButtonMessage
 	| ShowCloseButtonMessage
 	| HideButtonsMessage
-	| InitialSvgDataRequest;
+	| InitialSvgDataRequest
+	| PickImagesRequest
+	| GetImagePickerResultRequest
+	| CancelPickImagesRequest;
 
 export enum ResponseType {
 	InitialDataResponse = 'initialDataResponse',
 	SaveResponse = 'saveResponse',
+	ImagePickerTaskResponse = 'imagePickerStartedResponse',
+	ImagePickerResponse = 'imagePickerResponse',
 }
 
 export interface InitialDataResponse {
@@ -85,7 +107,28 @@ export interface SaveResponse {
 	waitingForSaveType: boolean;
 }
 
-export type WebViewMessageResponse = InitialDataResponse | SaveResponse | true;
+export interface TransferableImageData {
+	path: string;
+	name: string;
+	mime?: string;
+}
+
+export interface ImagePickerStartedResponse {
+	type: ResponseType.ImagePickerTaskResponse;
+	taskId: number;
+}
+
+export interface ImagePickerResponse {
+	type: ResponseType.ImagePickerResponse;
+	images: TransferableImageData[] | null;
+}
+
+export type WebViewMessageResponse =
+	| InitialDataResponse
+	| SaveResponse
+	| ImagePickerStartedResponse
+	| ImagePickerResponse
+	| true;
 
 export enum ToolbarType {
 	Default = 0,

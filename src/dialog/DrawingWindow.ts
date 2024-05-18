@@ -1,6 +1,6 @@
 import { DialogResult } from 'api/types';
-import { WebViewMessage, WebViewMessageResponse } from 'src/types';
-import AbstractDrawingView, { ButtonRecord } from './AbstractDrawingView';
+import { WebViewMessage } from 'src/types';
+import AbstractDrawingView, { ButtonRecord, OnWebViewMessageHandler } from './AbstractDrawingView';
 import { posix as posixPath, resolve } from 'path';
 import joplin from 'api';
 
@@ -9,10 +9,6 @@ export default class DrawingWindow extends AbstractDrawingView {
 	private win: Window | undefined = undefined;
 	private eventListener: any;
 	private onCloseListener = (_result: DialogResult) => {};
-
-	public constructor() {
-		super();
-	}
 
 	private async getBaseURL() {
 		const installationDir = await joplin.plugins.installationDir();
@@ -41,9 +37,7 @@ export default class DrawingWindow extends AbstractDrawingView {
 		}
 	}
 
-	protected override onMessage(
-		onMessageHandler: (message: WebViewMessage) => WebViewMessageResponse,
-	): void {
+	protected override onMessage(onMessageHandler: OnWebViewMessageHandler): void {
 		if (!this.win) {
 			this.eventListener = onMessageHandler;
 		} else {
@@ -54,7 +48,7 @@ export default class DrawingWindow extends AbstractDrawingView {
 
 				const id = event.data.id;
 				if (id) {
-					const response = onMessageHandler(event.data.message);
+					const response = await onMessageHandler(event.data.message);
 					console.log(event.data.message, response);
 					this.win?.postMessage({ responseId: id, response });
 				} else if (event.data.kind === 'dialogResult') {

@@ -39,6 +39,7 @@ interface AppLocalization {
 	// Label for the keyboard shortcuts setting
 	keyboardShortcuts: string;
 
+	loadLargePdf: (pageCount: number) => string;
 	notAnEditableImage: (resourceId: string, resourceType: string) => void;
 }
 
@@ -80,6 +81,8 @@ const defaultStrings: AppLocalization = {
 
 	keyboardShortcuts: 'Keyboard shortcuts',
 
+	loadLargePdf: (pageCount: number) =>
+		`A selected file is a large PDF (${pageCount} pages). Loading it may take some time. Continue?`,
 	notAnEditableImage: (resourceId: string, resourceType: string) =>
 		`Resource ${resourceId} is not an editable image. Unable to edit resource of type ${resourceType}.`,
 };

@@ -13,6 +13,9 @@ describe('makeJsDrawEditor', () => {
 			{
 				onSave: saveCallback,
 				onExit: exitCallback,
+				showImagePicker: async () => {
+					throw new Error('Unsupported.');
+				},
 			},
 			true,
 		);

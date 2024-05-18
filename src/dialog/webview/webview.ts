@@ -9,13 +9,13 @@ import {
 	SaveMethod,
 } from '../../types';
 import startAutosaveLoop from './startAutosaveLoop';
-import { PostMessageCallback } from './types';
+import { LoadImageTask, PostMessageCallback } from './types';
 import makeJsDrawEditor, { EditorControl } from './makeJsDrawEditor';
 import localStorageSettingControl from './settings/localStorageSettingControl';
 import showSaveScreen from './screens/showSaveScreen';
 import showCloseScreen from './screens/showCloseScreen';
 
-type OnMessageCallback = (info: { message: WebViewMessage }) => void;
+type OnMessageCallback = (info: { message: WebViewMessage }) => Promise<WebViewMessageResponse>;
 declare const webviewApi: {
 	postMessage: PostMessageCallback;
 	onMessage: (onMessage: OnMessageCallback) => void;
@@ -55,10 +55,42 @@ const addSaveCompletedListener = (listener: () => void) => {
 	saveCompletedListeners.push(listener);
 };
 
+const showImagePicker = async (): Promise<LoadImageTask> => {
+	const response = await webviewApi.postMessage({ type: MessageType.ShowImagePicker });
+
+	if (typeof response !== 'object' || response.type !== ResponseType.ImagePickerTaskResponse) {
+		throw new Error(`Invalid response or type ${response}`);
+	}
+
+	const images = (async () => {
+		const imagePickerResponse = await webviewApi.postMessage({
+			type: MessageType.GetImagePickerResult,
+			taskId: response.taskId,
+		});
+
+		if (
+			typeof imagePickerResponse !== 'object' ||
+			imagePickerResponse.type !== ResponseType.ImagePickerResponse
+		) {
+			throw new Error(`Invalid response or type ${imagePickerResponse}`);
+		}
+
+		return imagePickerResponse.images;
+	})();
+
+	return {
+		images,
+		cancel: () => {
+			webviewApi.postMessage({ type: MessageType.CancelImagePicker, taskId: response.taskId });
+		},
+	};
+};
+
 void (async () => {
 	editorControl = await makeJsDrawEditor(localStorageSettingControl, {
 		onSave: () => showSaveScreen(editorControl, postMessageCallback),
 		onExit: () => showCloseScreen(editorControl, postMessageCallback, addSaveCompletedListener),
+		showImagePicker,
 	});
 
 	if (editorInitializationData) {
@@ -66,7 +98,7 @@ void (async () => {
 	}
 })();
 
-webviewApi.onMessage(({ message }) => {
+webviewApi.onMessage(async ({ message }) => {
 	if (message.type === MessageType.SaveCompleted) {
 		editorControl?.onSaved();
 
@@ -81,8 +113,10 @@ webviewApi.onMessage(({ message }) => {
 			listener();
 		}
 		saveCompletedListeners = [];
+		return true;
 	} else {
 		console.log('unknown message', message);
+		throw new Error(`Unknown message: ${message}`);
 	}
 });
 

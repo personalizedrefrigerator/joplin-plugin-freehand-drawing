@@ -1,6 +1,6 @@
 import MaterialIconProvider from '@js-draw/material-icons';
 import Editor, { Erase, RenderingMode, adjustEditorThemeForContrast } from 'js-draw';
-import { EditorSaveExitCallbacks } from './types';
+import { EditorCallbacks } from './types';
 import { EditorStyle, KeybindingRecord, ToolbarType } from '../../types';
 import loadTemplate from './template/loadTemplate';
 import { SettingControl } from './settings/types';
@@ -20,7 +20,7 @@ export interface EditorControl {
 
 const makeJsDrawEditor = async (
 	settingControl: SettingControl,
-	callbacks: EditorSaveExitCallbacks,
+	callbacks: EditorCallbacks,
 
 	// For testing (allows running with jsdom)
 	disableRenderer?: boolean,
@@ -30,6 +30,29 @@ const makeJsDrawEditor = async (
 
 		// Disable the renderer to hide jsdom warnings when testing.
 		renderingMode: disableRenderer ? RenderingMode.DummyRenderer : undefined,
+
+		image: {
+			showImagePicker: async ({ setOnCancelCallback }): Promise<File[] | null> => {
+				const imageTask = await callbacks.showImagePicker();
+				setOnCancelCallback(() => {
+					imageTask.cancel();
+				});
+				const images = await imageTask.images;
+				if (!images) return null;
+
+				const files: File[] = [];
+				for (const image of images) {
+					const data = await fetch(image.path);
+					const buffer = await data.arrayBuffer();
+					files.push(
+						new File([buffer], image.name, {
+							type: image.mime,
+						}),
+					);
+				}
+				return files;
+			},
+		},
 	});
 	editor.focus();
 

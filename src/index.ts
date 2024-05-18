@@ -85,8 +85,8 @@ const insertText = async (textToInsert: string, richTextEditorSelectionMarker?: 
 
 joplin.plugins.register({
 	onStart: async function () {
-		const drawingDialog = await DrawingDialog.getInstance();
 		const tmpdir = await TemporaryDirectory.create();
+		const drawingDialog = await DrawingDialog.getInstance(tmpdir);
 
 		await registerAndApplySettings(drawingDialog);
 
@@ -106,7 +106,7 @@ joplin.plugins.register({
 		const getDialog = async (inNewWindow: boolean) => {
 			let dialog: AbstractDrawingView = drawingDialog;
 			if (inNewWindow) {
-				dialog = new DrawingWindow();
+				dialog = new DrawingWindow(tmpdir);
 				await applySettingsTo(dialog);
 			}
 
