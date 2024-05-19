@@ -61,7 +61,6 @@ This feature is still in beta and is currently difficult to access. [Issue repor
 4. Type "insertDrawing" and select the "insert drawing in a new window" option.
    ![screenshot: Second option in the command palette selected](https://github.com/personalizedrefrigerator/joplin-plugin-freehand-drawing/assets/46334387/789d6126-3fd7-422c-8272-733b83081ba8)
 
-
 ## Joplin closed while editing a drawing. How do I recover the unsaved changes?
 
 `joplin-plugin-freehand-drawing` autosaves every two minutes. The last autosave can be recovered by

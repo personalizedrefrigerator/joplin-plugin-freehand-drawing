@@ -1,3 +1,14 @@
+# 2.10.0
+
+- [Updates `js-draw` to v1.20.0](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#1200)
+  - Performance improvement when loading large drawings.
+  - Possible fix for stylus erasers not erasing on some devices.
+  - Support for attaching multiple images at once.
+- (Joplin > 3.0.2): Support inserting PDF screenshots using the "insert image" tool.
+  - As a result, the "insert image" tool now uses Joplin's plugin API to show a file chooser dialog.
+- Bug fixes
+  - Fix editors opened in new windows are initially scrolled.
+
 # 2.9.0 and 2.9.1
 
 - [Updates `js-draw` to v1.18.0](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#1180)
