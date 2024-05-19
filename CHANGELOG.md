@@ -1,4 +1,4 @@
-# 2.10.0
+# 2.10.0 and 2.10.1
 
 - [Updates `js-draw` to v1.20.0](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#1200)
   - Performance improvement when loading large drawings.
