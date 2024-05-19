@@ -31,10 +31,10 @@ const getFilters = async () => {
 
 	const supportsPdf = isVersionGreater((await joplin.versionInfo())?.version, '3.0.2');
 	if (supportsPdf) {
-		filters.push({ name: 'PDFs', extensions: ['pdf'] });
+		filters.push({ name: localization.pdfs, extensions: ['pdf'] });
 	}
 
-	filters.push({ name: 'All Files', extensions: ['*'] });
+	filters.push({ name: localization.allFiles, extensions: ['*'] });
 
 	return filters;
 };
