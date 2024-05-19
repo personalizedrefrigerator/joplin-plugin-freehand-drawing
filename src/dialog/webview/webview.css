@@ -127,3 +127,14 @@ button:focus-visible {
 
 	--primary-action-foreground-color: #7ae;
 }
+
+/* Make scrollbars similar to Joplin's */
+*::-webkit-scrollbar {
+	width: 5px;
+	height: 5px;
+}
+
+*::-webkit-scrollbar-thumb {
+	background-color: #666;
+	border-radius: 5px;
+}
