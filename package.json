@@ -48,6 +48,6 @@
 	},
 	"dependencies": {
 		"@js-draw/material-icons": "1.20.0",
-		"js-draw": "1.20.0"
+		"js-draw": "1.20.1"
 	}
 }
