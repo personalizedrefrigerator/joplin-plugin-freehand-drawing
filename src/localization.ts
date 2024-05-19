@@ -91,7 +91,7 @@ const defaultStrings: AppLocalization = {
 	allFiles: 'All Files',
 
 	loadLargePdf: (pageCount: number) =>
-		`A selected file is a large PDF (${pageCount} pages). Loading it may take some time. Continue?`,
+		`A selected file is a large PDF (${pageCount} pages). Loading it may take some time and incrase the size of the current drawing. Continue?`,
 	notAnEditableImage: (resourceId: string, resourceType: string) =>
 		`Resource ${resourceId} is not an editable image. Unable to edit resource of type ${resourceType}.`,
 };
