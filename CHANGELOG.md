@@ -1,6 +1,6 @@
-# 2.10.0 and 2.10.1
+# 2.10.0 - 2.10.2
 
-- [Updates `js-draw` to v1.20.0](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#1200)
+- [Updates `js-draw` to v1.20.1](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#1201)
   - Performance improvement when loading large drawings.
   - Possible fix for stylus erasers not erasing on some devices.
   - Support for attaching multiple images at once.
