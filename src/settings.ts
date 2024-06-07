@@ -44,8 +44,10 @@ export const registerAndApplySettings = async (drawingDialog: DrawingDialog) => 
 		[toolbarTypeKey]: {
 			public: true,
 			section: jsDrawSectionName,
+			advanced: true,
 
-			label: localization.toolbarTypeLabel,
+			label: localization.setting__toolbarTypeLabel,
+			description: localization.setting__toolbarTypeDescription,
 
 			isEnum: true,
 			type: SettingItemType.Int,
@@ -61,7 +63,7 @@ export const registerAndApplySettings = async (drawingDialog: DrawingDialog) => 
 			public: true,
 			section: jsDrawSectionName,
 
-			label: localization.themeLabel,
+			label: localization.setting__themeLabel,
 
 			isEnum: true,
 			type: SettingItemType.String,
@@ -76,18 +78,22 @@ export const registerAndApplySettings = async (drawingDialog: DrawingDialog) => 
 		[editorFillsWindowKey]: {
 			public: true,
 			section: jsDrawSectionName,
+			advanced: true,
 
-			label: localization.fullScreenDisabledSettingLabel,
+			label: localization.setting__disableFullScreen,
+			description: localization.setting__disableFullScreenDescription,
 			storage: SettingStorage.File,
 
 			type: SettingItemType.Bool,
 			value: false,
 		},
 		[autosaveIntervalKey]: {
-			public: false,
+			public: true,
 			section: jsDrawSectionName,
+			advanced: true,
 
-			label: localization.autosaveIntervalSettingLabel,
+			label: localization.setting__autosaveIntervalSettingLabel,
+			description: localization.setting__autosaveIntervalSettingDescription,
 			storage: SettingStorage.File,
 
 			type: SettingItemType.Int,
@@ -97,7 +103,7 @@ export const registerAndApplySettings = async (drawingDialog: DrawingDialog) => 
 			public: false,
 			section: jsDrawSectionName,
 
-			label: localization.keyboardShortcuts,
+			label: localization.setting__keyboardShortcuts,
 			storage: SettingStorage.File,
 
 			type: SettingItemType.Object,

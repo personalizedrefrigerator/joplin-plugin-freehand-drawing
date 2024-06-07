@@ -21,10 +21,13 @@ interface AppLocalization {
 	exitInstructions: string;
 
 	settingsPaneDescription: string;
-	fullScreenDisabledSettingLabel: string;
-	autosaveIntervalSettingLabel: string;
-	themeLabel: string;
-	toolbarTypeLabel: string;
+	setting__disableFullScreen: string;
+	setting__disableFullScreenDescription: string;
+	setting__autosaveIntervalSettingLabel: string;
+	setting__autosaveIntervalSettingDescription: string;
+	setting__themeLabel: string;
+	setting__toolbarTypeLabel: string;
+	setting__toolbarTypeDescription: string;
 
 	// Labels for the toolbar type setting
 	toolbarTypeDefault: string;
@@ -37,7 +40,7 @@ interface AppLocalization {
 	styleJsDrawDark: string;
 
 	// Label for the keyboard shortcuts setting
-	keyboardShortcuts: string;
+	setting__keyboardShortcuts: string;
 
 	// File picker labels
 	images: string;
@@ -70,28 +73,33 @@ const defaultStrings: AppLocalization = {
 	saveChanges: 'Save changes',
 	exitInstructions: 'All changes saved! Click below to exit.',
 
-	settingsPaneDescription: 'Settings for the js-draw image editor',
-	fullScreenDisabledSettingLabel: 'Disable editor dialog fills entire window.',
-	autosaveIntervalSettingLabel: 'Autosave interval (minutes)',
-	themeLabel: 'Theme',
-	toolbarTypeLabel: 'Toolbar type',
+	settingsPaneDescription: 'Settings for the Freehand Drawing image editor.',
+	setting__disableFullScreen: 'Dialog mode',
+	setting__disableFullScreenDescription:
+		'Enabling this setting causes the editor to only partially fill the Joplin window.',
+	setting__autosaveIntervalSettingLabel: 'Autosave interval (minutes)',
+	setting__autosaveIntervalSettingDescription:
+		'Adjusts how often a backup copy of the current drawing is created. The most recent autosave can be restored by searching for ":restore autosave" in the command palette (ctrl+shift+p or cmd+shift+p on MacOS) and clicking "Restore from autosaved drawing". If this setting is set to zero, autosaves are created every two minutes.',
+	setting__themeLabel: 'Theme',
+	setting__toolbarTypeLabel: 'Toolbar type',
+	setting__toolbarTypeDescription:
+		'This setting switches between possible toolbar user interfaces for the image editor.',
+	setting__keyboardShortcuts: 'Keyboard shortcuts',
 
 	toolbarTypeDefault: 'Default',
 	toolbarTypeSidebar: 'Sidebar',
 	toolbarTypeDropdown: 'Dropdown',
 
 	styleMatchJoplin: 'Match Joplin',
-	styleJsDrawLight: 'js-draw light',
-	styleJsDrawDark: 'js-draw dark',
-
-	keyboardShortcuts: 'Keyboard shortcuts',
+	styleJsDrawLight: 'Light',
+	styleJsDrawDark: 'Dark',
 
 	images: 'Images',
 	pdfs: 'PDFs',
 	allFiles: 'All Files',
 
 	loadLargePdf: (pageCount: number) =>
-		`A selected file is a large PDF (${pageCount} pages). Loading it may take some time and incrase the size of the current drawing. Continue?`,
+		`A selected file is a large PDF (${pageCount} pages). Loading it may take some time and increase the size of the current drawing. Continue?`,
 	notAnEditableImage: (resourceId: string, resourceType: string) =>
 		`Resource ${resourceId} is not an editable image. Unable to edit resource of type ${resourceType}.`,
 };
