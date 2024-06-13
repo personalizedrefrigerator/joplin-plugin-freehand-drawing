@@ -20,9 +20,13 @@ export enum SaveMethod {
 	Overwrite = 'overwrite',
 }
 
+export type ImageMetadata = { text: string };
+
 export interface SaveMessage {
 	type: MessageType.SaveSVG;
 	data: string;
+
+	metadata: ImageMetadata;
 }
 
 export interface SaveCompletedMessage {

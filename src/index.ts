@@ -7,11 +7,12 @@ import TemporaryDirectory from './TemporaryDirectory';
 import waitFor from './util/waitFor';
 import DrawingDialog from './dialog/DrawingDialog';
 import { pluginPrefix } from './constants';
-import { SaveMethod } from './types';
+import { ImageMetadata, SaveMethod } from './types';
 import isVersionGreater from './util/isVersionGreater';
 import DrawingWindow from './dialog/DrawingWindow';
 import AbstractDrawingView from './dialog/AbstractDrawingView';
-import { applySettingsTo, registerAndApplySettings } from './settings';
+import { applySettingsTo, filenameTemplateKey, registerAndApplySettings } from './settings';
+import makeImageTitle from './util/getImageTitle';
 
 // While learning how to use the Joplin plugin API,
 // * https://github.com/herdsothom/joplin-insert-date/blob/main/src/index.ts
@@ -90,15 +91,19 @@ joplin.plugins.register({
 
 		await registerAndApplySettings(drawingDialog);
 
-		const insertNewDrawing = async (svgData: string, richTextEditorSelectionData?: string) => {
-			const resource = await Resource.ofData(
-				tmpdir,
-				svgData,
-				localization.defaultImageTitle,
-				'.svg',
-			);
+		const insertNewDrawing = async (
+			svgData: string,
+			metadata: ImageMetadata,
+			richTextEditorSelectionData?: string,
+		) => {
+			const imageTitle = makeImageTitle(await joplin.settings.value(filenameTemplateKey), metadata);
+			const resource = await Resource.ofData(tmpdir, svgData, {
+				title: imageTitle,
+				searchText: metadata.text,
+				fileExtension: 'svg',
+			});
 
-			const textToInsert = `![${resource.htmlSafeTitle()}](:/${resource.resourceId})`;
+			const textToInsert = `![${resource.markdownTitleSafeTitle()}](:/${resource.resourceId})`;
 			await insertText(textToInsert, richTextEditorSelectionData);
 			return resource;
 		};
@@ -131,18 +136,18 @@ joplin.plugins.register({
 			}
 
 			let resource = originalResource;
-			const saveAsNewCallback = async (data: string) => {
+			const saveAsNewCallback = async (data: string, metadata: ImageMetadata) => {
 				console.log('Image editor: Inserting new drawing...');
-				resource = await insertNewDrawing(data);
+				resource = await insertNewDrawing(data, metadata);
 			};
 
 			const dialog = await getDialog(inNewWindow);
 			const saved = await dialog.promptForDrawing({
 				initialData: await resource.getDataAsString(),
 				saveCallbacks: {
-					overwrite: async (data) => {
+					overwrite: async (data, metadata) => {
 						console.log('Image editor: Overwriting resource...');
-						await resource.updateData(data);
+						await resource.updateData(data, metadata.text);
 					},
 					saveAsNew: allowSaveAsCopy ? saveAsNewCallback : null,
 				},
@@ -172,15 +177,15 @@ joplin.plugins.register({
 				const saved = await dialog.promptForDrawing({
 					initialData: undefined,
 					saveCallbacks: {
-						saveAsNew: async (svgData) => {
-							savedResource = await insertNewDrawing(svgData, savedSelection);
+						saveAsNew: async (svgData, metadata) => {
+							savedResource = await insertNewDrawing(svgData, metadata, savedSelection);
 						},
-						overwrite: async (svgData) => {
+						overwrite: async (svgData, metadata) => {
 							if (!savedResource) {
 								throw new Error('A new drawing must be saved once before it can be overwritten');
 							}
 
-							await savedResource.updateData(svgData);
+							await savedResource.updateData(svgData, metadata.text);
 						},
 					},
 
@@ -248,7 +253,7 @@ joplin.plugins.register({
 					return;
 				}
 
-				await insertNewDrawing(svgData);
+				await insertNewDrawing(svgData, { text: localization.defaultImageTitle });
 			},
 		});
 		await joplin.commands.register({

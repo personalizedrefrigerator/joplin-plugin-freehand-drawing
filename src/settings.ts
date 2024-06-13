@@ -6,11 +6,12 @@ import AbstractDrawingView from './dialog/AbstractDrawingView';
 import DrawingDialog from './dialog/DrawingDialog';
 
 // Joplin adds a prefix to the setting in settings.json for us.
-const editorFillsWindowKey = 'disable-editor-fills-window';
-const autosaveIntervalKey = 'autosave-interval-minutes';
-const toolbarTypeKey = 'toolbar-type';
-const styleModeKey = 'style-mode';
-const keyboardShortcutsKey = 'keyboard-shortcuts';
+export const editorFillsWindowKey = 'disable-editor-fills-window';
+export const autosaveIntervalKey = 'autosave-interval-minutes';
+export const filenameTemplateKey = 'image-title-template';
+export const toolbarTypeKey = 'toolbar-type';
+export const styleModeKey = 'style-mode';
+export const keyboardShortcutsKey = 'keyboard-shortcuts';
 
 export const applySettingsTo = async (drawingDialog: AbstractDrawingView) => {
 	let autosaveIntervalMinutes = await joplin.settings.value(autosaveIntervalKey);
@@ -74,6 +75,15 @@ export const registerAndApplySettings = async (drawingDialog: DrawingDialog) => 
 				[EditorStyle.JsDrawLight]: localization.styleJsDrawLight,
 				[EditorStyle.JsDrawDark]: localization.styleJsDrawDark,
 			},
+		},
+		[filenameTemplateKey]: {
+			public: true,
+			section: jsDrawSectionName,
+			label: localization.setting__descriptionTemplate,
+			advanced: true,
+
+			type: SettingItemType.String,
+			value: 'Drawing: {{short_text}}',
 		},
 		[editorFillsWindowKey]: {
 			public: true,

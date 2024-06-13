@@ -48,7 +48,7 @@ export class Resource {
 		return stringData;
 	}
 
-	public async updateData(data: string): Promise<void> {
+	public async updateData(data: string, ocr_text?: string): Promise<void> {
 		if (this.tempfilePath) {
 			await fs.rm(this.tempfilePath);
 			this.tempfilePath = null;
@@ -62,6 +62,7 @@ export class Resource {
 			title: this.title,
 			updated_time: Date.now(),
 			user_updated_time: Date.now(),
+			ocr_text,
 
 			// Remove the leading '.'
 			file_extension: this.fileExt ? /^[.]?(.*)$/.exec(this.fileExt)![1] : null,
@@ -79,6 +80,11 @@ export class Resource {
 			.replace(/[>]/g, '&gt;')
 			.replace(/["]/g, '&quot;')
 			.replace(/[']/g, '&#39;');
+	}
+
+	// Safe only for image and link titles.
+	public markdownTitleSafeTitle(): string {
+		return this.title.replace(/\]/g, '_').replace(/[\n]/g, ' ');
 	}
 
 	// Given a URL in the form
@@ -133,19 +139,29 @@ export class Resource {
 	public static async ofData(
 		tmpdir: TemporaryDirectory,
 		data: string,
-		title: string,
-		fileExtension: string,
+		itemMetadata: {
+			title: string;
+			fileExtension: string;
+			searchText: string;
+		},
 	): Promise<Resource> {
 		const query = null;
+		const { title, fileExtension, searchText } = itemMetadata;
+		const safeTitle = encodeURIComponent(title);
 		const metadata = {
-			title: title.endsWith(fileExtension) ? title : `${title}${fileExtension}`,
+			title,
+			filename: safeTitle.endsWith(fileExtension) ? safeTitle : `${safeTitle}.${fileExtension}`,
+			ocr_text: searchText,
+			ocr_status: searchText ? 2 : 0,
+
 			created_time: Date.now(),
 			updated_time: Date.now(),
-			file_extension: fileExtension,
+			file_extension: '.' + fileExtension,
 		};
 		const filePath = await tmpdir.newFile(data, fileExtension);
 		const fileData = [{ path: filePath }];
 		const result = await joplin.data.post(['resources'], query, metadata, fileData);
+		console.log(metadata, '->', result);
 		const resource = new Resource({
 			tmpdir: tmpdir,
 			resourceId: result.id,

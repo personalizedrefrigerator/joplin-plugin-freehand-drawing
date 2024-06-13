@@ -5,6 +5,19 @@ import localization from '../../../localization';
 import { EditorControl } from '../makeJsDrawEditor';
 import { PostMessageCallback } from '../types';
 import svgElementToString from '../svgElementToString';
+import { EditorImage, ImageComponent, TextComponent } from 'js-draw';
+
+const imageToText = (image: EditorImage) => {
+	const text = [];
+	for (const component of image.getAllElements()) {
+		if (component instanceof TextComponent) {
+			text.push(component.getText());
+		} else if (component instanceof ImageComponent) {
+			text.push(component.getAltText() ?? '');
+		}
+	}
+	return text.join(' ');
+};
 
 // without the need for a screen.
 const showSaveScreen = async (
@@ -19,7 +32,9 @@ const showSaveScreen = async (
 	const saveMessage: SaveMessage = {
 		type: MessageType.SaveSVG,
 		data: svgElementToString(editor.toSVG()),
+		metadata: { text: imageToText(editor.image) },
 	};
+
 	const response = await postMessageCallback({ ...saveMessage });
 	if (response !== true && response.type === ResponseType.SaveResponse) {
 		// If already saved, exit!

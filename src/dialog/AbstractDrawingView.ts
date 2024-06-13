@@ -3,6 +3,7 @@ import { autosave, clearAutosave } from '../autosave';
 import localization from '../localization';
 import {
 	EditorStyle,
+	ImageMetadata,
 	KeybindingRecord,
 	MessageType,
 	ResponseType,
@@ -18,7 +19,7 @@ import promptForImages, {
 	taskById as imagePickerTaskById,
 } from '../util/promptForImages';
 
-export type SaveCallback = (svgData: string) => void | Promise<void>;
+export type SaveCallback = (svgData: string, metadata: ImageMetadata) => void | Promise<void>;
 export type SaveCallbacks =
 	| {
 			saveAsNew: SaveCallback;
@@ -104,16 +105,16 @@ export default abstract class AbstractDrawingView {
 			saveOption = SaveMethod.Overwrite;
 		}
 
-		const save = async (data: string) => {
+		const save = async (data: string, metadata: ImageMetadata) => {
 			try {
 				if (saveOption === SaveMethod.SaveAsNew) {
 					if (options.saveCallbacks.saveAsNew) {
-						await options.saveCallbacks.saveAsNew(data);
+						await options.saveCallbacks.saveAsNew(data, metadata);
 					} else {
 						throw new Error('saveAsNew save callback not defined');
 					}
 				} else if (saveOption === SaveMethod.Overwrite) {
-					await options.saveCallbacks.overwrite(data);
+					await options.saveCallbacks.overwrite(data, metadata);
 				} else {
 					throw new Error('saveOption must be either saveAsNew or overwrite');
 				}
@@ -130,10 +131,14 @@ export default abstract class AbstractDrawingView {
 		};
 
 		const result = new Promise<boolean>((resolve, reject) => {
-			let saveData: string | null = null;
+			type SaveData = { svgData: string; metadata: ImageMetadata };
+			let saveData: SaveData | null = null;
 			this.onMessage(async (message: WebViewMessage): Promise<WebViewMessageResponse> => {
 				if (message.type === 'saveSVG' && !saveOption) {
-					saveData = message.data;
+					saveData = {
+						svgData: message.data,
+						metadata: message.metadata,
+					};
 
 					this.setDialogButtons([
 						{
@@ -147,7 +152,7 @@ export default abstract class AbstractDrawingView {
 						waitingForSaveType: true,
 					};
 				} else if (message.type === 'saveSVG' && saveOption) {
-					void save(message.data);
+					void save(message.data, message.metadata);
 					saveData = null;
 
 					return {
@@ -219,7 +224,7 @@ export default abstract class AbstractDrawingView {
 			this.showDialog().then(async (result: DialogResult) => {
 				if (saveData && result.id === 'ok') {
 					saveOption ??= result.formData?.saveOptions?.saveOption ?? SaveMethod.SaveAsNew;
-					await save(saveData);
+					await save(saveData.svgData, saveData.metadata);
 					resolve(true);
 				} else if (!saveData || result.id === 'cancel') {
 					resolve(didSave);

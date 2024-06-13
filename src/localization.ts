@@ -28,6 +28,7 @@ interface AppLocalization {
 	setting__themeLabel: string;
 	setting__toolbarTypeLabel: string;
 	setting__toolbarTypeDescription: string;
+	setting__descriptionTemplate: string;
 
 	// Labels for the toolbar type setting
 	toolbarTypeDefault: string;
@@ -85,6 +86,7 @@ const defaultStrings: AppLocalization = {
 	setting__toolbarTypeDescription:
 		'This setting switches between possible toolbar user interfaces for the image editor.',
 	setting__keyboardShortcuts: 'Keyboard shortcuts',
+	setting__descriptionTemplate: 'Default ALT text template',
 
 	toolbarTypeDefault: 'Default',
 	toolbarTypeSidebar: 'Sidebar',
