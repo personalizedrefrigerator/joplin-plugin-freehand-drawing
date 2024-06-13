@@ -1,3 +1,9 @@
+# 2.11.0
+
+- [Updates `js-draw` to v1.20.3](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#1203)
+  - Bug fix: Alt text for an image could be set to "undefined" instead of empty in some cases.
+- Reorganize and improve descriptions of settings in the settings tab.
+
 # 2.10.0 - 2.10.2
 
 - [Updates `js-draw` to v1.20.1](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#1201)
