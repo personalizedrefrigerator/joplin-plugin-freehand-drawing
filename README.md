@@ -123,6 +123,10 @@ Joplin must be restarted for the changes to be applied.
 
 </details>
 
+## How do I delete a drawing?
+
+Joplin should automatically purge drawings and other attachments after they have been removed from a note. The time this takes is determined by the "Keep note history for" setting, even if note history is disabled. See [this forum post for details](https://discourse.joplinapp.org/t/do-attachments-pictures-unattached-to-any-note-get-deleted-if-note-history-is-disabled/35308/3?u=personalizedrefriger).
+
 ## How do I report a bug related to the image editor?
 
 This plugin uses [js-draw](https://github.com/personalizedrefrigerator/js-draw) to edit/create freehand drawings. Bugs related to `js-draw` can be reported using its [issue tracker](https://github.com/personalizedrefrigerator/js-draw/issues).
