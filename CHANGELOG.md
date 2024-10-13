@@ -1,3 +1,9 @@
+# 2.12.0
+
+- [Updates `js-draw` to v1.21.3](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#1213)
+  - Feature: Add context menu to selection tool.
+  - Bug fix: Fix strokes drawn with a stylus without `isPrimary` are not added to the image.
+
 # 2.11.0
 
 - [Updates `js-draw` to v1.20.3](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#1203)
