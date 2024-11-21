@@ -30,33 +30,6 @@ const makeJsDrawEditor = async (
 
 		// Disable the renderer to hide jsdom warnings when testing.
 		renderingMode: disableRenderer ? RenderingMode.DummyRenderer : undefined,
-
-		image: {
-			showImagePicker: async ({ setOnCancelCallback }): Promise<File[] | null> => {
-				const imageTask = await callbacks.showImagePicker();
-				setOnCancelCallback(() => {
-					imageTask.cancel();
-					imageTask.cleanUp();
-				});
-				const images = await imageTask.images;
-				if (!images) return null;
-
-				const files: File[] = [];
-				for (const image of images) {
-					const data = await fetch(image.path);
-					const buffer = await data.arrayBuffer();
-					files.push(
-						new File([buffer], image.name, {
-							type: image.mime,
-						}),
-					);
-				}
-
-				imageTask.cleanUp();
-
-				return files;
-			},
-		},
 	});
 	editor.focus();
 
