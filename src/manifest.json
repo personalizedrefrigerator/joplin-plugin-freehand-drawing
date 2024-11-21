@@ -10,6 +10,9 @@
 	"repository_url": "https://github.com/personalizedrefrigerator/joplin-draw",
 	"keywords": ["drawing", "freehand-drawing", "freehand", "handwriting"],
 	"categories": ["editor"],
+	"icon": {
+		"180": "icons/icon-180.png"
+	},
 	"screenshots": [
 		{
 			"src": "screenshots/editor-lightdark-fullscreen.png",
