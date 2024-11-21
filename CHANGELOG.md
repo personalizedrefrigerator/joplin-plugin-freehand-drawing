@@ -1,3 +1,8 @@
+# 2.13.0
+
+- [Updates `js-draw` to v1.22.0](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#1220)
+- Slightly changes the style of the selection menu.
+
 # 2.12.0
 
 - [Updates `js-draw` to v1.21.3](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#1213)
