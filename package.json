@@ -1,6 +1,6 @@
 {
 	"name": "joplin-plugin-freehand-drawing",
-	"version": "2.13.0",
+	"version": "2.14.0",
 	"scripts": {
 		"dist": "webpack --env joplin-plugin-config=buildMain && webpack --env joplin-plugin-config=buildExtraScripts && webpack --env joplin-plugin-config=createArchive",
 		"prepare": "npm run dist",
@@ -47,7 +47,7 @@
 		"webpack-cli": "^5.1.4"
 	},
 	"dependencies": {
-		"@js-draw/material-icons": "1.22.0",
-		"js-draw": "1.22.0"
+		"@js-draw/material-icons": "1.26.0",
+		"js-draw": "1.26.0"
 	}
 }
