@@ -1,6 +1,7 @@
 # 2.14.0
 
 - [Updates `js-draw` to v1.26.0](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#1260)
+- Disable the "insert drawing" button in read-only notes.
 
 # 2.13.0
 

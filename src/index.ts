@@ -204,6 +204,7 @@ joplin.plugins.register({
 		await joplin.commands.register({
 			name: editInSameWindowCommand,
 			label: localization.insertDrawing,
+			enabledCondition: 'oneNoteSelected && !noteIsReadOnly',
 			iconName: 'fas fa-pen-alt',
 			execute: async () => {
 				await editOrInsertDrawing(false);
