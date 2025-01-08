@@ -11,7 +11,8 @@
 	"keywords": ["drawing", "freehand-drawing", "freehand", "handwriting"],
 	"categories": ["editor"],
 	"icons": {
-		"180": "icons/icon-180.png"
+		"180": "icons/icon-180.png",
+		"256": "icons/icon-256.png"
 	},
 	"screenshots": [
 		{
