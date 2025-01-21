@@ -1,3 +1,8 @@
+# 2.15.0
+
+- [Updates `js-draw` to v1.27.2](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#1272)
+  - Adds a lasso selection mode to the "select" tool.
+
 # 2.14.0
 
 - [Updates `js-draw` to v1.26.0](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#1260)
