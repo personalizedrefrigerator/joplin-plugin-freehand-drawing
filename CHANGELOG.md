@@ -1,3 +1,8 @@
+# 2.16.0
+
+- [Updates `js-draw` to v1.29.0](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#1290)
+  - Adds a pressure sensitivity toggle (contributed by [@MassiveBox](https://github.com/MassiveBox)).
+
 # 2.15.0
 
 - [Updates `js-draw` to v1.27.2](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#1272)
