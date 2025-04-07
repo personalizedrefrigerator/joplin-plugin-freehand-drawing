@@ -163,7 +163,7 @@ function onBuildCompleted() {
 }
 
 const baseConfig = {
-	mode: 'development',
+	mode: 'production',
 	target: 'node',
 	stats: 'errors-only',
 	module: {
