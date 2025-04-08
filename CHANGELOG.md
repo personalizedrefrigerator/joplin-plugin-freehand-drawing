@@ -1,3 +1,8 @@
+# 2.16.1
+
+- [Updates `js-draw` to v1.29.1](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#1291)
+  - Fixes an issue when using input stabilization and a hardware eraser button.
+
 # 2.16.0
 
 - [Updates `js-draw` to v1.29.0](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#1290)
