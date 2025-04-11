@@ -4,11 +4,9 @@ import { clearAutosave, getAutosave } from './autosave';
 import localization from './localization';
 import Resource from './Resource';
 import TemporaryDirectory from './TemporaryDirectory';
-import waitFor from './util/waitFor';
 import DrawingDialog from './dialog/DrawingDialog';
 import { pluginPrefix } from './constants';
 import { SaveMethod } from './types';
-import isVersionGreater from './util/isVersionGreater';
 import DrawingWindow from './dialog/DrawingWindow';
 import AbstractDrawingView from './dialog/AbstractDrawingView';
 import { applySettingsTo, registerAndApplySettings } from './settings';
@@ -18,69 +16,8 @@ import { applySettingsTo, registerAndApplySettings } from './settings';
 // * and https://github.com/marc0l92/joplin-plugin-drawio
 // were both wonderful references.
 
-// Returns true if the CodeMirror editor is active.
-const isMarkdownEditor = async () => {
-	return (
-		(await joplin.commands.execute('editor.execCommand', {
-			name: 'js-draw--isCodeMirrorActive',
-		})) === 'active'
-	);
-};
-
-const saveRichTextEditorSelection = async () => {
-	// For saving the selection if switching between editors.
-	// We want the selection placeholder to be able to compile to a regular expression. Avoid
-	// non-alphanumeric characters.
-	const selectionPointIdText = `placeholderid${Math.random()}${Math.random()}`.replace(/[.]/g, 'x');
-
-	await joplin.commands.execute('editor.execCommand', {
-		name: 'mceInsertContent',
-		value: selectionPointIdText,
-	});
-
-	return selectionPointIdText;
-};
-
-const needsToSwitchEditorsBeforeInsertingText = async () => {
-	// Newer versions of Joplin don't have the bug that required switching editors
-	// before inserting text.
-	const version = await joplin.versionInfo();
-	return !isVersionGreater(version.version, '2.13.4') && !(await isMarkdownEditor());
-};
-
-/**
- * Inserts `textToInsert` at the point of current selection, **or**, if `richTextEditorSelectionMarker`
- * is given and the rich text editor is currently open, replaces `richTextEditorSelectionMarker` with
- * `textToInsert`.
- *
- * `richTextEditorSelectionMarker` works around a bug in the rich text editor. See
- * https://github.com/laurent22/joplin/issues/7547
- */
-const insertText = async (textToInsert: string, richTextEditorSelectionMarker?: string) => {
-	const needsEditorSwitch = await needsToSwitchEditorsBeforeInsertingText();
-
-	// MCE or Joplin has a bug where inserting markdown code for an SVG image removes
-	// the image data. See https://github.com/laurent22/joplin/issues/7547.
-	if (needsEditorSwitch) {
-		// Switch to the markdown editor.
-		await joplin.commands.execute('toggleEditors');
-
-		// Delay: Ensure we're really in the CodeMirror editor.
-		await waitFor(100);
-
-		// Jump to the rich text editor selection
-		await joplin.commands.execute('editor.execCommand', {
-			name: 'js-draw--cmSelectAndDelete',
-			args: [richTextEditorSelectionMarker],
-		});
-	}
-
+const insertText = async (textToInsert: string) => {
 	await joplin.commands.execute('insertText', textToInsert);
-
-	// Try to switch back to the original editor
-	if (needsEditorSwitch) {
-		await joplin.commands.execute('toggleEditors');
-	}
 };
 
 joplin.plugins.register({
@@ -90,7 +27,7 @@ joplin.plugins.register({
 
 		await registerAndApplySettings(drawingDialog);
 
-		const insertNewDrawing = async (svgData: string, richTextEditorSelectionData?: string) => {
+		const insertNewDrawing = async (svgData: string) => {
 			const resource = await Resource.ofData(
 				tmpdir,
 				svgData,
@@ -99,7 +36,7 @@ joplin.plugins.register({
 			);
 
 			const textToInsert = `![${resource.htmlSafeTitle()}](:/${resource.resourceId})`;
-			await insertText(textToInsert, richTextEditorSelectionData);
+			await insertText(textToInsert);
 			return resource;
 		};
 
@@ -161,11 +98,6 @@ joplin.plugins.register({
 				// TODO: Update the cache-breaker for the resource.
 				await editDrawing(selection, false, inNewWindow);
 			} else {
-				let savedSelection: string | undefined = undefined;
-				if (await needsToSwitchEditorsBeforeInsertingText()) {
-					savedSelection = await saveRichTextEditorSelection();
-				}
-
 				const dialog = await getDialog(inNewWindow);
 
 				let savedResource: Resource | null = null;
@@ -173,7 +105,7 @@ joplin.plugins.register({
 					initialData: undefined,
 					saveCallbacks: {
 						saveAsNew: async (svgData) => {
-							savedResource = await insertNewDrawing(svgData, savedSelection);
+							savedResource = await insertNewDrawing(svgData);
 						},
 						overwrite: async (svgData) => {
 							if (!savedResource) {
@@ -190,11 +122,6 @@ joplin.plugins.register({
 
 				// If the user canceled the drawing,
 				if (!saved) {
-					// Clear the selection marker, if it exists.
-					if (savedSelection) {
-						await insertText('', savedSelection);
-					}
-
 					return;
 				}
 			}
