@@ -1,5 +1,5 @@
 import joplin from 'api';
-import { ButtonSpec, DialogResult } from 'api/types';
+import { ButtonSpec, DialogResult, ViewHandle } from 'api/types';
 import { pluginPrefix } from '../constants';
 import { SaveMethod, WebViewMessage } from '../types';
 import AbstractDrawingView, { OnWebViewMessageHandler } from './AbstractDrawingView';
@@ -24,59 +24,42 @@ export interface InsertDrawingOptions {
 	initialSaveMethod?: SaveMethod;
 }
 
+let dialogCounter = 0;
 export default class DrawingDialog extends AbstractDrawingView {
-	private static instance: DrawingDialog;
-	private handle: string;
-	private canFullscreen: boolean = true;
-	private isFullscreen: boolean = false;
+	private handle: Promise<ViewHandle>;
+	private canFullscreen: boolean = false;
 
-	/** @returns a reference to the singleton instance of the DrawingDialog. */
-	public static async getInstance(tempDir: TemporaryDirectory): Promise<DrawingDialog> {
-		if (!DrawingDialog.instance) {
-			DrawingDialog.instance = new DrawingDialog(tempDir);
+	private constructor(handle: Promise<ViewHandle>, tempDir: TemporaryDirectory) {
+		super(tempDir);
+		this.handle = handle;
+	}
 
-			DrawingDialog.instance.handle = await dialogs.create(`${pluginPrefix}jsDrawDialog`);
-			await DrawingDialog.instance.initializeDialog();
-		}
-
-		return DrawingDialog.instance;
+	public static create(tempDir: TemporaryDirectory) {
+		const handlePromise = dialogs.create(`${pluginPrefix}jsDrawDialog-${dialogCounter++}`);
+		return new DrawingDialog(handlePromise, tempDir);
 	}
 
 	protected override async initializeDialog() {
 		await super.initializeDialog();
 
-		await dialogs.setHtml(this.handle, '');
-		await dialogs.setFitToContent(this.handle, false);
-		await this.setFullscreen(false);
+		const handle = await this.handle;
+		await dialogs.setHtml(handle, '');
+		await dialogs.setFitToContent(handle, false);
 	}
 
 	/**
 	 * Sets whether this dialog is automatically set to fullscreen mode when the
 	 * editor is visible.
 	 */
-	public async setCanFullscreen(canFullscreen: boolean) {
+	public override async setCanFullscreen(canFullscreen: boolean) {
+		if (this.canFullscreen === canFullscreen) {
+			return;
+		}
 		this.canFullscreen = canFullscreen;
-
-		if (!canFullscreen) {
-			this.setFullscreen(false);
-		}
-	}
-
-	/** Set whether this drawing dialog takes up the entire Joplin window. */
-	private async setFullscreen(fullscreen: boolean) {
-		if (this.isFullscreen === fullscreen) {
-			return;
-		}
-
-		if (!this.canFullscreen && fullscreen) {
-			return;
-		}
-
-		this.isFullscreen = fullscreen;
 
 		const installationDir = await joplin.plugins.installationDir();
 
-		const cssFile = fullscreen ? 'dialogFullscreen.css' : 'dialogNonfullscreen.css';
+		const cssFile = canFullscreen ? 'dialogFullscreen.css' : 'dialogNonfullscreen.css';
 		await joplin.window.loadChromeCssFile(installationDir + '/dialog/userchromeStyles/' + cssFile);
 	}
 
@@ -85,24 +68,23 @@ export default class DrawingDialog extends AbstractDrawingView {
 	 * are visible.
 	 */
 	protected override async setDialogButtons(buttons: ButtonSpec[]) {
-		// No buttons? Allow fullscreen.
-		await this.setFullscreen(buttons.length === 0);
-		await dialogs.setButtons(this.handle, buttons);
+		const handle = await this.handle;
+		await dialogs.setButtons(handle, buttons);
 	}
 
-	protected override addScript(path: string): Promise<void> {
-		return dialogs.addScript(this.handle, path);
+	protected override async addScript(path: string): Promise<void> {
+		await dialogs.addScript(await this.handle, path);
 	}
 
-	protected override postMessage(message: WebViewMessage) {
-		joplin.views.panels.postMessage(this.handle, message);
+	protected override async postMessage(message: WebViewMessage) {
+		joplin.views.panels.postMessage(await this.handle, message);
 	}
 
-	protected override onMessage(onMessageHandler: OnWebViewMessageHandler) {
-		joplin.views.panels.onMessage(this.handle, onMessageHandler);
+	protected override async onMessage(onMessageHandler: OnWebViewMessageHandler) {
+		joplin.views.panels.onMessage(await this.handle, onMessageHandler);
 	}
 
-	protected override showDialog(): Promise<DialogResult> {
-		return dialogs.open(this.handle);
+	protected override async showDialog(): Promise<DialogResult> {
+		return dialogs.open(await this.handle);
 	}
 }

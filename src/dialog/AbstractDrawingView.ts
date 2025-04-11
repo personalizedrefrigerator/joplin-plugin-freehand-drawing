@@ -43,10 +43,11 @@ export interface InsertDrawingOptions {
 export type OnWebViewMessageHandler = (message: WebViewMessage) => Promise<WebViewMessageResponse>;
 
 export default abstract class AbstractDrawingView {
-	private autosaveInterval: number = 120 * 1000; // ms
-	private toolbarType: ToolbarType = ToolbarType.Default;
-	private styleMode: EditorStyle = EditorStyle.MatchJoplin;
-	private keybindings: KeybindingRecord = Object.create(null);
+	#autosaveInterval: number = 120 * 1000; // ms
+	#toolbarType: ToolbarType = ToolbarType.Default;
+	#styleMode: EditorStyle = EditorStyle.MatchJoplin;
+	#keybindings: KeybindingRecord = Object.create(null);
+	#open: boolean = false;
 
 	public constructor(private tempDir: TemporaryDirectory) {}
 
@@ -55,6 +56,10 @@ export default abstract class AbstractDrawingView {
 	protected abstract postMessage(message: WebViewMessage): void;
 	protected abstract onMessage(onMessageHandler: OnWebViewMessageHandler): void;
 	protected abstract showDialog(): Promise<DialogResult>;
+
+	public isOpen() {
+		return this.#open;
+	}
 
 	/** Resets the dialog prior to use. This can be called multiple times. */
 	protected async initializeDialog() {
@@ -68,25 +73,30 @@ export default abstract class AbstractDrawingView {
 	}
 
 	/** Sets the autosave interval in milliseconds. Takes effect on the next editor launch. */
-	public async setAutosaveInterval(interval: number) {
-		this.autosaveInterval = interval;
+	public setAutosaveInterval(interval: number) {
+		this.#autosaveInterval = interval;
 	}
 
 	/** Sets the toolbar to be displayed in the dialog. Takes effect on the next editor launch. */
 	public setToolbarType(type: ToolbarType) {
-		this.toolbarType = type;
+		this.#toolbarType = type;
 	}
 
 	/** Changes the editor's style. Takes effect on the next launch of the editor. */
 	public setStyleMode(style: EditorStyle) {
-		this.styleMode = style;
+		this.#styleMode = style;
 	}
 
 	/** Sets the keyboard shortcuts. Takes effect when the editor is next launched. */
 	public setKeyboardShortcuts(keybindings: KeybindingRecord) {
 		for (const id in keybindings) {
-			this.keybindings[id] = [...keybindings[id]];
+			this.#keybindings[id] = [...keybindings[id]];
 		}
+	}
+
+	/** Sets whether the view can be fullscreened (not used by all implementations) */
+	public setCanFullscreen(_enabled: boolean) {
+		// Not used by some implementations
 	}
 
 	/**
@@ -163,11 +173,11 @@ export default abstract class AbstractDrawingView {
 					return {
 						type: ResponseType.InitialDataResponse,
 
-						autosaveIntervalMS: this.autosaveInterval,
-						toolbarType: this.toolbarType,
+						autosaveIntervalMS: this.#autosaveInterval,
+						toolbarType: this.#toolbarType,
 						initialData: options.initialData,
-						styleMode: this.styleMode,
-						keyboardShortcuts: this.keybindings,
+						styleMode: this.#styleMode,
+						keyboardShortcuts: this.#keybindings,
 					};
 				} else if (message.type === MessageType.ShowCloseButton) {
 					this.setDialogButtons([
@@ -216,7 +226,9 @@ export default abstract class AbstractDrawingView {
 				return true;
 			});
 
+			this.#open = true;
 			this.showDialog().then(async (result: DialogResult) => {
+				this.#open = false;
 				if (saveData && result.id === 'ok') {
 					saveOption ??= result.formData?.saveOptions?.saveOption ?? SaveMethod.SaveAsNew;
 					await save(saveData);

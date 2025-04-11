@@ -3,35 +3,45 @@ import localization from './localization';
 import { SettingItemType, SettingStorage } from 'api/types';
 import { EditorStyle, ToolbarType } from './types';
 import AbstractDrawingView from './dialog/AbstractDrawingView';
-import DrawingDialog from './dialog/DrawingDialog';
 
 // Joplin adds a prefix to the setting in settings.json for us.
-const editorFillsWindowKey = 'disable-editor-fills-window';
+const disableFullscreenKey = 'disable-editor-fills-window';
 const autosaveIntervalKey = 'autosave-interval-minutes';
 const toolbarTypeKey = 'toolbar-type';
 const styleModeKey = 'style-mode';
 const keyboardShortcutsKey = 'keyboard-shortcuts';
 
-export const applySettingsTo = async (drawingDialog: AbstractDrawingView) => {
-	let autosaveIntervalMinutes = await joplin.settings.value(autosaveIntervalKey);
+const loadSettings = async () => {
+	return {
+		disableFullscreen: (await joplin.settings.value(disableFullscreenKey)) satisfies boolean,
+		autosaveInterval: (await joplin.settings.value(autosaveIntervalKey)) satisfies number,
+		toolbarType: (await joplin.settings.value(toolbarTypeKey)) satisfies ToolbarType,
+		styleMode: (await joplin.settings.value(styleModeKey)) satisfies EditorStyle,
+		keyboardShortcuts: (await joplin.settings.value(keyboardShortcutsKey)) satisfies Record<
+			string,
+			string
+		>,
+	};
+};
+
+type SettingsObject = Awaited<ReturnType<typeof loadSettings>>;
+
+const applySettingsTo = (settings: SettingsObject, drawingDialog: AbstractDrawingView) => {
+	let autosaveIntervalMinutes = settings.autosaveInterval;
 
 	// Default to two minutes.
 	if (!autosaveIntervalMinutes) {
 		autosaveIntervalMinutes = 2;
 	}
 
-	await drawingDialog.setAutosaveInterval(autosaveIntervalMinutes * 60 * 1000);
-
-	const toolbarType = (await joplin.settings.value(toolbarTypeKey)) as ToolbarType;
-	drawingDialog.setToolbarType(toolbarType);
-
-	const styleMode = (await joplin.settings.value(styleModeKey)) as EditorStyle;
-	drawingDialog.setStyleMode(styleMode);
-
-	drawingDialog.setKeyboardShortcuts(await joplin.settings.value(keyboardShortcutsKey));
+	drawingDialog.setAutosaveInterval(autosaveIntervalMinutes * 60 * 1000);
+	drawingDialog.setToolbarType(settings.toolbarType);
+	drawingDialog.setStyleMode(settings.styleMode);
+	drawingDialog.setKeyboardShortcuts(settings.keyboardShortcuts);
+	drawingDialog.setCanFullscreen(!settings.disableFullscreen);
 };
 
-export const registerAndApplySettings = async (drawingDialog: DrawingDialog) => {
+export const registerSettings = async () => {
 	const jsDrawSectionName = 'js-draw';
 	await joplin.settings.registerSection(jsDrawSectionName, {
 		label: 'Freehand Drawing',
@@ -54,9 +64,9 @@ export const registerAndApplySettings = async (drawingDialog: DrawingDialog) => 
 			value: 0,
 
 			options: {
-				0: localization.toolbarTypeDefault,
-				1: localization.toolbarTypeSidebar,
-				2: localization.toolbarTypeDropdown,
+				[ToolbarType.Default]: localization.toolbarTypeDefault,
+				[ToolbarType.Sidebar]: localization.toolbarTypeSidebar,
+				[ToolbarType.Dropdown]: localization.toolbarTypeDropdown,
 			},
 		},
 		[styleModeKey]: {
@@ -75,7 +85,7 @@ export const registerAndApplySettings = async (drawingDialog: DrawingDialog) => 
 				[EditorStyle.JsDrawDark]: localization.styleJsDrawDark,
 			},
 		},
-		[editorFillsWindowKey]: {
+		[disableFullscreenKey]: {
 			public: true,
 			section: jsDrawSectionName,
 			advanced: true,
@@ -111,15 +121,14 @@ export const registerAndApplySettings = async (drawingDialog: DrawingDialog) => 
 		},
 	});
 
-	const applySettings = async () => {
-		const fullscreenDisabled = await joplin.settings.value(editorFillsWindowKey);
-		await drawingDialog.setCanFullscreen(!fullscreenDisabled);
-		applySettingsTo(drawingDialog);
-	};
-
-	await joplin.settings.onChange((_event) => {
-		void applySettings();
+	let settings = await loadSettings();
+	await joplin.settings.onChange(async (_event) => {
+		settings = await loadSettings();
 	});
 
-	await applySettings();
+	return {
+		applySettingsTo: (view: AbstractDrawingView) => {
+			return applySettingsTo(settings, view);
+		},
+	};
 };

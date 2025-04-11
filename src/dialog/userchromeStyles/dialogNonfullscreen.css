@@ -1,5 +1,7 @@
-/* Makes the main drawing dialog take up only part of the entire screen */
-iframe[id$='js-draw-jop-freehand-drawing-jsdraw-plugin-jsDrawDialog'] {
+/* Makes the main drawing dialog take up only part of the entire screen.
+   This should be the same selector as in dialogFullscreen.css. */
+.user-webview-dialog:not(:has(.user-dialog-button-bar > button))
+	iframe[id*='js-draw-jop-freehand-drawing-jsdraw-plugin-jsDrawDialog'] {
 	position: relative;
 	width: 100%;
 	height: 100%;
