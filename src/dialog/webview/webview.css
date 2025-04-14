@@ -10,7 +10,7 @@ body,
 	font-size: 11pt;
 }
 
-body > :not(.imageEditorContainer) button,
+body > :not(.imageEditorContainer):not(.clr-picker) button,
 body > button {
 	color: var(--joplin-color4);
 	background-color: var(--joplin-background-color4);
