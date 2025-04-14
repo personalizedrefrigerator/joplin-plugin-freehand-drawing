@@ -3,6 +3,7 @@
 		"dialog/webview/webview.ts",
 		"dialog/window/window.ts",
 		"contentScripts/markdownIt.ts",
+		"contentScripts/markdownIt-content.ts",
 		"contentScripts/codeMirror.ts"
 	]
 }
