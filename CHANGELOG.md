@@ -1,3 +1,9 @@
+# 3.0.0
+
+- Fix color picker displays an incorrect color in the preview.
+- Fix possible compatibility issue with the Rich Text Editor in future Joplin versions.
+- **Breaking change**: Drop support for Joplin < v3.0.9.
+
 # 2.17.0
 
 - Features
