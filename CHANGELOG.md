@@ -1,3 +1,10 @@
+# 2.17.0
+
+- Features
+  - Improve support for secondary Joplin windows. Previously, opening a drawing dialog in a new Joplin window closed any dialogs open in other windows.
+- [Updates `js-draw` to v1.29.2](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#1292)
+  - Fixes a compatibility issue that resulted in a different default image template (fixes a regression in this plugin).
+
 # 2.16.1
 
 - [Updates `js-draw` to v1.29.1](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#1291)
