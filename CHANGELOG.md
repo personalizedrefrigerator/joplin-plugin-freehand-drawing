@@ -1,3 +1,10 @@
+# 3.0.1
+
+- **Markdown viewer, drawing dialog**: Fix error logged when loading the note viewer (commit 31ae4f375bd0e5fb62bf03b5f887f0465bfd3f40).
+- **Markdown viewer**: Fix error logged and edit button fails to appear in some cases (commit 60b74c42ea772dd5297d68786268eaf2cf5c528d).
+- **Dialog**: Fix fullscreen issue in Joplin 3.1.x.
+- **Manifest**: Fix incorrect minimum version -- certain CSS styles will be incorrect in Joplin < 3.1.1.
+
 # 3.0.0
 
 - Fix color picker displays an incorrect color in the preview.
