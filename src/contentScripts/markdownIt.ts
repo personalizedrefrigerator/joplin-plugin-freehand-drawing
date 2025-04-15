@@ -45,7 +45,7 @@ export default ({ contentScriptId }: { contentScriptId: string }) => {
 					`	contentEditable='false'>`,
 					htmlWithOnload,
 					'</span>',
-				].join(' ');
+				].join('');
 			};
 		},
 		assets: () => {
