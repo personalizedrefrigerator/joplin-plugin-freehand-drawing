@@ -37,11 +37,12 @@ const makeImageEditable = (container: HTMLElement) => {
 		};
 	};
 
-	const isRichTextEditor = document.body?.id === 'tinymce';
-	if (!isRichTextEditor) {
-		addEditButton();
-	} else {
+	const isRichTextEditor =
+		document.body.classList.contains('mce-content-body') || document.body.id === 'tinymce';
+	if (isRichTextEditor) {
 		image.style.cursor = 'pointer';
+	} else {
+		addEditButton();
 	}
 
 	image.ondblclick = onEdit;
