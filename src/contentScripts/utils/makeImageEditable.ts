@@ -1,8 +1,9 @@
-import localization from '../../localization';
-
 declare const webviewApi: any;
 
-const makeImageEditable = (container: HTMLElement, contentScriptId: string) => {
+// Note: For now, makeImageEditable should avoid using imported functions.
+// To support old Joplin versions, it should be possible to convert makeImageEditable
+// to a string.
+const makeImageEditable = (container: HTMLElement) => {
 	const image = container.querySelector('img');
 	if (!image) {
 		console.warn('Freehand drawing plugin: No image found in container.');
@@ -15,6 +16,9 @@ const makeImageEditable = (container: HTMLElement, contentScriptId: string) => {
 
 	container.classList.add('js-draw--editable');
 
+	const editLabel = container.getAttribute('data-js-draw-edit-label');
+	const contentScriptId = container.getAttribute('data-js-draw-content-script-id');
+
 	const onEdit = () => {
 		const message = image.src;
 		webviewApi.postMessage(contentScriptId, message).catch((err: any) => {
@@ -24,7 +28,7 @@ const makeImageEditable = (container: HTMLElement, contentScriptId: string) => {
 
 	const addEditButton = () => {
 		const editButton = document.createElement('button');
-		editButton.textContent = `${localization.edit} 🖊️`;
+		editButton.textContent = `${editLabel} 🖊️`;
 		editButton.classList.add('jsdraw--editButton');
 		container.appendChild(editButton);
 

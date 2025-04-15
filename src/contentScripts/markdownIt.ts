@@ -2,6 +2,7 @@ import type MarkdownIt = require('markdown-it');
 import type Renderer = require('markdown-it/lib/renderer');
 import type Token = require('markdown-it/lib/token');
 import makeImageEditable from './utils/makeImageEditable';
+import localization from '../localization';
 
 export default ({ contentScriptId }: { contentScriptId: string }) => {
 	return {
@@ -24,24 +25,27 @@ export default ({ contentScriptId }: { contentScriptId: string }) => {
 					return defaultHtml;
 				}
 
-				const contentScriptIdHtml = markdownIt.utils.escapeHtml(contentScriptId);
 				const processImageFn = markdownIt.utils.escapeHtml(makeImageEditable.toString());
-				const escapedScriptId = markdownIt.utils.escapeHtml(contentScriptIdHtml);
-				const escapedQuotedScriptId = markdownIt.utils.escapeHtml(
-					JSON.stringify(contentScriptIdHtml),
-				);
+
+				const escapeAndQuote = (text: string) => {
+					return JSON.stringify(markdownIt.utils.escapeHtml(text));
+				};
 
 				const htmlWithOnload = defaultHtml.replace(
 					'<img ',
 					// Required for older versioins of the Rich Text Editor, where scripts must be inlined.
-					`<img onload="(${processImageFn})(this.parentElement, ${escapedQuotedScriptId})" `,
+					`<img onload="(${processImageFn})(this.parentElement)" `,
 				);
 
 				return [
-					`<span class='jsdraw--svgWrapper' data-js-draw-source-content-script-id="${escapedScriptId}" contentEditable='false'>`,
+					'<span',
+					`	class='jsdraw--svgWrapper'`,
+					`	data-js-draw-edit-label=${escapeAndQuote(localization.edit)}`,
+					`	data-js-draw-content-script-id=${escapeAndQuote(contentScriptId)}`,
+					`	contentEditable='false'>`,
 					htmlWithOnload,
 					'</span>',
-				].join('');
+				].join(' ');
 			};
 		},
 		assets: () => {
