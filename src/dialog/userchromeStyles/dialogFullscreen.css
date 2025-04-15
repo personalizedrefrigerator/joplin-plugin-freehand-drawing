@@ -1,7 +1,7 @@
 /* Makes the main drawing dialog take up the entire screen */
 .user-webview-dialog:not(
 	/* Exclude the case where buttons would be hidden by the iframe */
-	:has(.user-dialog-button-bar > button)
+	:has(* > button)
 ) iframe[id*='js-draw-jop-freehand-drawing-jsdraw-plugin-jsDrawDialog'] {
 	position: absolute;
 	top: 0;
