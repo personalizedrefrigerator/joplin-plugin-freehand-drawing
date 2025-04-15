@@ -1,9 +1,8 @@
 {
-	"extraScripts": [
+	"extraScripts": ["contentScripts/markdownIt.ts", "contentScripts/codeMirror.ts"],
+	"extraStandaloneScripts": [
 		"dialog/webview/webview.ts",
 		"dialog/window/window.ts",
-		"contentScripts/markdownIt.ts",
-		"contentScripts/markdownIt-content.ts",
-		"contentScripts/codeMirror.ts"
+		"contentScripts/markdownIt-content.ts"
 	]
 }

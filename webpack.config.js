@@ -236,7 +236,7 @@ const createArchiveConfig = {
 	}],
 };
 
-function resolveExtraScriptPath(name) {
+function resolveExtraScriptPath(name, isLibrary) {
 	const relativePath = `./src/${name}`;
 
 	const fullPath = path.resolve(`${rootDir}/${relativePath}`);
@@ -251,23 +251,36 @@ function resolveExtraScriptPath(name) {
 		output: {
 			filename: `${nameNoExt}.js`,
 			path: distDir,
-			library: 'default',
-			libraryTarget: 'commonjs',
-			libraryExport: 'default',
+			...(isLibrary ? {
+				library: 'default',
+				libraryTarget: 'commonjs',
+				libraryExport: 'default',
+			} : {})
 		},
 	};
 }
 
 function buildExtraScriptConfigs(userConfig) {
-	if (!userConfig.extraScripts.length) return [];
+	const extraScripts = [
+		...userConfig.extraScripts,
+		...userConfig.extraStandaloneScripts,
+	];
+	if (!extraScripts.length) return [];
 
 	const output = [];
 
-	for (const scriptName of userConfig.extraScripts) {
-		const scriptPaths = resolveExtraScriptPath(scriptName);
+	const processScript = (scriptName, isLibrary) => {
+		const scriptPaths = resolveExtraScriptPath(scriptName, isLibrary);
 		output.push({ ...extraScriptConfig, entry: scriptPaths.entry,
 			output: scriptPaths.output });
-	}
+	};
+	const processScripts = (scripts, isLibrary) => {
+		for (const scriptName of scripts) {
+			processScript(scriptName, isLibrary);
+		}
+	};
+	processScripts(userConfig.extraScripts, true);
+	processScripts(userConfig.extraStandaloneScripts, false);
 
 	return output;
 }
