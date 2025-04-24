@@ -1,7 +1,7 @@
 import joplin from 'api';
 import { ContentScriptType, MenuItemLocation, ToolbarButtonLocation } from 'api/types';
 import { clearAutosave, getAutosave } from './autosave';
-import localization from './localization';
+import localization, { setLocale } from './localization';
 import TemporaryDirectory from './TemporaryDirectory';
 import DrawingDialog from './dialog/DrawingDialog';
 import { pluginPrefix } from './constants';
@@ -11,6 +11,10 @@ import DrawingManager from './DrawingManager';
 
 joplin.plugins.register({
 	onStart: async function () {
+		// Initialize `localizations` from Joplin's global locale -- navigator.localizations
+		// does not necessarily match the Joplin locale.
+		setLocale(await joplin.settings.globalValue('locale'));
+
 		const tmpdir = await TemporaryDirectory.create();
 
 		const settings = await registerSettings();

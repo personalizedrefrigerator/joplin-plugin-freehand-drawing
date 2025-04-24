@@ -2,11 +2,12 @@ import type MarkdownIt = require('markdown-it');
 import type Renderer = require('markdown-it/lib/renderer');
 import type Token = require('markdown-it/lib/token');
 import makeImageEditable from './utils/makeImageEditable';
-import localization from '../localization';
+import localization, { setLocale } from '../localization';
 
 export default ({ contentScriptId }: { contentScriptId: string }) => {
 	return {
-		plugin: (markdownIt: MarkdownIt, _options: any) => {
+		plugin: (markdownIt: MarkdownIt, options: any) => {
+			setLocale(options.settingValue('locale'));
 			// Ref: https://github.com/markdown-it/markdown-it/blob/master/docs/architecture.md#renderer
 			// and the joplin-drawio plugin
 			const originalRenderer = markdownIt.renderer.rules.image;

@@ -104,9 +104,8 @@ const defaultStrings: AppLocalization = {
 		`Resource ${resourceId} is not an editable image. Unable to edit resource of type ${resourceType}.`,
 };
 
-const localizations: Record<string, AppLocalization> = {
+const localizations: Record<string, Partial<AppLocalization>> = {
 	de: {
-		...defaultStrings,
 		insertDrawing: 'Zeichnung einfügen',
 		restoreFromAutosave: 'Automatische Sicherung wiederherstellen',
 		deleteAutosave: 'Alle automatischen Sicherungen löschen',
@@ -128,7 +127,6 @@ const localizations: Record<string, AppLocalization> = {
 	},
 	en: defaultStrings,
 	es: {
-		...defaultStrings,
 		insertDrawing: 'Añada dibujo',
 		restoreFromAutosave: 'Resturar al autoguardado',
 		deleteAutosave: 'Borrar el autoguardado',
@@ -155,11 +153,11 @@ const localizations: Record<string, AppLocalization> = {
 		noSuchAutosaveExists: 'Nicio salvare automată nu există',
 		discardChanges: 'Anulează modificările',
 		defaultImageTitle: 'Desen liber',
-	
+
 		edit: 'Editează',
 		close: 'Închide',
 		saveAndClose: 'Salvează și închide',
-	
+
 		overwriteExisting: 'Suprascrie existent',
 		saveAsNewDrawing: 'Salvează ca desen nou',
 		clickBelowToContinue: 'Gata! Fă clic mai jos pentru a continua.',
@@ -168,7 +166,7 @@ const localizations: Record<string, AppLocalization> = {
 		saveAndResumeEditing: 'Salvează și continuă editarea',
 		saveChanges: 'Salvează modificările',
 		exitInstructions: 'Toate modificările au fost salvate! Fă clic mai jos pentru a ieși.',
-	
+
 		settingsPaneDescription: 'Setări pentru editorul de imagine liber.',
 		setting__disableFullScreen: 'Mod dialog',
 		setting__disableFullScreenDescription:
@@ -181,19 +179,19 @@ const localizations: Record<string, AppLocalization> = {
 		setting__toolbarTypeDescription:
 			'Această setare comută între posibilele interfețe pentru editorul de imagine.',
 		setting__keyboardShortcuts: 'Scurtături de la tastatură',
-	
+
 		toolbarTypeDefault: 'Implicit',
 		toolbarTypeSidebar: 'Bară laterală',
 		toolbarTypeDropdown: 'Casete derulante',
-	
+
 		styleMatchJoplin: 'La fel ca Joplin',
 		styleJsDrawLight: 'Luminoasă',
 		styleJsDrawDark: 'Întunecată',
-	
+
 		images: 'Imagini',
 		pdfs: 'PDF-uri',
 		allFiles: 'Toate fișierele',
-	
+
 		loadLargePdf: (pageCount: number) =>
 			`Un fișier PDF selectat este un fișier mare (${pageCount} de pagini). Încărcarea lui ar putea dura ceva timp și să crească dimensiunea desenului curent. Continui?`,
 		notAnEditableImage: (resourceId: string, resourceType: string) =>
@@ -201,27 +199,55 @@ const localizations: Record<string, AppLocalization> = {
 	},
 };
 
-let localization: AppLocalization | undefined;
+let localization: Partial<AppLocalization> | undefined;
+let supportedLanguages: string[] = [];
+const setLocaleInternal = (supportedLocales: readonly string[]) => {
+	const languages = [...supportedLocales];
 
-const languages = [...navigator.languages];
-for (const language of navigator.languages) {
-	const localeSep = language.indexOf('-');
+	for (let language of supportedLocales) {
+		// Joplin locales may use ro_RO format, navigator.languages locales
+		// use ro-RO format. Normalize:
+		language = language.replace('_', '-');
+		const localeSep = language.indexOf('-');
 
-	if (localeSep !== -1) {
-		languages.push(language.substring(0, localeSep));
+		if (localeSep !== -1) {
+			languages.push(language.substring(0, localeSep));
+		}
 	}
-}
 
-for (const locale of languages) {
-	if (locale in localizations) {
-		localization = localizations[locale];
-		break;
+	for (const locale of languages) {
+		if (locale in localizations) {
+			localization = localizations[locale];
+			break;
+		}
 	}
-}
 
-if (!localization) {
-	console.log('No supported localization found. Falling back to default.');
-	localization = defaultStrings;
-}
+	supportedLanguages = languages;
+};
 
-export default localization!;
+let localizationSet = false;
+export const setLocale = (supportedLocales: readonly string[] | string) => {
+	if (typeof supportedLocales === 'string') {
+		supportedLocales = [supportedLocales];
+	}
+
+	setLocaleInternal(supportedLocales);
+	localizationSet = true;
+};
+setLocale(navigator.languages);
+
+export const getLocales = () => {
+	return [...supportedLanguages];
+};
+
+export default new Proxy(defaultStrings, {
+	get(_target, prop) {
+		if (!localizationSet) {
+			console.warn(
+				'Accessing language data without a localization set. The default Electron locale will be used.',
+			);
+		}
+		const propAsKey = prop as keyof typeof defaultStrings;
+		return localization?.[propAsKey] ?? defaultStrings[propAsKey];
+	},
+});

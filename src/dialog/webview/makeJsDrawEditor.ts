@@ -1,5 +1,10 @@
 import MaterialIconProvider from '@js-draw/material-icons';
-import Editor, { Erase, RenderingMode, adjustEditorThemeForContrast } from 'js-draw';
+import Editor, {
+	Erase,
+	RenderingMode,
+	adjustEditorThemeForContrast,
+	getLocalizationTable,
+} from 'js-draw';
 import { EditorCallbacks } from './types';
 import { EditorStyle, KeybindingRecord, ToolbarType } from '../../types';
 import loadTemplate from './template/loadTemplate';
@@ -7,6 +12,7 @@ import { SettingControl } from './settings/types';
 import setupToolbar from './setupToolbar';
 import saveStateAsTemplate from './template/saveStateAsTemplate';
 import applyShortcutOverrides from './applyShortcutOverrides';
+import { getLocales } from '../../localization';
 
 export interface EditorControl {
 	editor: Editor;
@@ -57,6 +63,8 @@ const makeJsDrawEditor = async (
 				return files;
 			},
 		},
+
+		localization: getLocalizationTable(getLocales()),
 	});
 	editor.focus();
 

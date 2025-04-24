@@ -43,7 +43,6 @@ export default class DrawingDialog extends AbstractDrawingView {
 		await super.initializeDialog();
 
 		const handle = await this.handle;
-		await dialogs.setHtml(handle, '');
 		await dialogs.setFitToContent(handle, false);
 	}
 
@@ -70,6 +69,10 @@ export default class DrawingDialog extends AbstractDrawingView {
 	protected override async setDialogButtons(buttons: ButtonSpec[]) {
 		const handle = await this.handle;
 		await dialogs.setButtons(handle, buttons);
+	}
+
+	protected override async setHtml(html: string): Promise<void> {
+		await dialogs.setHtml(await this.handle, html);
 	}
 
 	protected override async addScript(path: string): Promise<void> {

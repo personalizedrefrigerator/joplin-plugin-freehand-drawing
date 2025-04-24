@@ -5,7 +5,6 @@ import { posix as posixPath, resolve } from 'path';
 import joplin from 'api';
 
 export default class DrawingWindow extends AbstractDrawingView {
-	private scriptPaths: string[] = [];
 	private win: Window | undefined = undefined;
 	private eventListener: any;
 	private onCloseListener = (_result: DialogResult) => {};
@@ -23,8 +22,11 @@ export default class DrawingWindow extends AbstractDrawingView {
 
 	protected override async addScript(path: string) {
 		const scriptPath = resolve(await joplin.plugins.installationDir(), path);
-		this.scriptPaths.push(scriptPath);
 		this.win?.postMessage({ kind: 'addScript', src: scriptPath }, await this.getMessageOrigin());
+	}
+
+	protected override async setHtml(html: string) {
+		this.win?.postMessage({ kind: 'setHtml', html }, await this.getMessageOrigin());
 	}
 
 	protected override async setDialogButtons(buttons: ButtonRecord[]) {

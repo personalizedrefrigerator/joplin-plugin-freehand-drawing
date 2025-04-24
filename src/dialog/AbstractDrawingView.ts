@@ -17,6 +17,8 @@ import promptForImages, {
 	cleanUpTaskResult,
 	taskById as imagePickerTaskById,
 } from '../util/promptForImages';
+import { escapeHtml } from '../util/htmlUtil';
+import joplin from 'api';
 
 export type SaveCallback = (svgData: string) => void | Promise<void>;
 export type SaveCallbacks =
@@ -51,6 +53,7 @@ export default abstract class AbstractDrawingView {
 
 	public constructor(private tempDir: TemporaryDirectory) {}
 
+	protected abstract setHtml(data: string): Promise<void>;
 	protected abstract addScript(path: string): Promise<void>;
 	protected abstract setDialogButtons(buttons: ButtonRecord[]): Promise<void>;
 	protected abstract postMessage(message: WebViewMessage): void;
@@ -63,6 +66,10 @@ export default abstract class AbstractDrawingView {
 
 	/** Resets the dialog prior to use. This can be called multiple times. */
 	protected async initializeDialog() {
+		const locale = await joplin.settings.globalValue('locale');
+		await this.setHtml(
+			[`<input type='hidden' value='${escapeHtml(locale)}' id='default-locale-data'/>`].join('\n'),
+		);
 		// Sometimes, the dialog doesn't load properly.
 		// Add a cancel button to hide it and try loading again.
 		await this.setDialogButtons([{ id: 'cancel' }]);

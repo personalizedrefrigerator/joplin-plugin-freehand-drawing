@@ -31,6 +31,8 @@ window.onmessage = (event) => {
 			linkElement.rel = 'stylesheet';
 			document.head.appendChild(linkElement);
 		}
+	} else if (data.kind === 'setHtml') {
+		document.body.innerHTML = data.html;
 	} else if (data.kind === 'setButtons') {
 		const buttons: ButtonRecord[] = data.buttons;
 		const buttonElements: HTMLButtonElement[] = [];

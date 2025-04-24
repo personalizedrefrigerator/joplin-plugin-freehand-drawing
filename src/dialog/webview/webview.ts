@@ -1,4 +1,5 @@
 import 'js-draw/bundledStyles';
+import './setUpLocalization';
 import {
 	InitialSvgDataRequest,
 	WebViewMessage,

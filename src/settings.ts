@@ -119,12 +119,28 @@ export const registerSettings = async () => {
 			type: SettingItemType.Object,
 			value: {},
 		},
+		locale: {
+			public: false,
+			label: 'Locale (Internal setting)',
+			description:
+				'Mirrors the global joplin.locale setting. This is done to allow the current app locale to be accessed from the renderer.',
+			type: SettingItemType.String,
+			value: '',
+		},
 	});
 
 	let settings = await loadSettings();
 	await joplin.settings.onChange(async (_event) => {
 		settings = await loadSettings();
 	});
+
+	const syncMirroredSettings = async () => {
+		const mirroredSettingKeys = ['locale'];
+		for (const key of mirroredSettingKeys) {
+			await joplin.settings.setValue(key, await joplin.settings.globalValue(key));
+		}
+	};
+	await syncMirroredSettings();
 
 	return {
 		applySettingsTo: (view: AbstractDrawingView) => {
