@@ -147,6 +147,58 @@ const localizations: Record<string, AppLocalization> = {
 		resumeEditing: 'Continuar editando',
 		saveAndResumeEditing: 'Guardar y continuar editando',
 	},
+	ro: {
+		insertDrawing: 'Inserează un desen',
+		insertDrawingInNewWindow: 'Inserează un desen într-o fereastră nouă',
+		restoreFromAutosave: 'Restaurează dintr-un desen salvat automat',
+		deleteAutosave: 'Șterge toate desenele salvate automat',
+		noSuchAutosaveExists: 'Nicio salvare automată nu există',
+		discardChanges: 'Anulează modificările',
+		defaultImageTitle: 'Desen liber',
+	
+		edit: 'Editează',
+		close: 'Închide',
+		saveAndClose: 'Salvează și închide',
+	
+		overwriteExisting: 'Suprascrie existent',
+		saveAsNewDrawing: 'Salvează ca desen nou',
+		clickBelowToContinue: 'Gata! Fă clic mai jos pentru a continua.',
+		discardUnsavedChanges: 'Anulezi modificările nesalvate?',
+		resumeEditing: 'Continuă editarea',
+		saveAndResumeEditing: 'Salvează și continuă editarea',
+		saveChanges: 'Salvează modificările',
+		exitInstructions: 'Toate modificările au fost salvate! Fă clic mai jos pentru a ieși.',
+	
+		settingsPaneDescription: 'Setări pentru editorul de imagine liber.',
+		setting__disableFullScreen: 'Mod dialog',
+		setting__disableFullScreenDescription:
+			'Activarea acestei opțiuni face ca editorul să acopere doar parțial fereastra Joplin.',
+		setting__autosaveIntervalSettingLabel: 'Interval salvare automată (minute)',
+		setting__autosaveIntervalSettingDescription:
+			'Ajustează cât de des se face o copie de siguranță a desenului curent. Cea mai recentă versiune salvată automat poate fi restaurată căutând după ":restore autosave" în paleta de comenzi (Ctrl+Shift+P sau Cmd+Shift+P pe MacOS) și făcând clic pe „Restaurează dintr-un desen salvat automat”. Dacă acestă setare este 0, salvările automate sunt create la fiecare 2 minute.',
+		setting__themeLabel: 'Temă',
+		setting__toolbarTypeLabel: 'Tip bară de instrumente',
+		setting__toolbarTypeDescription:
+			'Această setare comută între posibilele interfețe pentru editorul de imagine.',
+		setting__keyboardShortcuts: 'Scurtături de la tastatură',
+	
+		toolbarTypeDefault: 'Implicit',
+		toolbarTypeSidebar: 'Bară laterală',
+		toolbarTypeDropdown: 'Casete derulante',
+	
+		styleMatchJoplin: 'La fel ca Joplin',
+		styleJsDrawLight: 'Luminoasă',
+		styleJsDrawDark: 'Întunecată',
+	
+		images: 'Imagini',
+		pdfs: 'PDF-uri',
+		allFiles: 'Toate fișierele',
+	
+		loadLargePdf: (pageCount: number) =>
+			`Un fișier PDF selectat este un fișier mare (${pageCount} de pagini). Încărcarea lui ar putea dura ceva timp și să crească dimensiunea desenului curent. Continui?`,
+		notAnEditableImage: (resourceId: string, resourceType: string) =>
+			`Resursa ${resourceId} nu este o imagine editabilă. Nu se poate edita resursa de tipul ${resourceType}.`,
+	},
 };
 
 let localization: AppLocalization | undefined;
