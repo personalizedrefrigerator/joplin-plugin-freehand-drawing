@@ -39,9 +39,12 @@ const makeImageEditable = (container: HTMLElement) => {
 
 	const isRichTextEditor =
 		document.body.classList.contains('mce-content-body') || document.body.id === 'tinymce';
+	const hasWebViewApi = typeof webviewApi !== 'undefined';
+
 	if (isRichTextEditor) {
 		image.style.cursor = 'pointer';
-	} else {
+	} else if (hasWebViewApi) {
+		// Don't show the edit button e.g. in exported HTML.
 		addEditButton();
 	}
 
