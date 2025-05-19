@@ -1,3 +1,16 @@
+# 3.1.0
+
+- Bug fixes
+  - **HTML Export**: Fix "edit" button visible (commit d0cc97447d1f650521f8d37059bfdae5bc670337).
+  - **Localization**: Use Joplin's UI language as the plugin's UI language (commit 9b76a3c3bda6d82cc1385c61a261eeba4578e13e). Previously, the OS language was used to localize the plugin.
+- Features
+  - Romanian translation (commit 3c725129eeb19bf9c26dd27aefa0adc0e08b93fc by @SilverGreen93).
+  - Upgraded to js-draw v1.30.0.
+    - Slovak translation (by @dodog)
+    - Accelerated inking with the [web ink API](https://developer.mozilla.org/en-US/docs/Web/API/Ink_API) on some platforms.
+- Other changes
+  - Added a `Content-Security-Policy` to custom secondary windows (commit 38e1d5e35eff0d8f0247441c6e607aac266fef5c).
+
 # 3.0.1
 
 - **Markdown viewer, drawing dialog**: Fix error logged when loading the note viewer (commit 31ae4f375bd0e5fb62bf03b5f887f0465bfd3f40).
