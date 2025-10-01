@@ -197,6 +197,58 @@ const localizations: Record<string, Partial<AppLocalization>> = {
 		notAnEditableImage: (resourceId: string, resourceType: string) =>
 			`Resursa ${resourceId} nu este o imagine editabilă. Nu se poate edita resursa de tipul ${resourceType}.`,
 	},
+	sk: {
+		insertDrawing: 'Vložiť kresbu',
+		insertDrawingInNewWindow: 'Vložiť kresbu do nového okna',
+		restoreFromAutosave: 'Obnoviť z automaticky uloženej kresby',
+		deleteAutosave: 'Vymazať všetky automaticky uložené kresby',
+		noSuchAutosaveExists: 'Neexistujú žiadne automaticky uložené',
+		discardChanges: 'Zrušiť zmeny',
+		defaultImageTitle: 'Kresba voľnou rukou',
+
+		edit: 'Upraviť',
+		close: 'Zavrieť',
+		saveAndClose: 'Uložiť a zavrieť',
+
+		overwriteExisting: 'Prepísať existujúcu',
+		saveAsNewDrawing: 'Uložiť ako novú kresbu',
+		clickBelowToContinue: 'Hotovo! Kliknite nižšie pre pokračovanie.',
+		discardUnsavedChanges: 'Zrušiť neuložené zmeny?',
+		resumeEditing: 'Pokračovať v úprave',
+		saveAndResumeEditing: 'Uložiť a pokračovať v úpravách',
+		saveChanges: 'Uložiť zmeny',
+		exitInstructions: 'Všetky zmeny boli uložené! Kliknite nižšie pre ukončenie.',
+
+		settingsPaneDescription: 'Nastavenia pre grafický editor Kresba voľnou rukou.',
+		setting__disableFullScreen: 'Dialógový režim',
+		setting__disableFullScreenDescription:
+			'Aktivácia tohto nastavenia spôsobí, že editor vyplní okno Joplin len čiastočne.',
+		setting__autosaveIntervalSettingLabel: 'Interval automatického ukladania (v minútach)',
+		setting__autosaveIntervalSettingDescription:
+			'Nastaví, ako často sa vytvára záložná kópia aktuálnej kresby. Posledné automatické uloženie je možné obnoviť vyhľadaním „:restore autosave“ v palete príkazov (ctrl+shift+p alebo cmd+shift+p v systéme MacOS) a kliknutím na „Obnoviť z automaticky uloženej kresby“. Ak je toto nastavenie nastavené na nulu, automatické uloženia sa vytvárajú každé dve minúty.',
+		setting__themeLabel: 'Téma',
+		setting__toolbarTypeLabel: 'Typ panela nástrojov',
+		setting__toolbarTypeDescription:
+			'Toto nastavenie prepína medzi možnými používateľskými rozhraniami panela nástrojov pre grafický editor.',
+		setting__keyboardShortcuts: 'Klávesové skratky',
+
+		toolbarTypeDefault: 'Predvolené',
+		toolbarTypeSidebar: 'Bočný panel',
+		toolbarTypeDropdown: 'Rozbaľovacie menu',
+
+		styleMatchJoplin: 'Rovnaká ako Joplin',
+		styleJsDrawLight: 'Svetlá',
+		styleJsDrawDark: 'Tmavá',
+
+		images: 'Obrázky',
+		pdfs: 'PDF súbory',
+		allFiles: 'Všetky súbory',
+
+		loadLargePdf: (pageCount: number) =>
+			`Vybraný súbor je veľký PDF súbor (${pageCount} strán). Jeho načítanie môže trvať nejaký čas a zvýšiť veľkosť aktuálnej kresby. Pokračovať?`,
+		notAnEditableImage: (resourceId: string, resourceType: string) =>
+			`Zdroj ${resourceId} nie je upraviteľný obrázok. Nie je možné upraviť zdroj typu ${resourceType}.`,
+	},
 };
 
 let localization: Partial<AppLocalization> | undefined;
