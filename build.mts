@@ -253,9 +253,12 @@ async function build() {
     await onBuildCompleted();
 }
 
-const command = process.argv[1];
+const command = process.argv[2];
 if (command === 'build') {
 	build();
 } else if (command === 'bump-version') {
 	updateVersion();
+} else {
+	console.warn('Unknown command', command);
+	process.exit(1);
 }
