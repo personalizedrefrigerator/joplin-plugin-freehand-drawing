@@ -23,6 +23,19 @@ import { copyFile, mkdir, stat } from 'node:fs/promises';
 const __filename = new URL(import.meta.url).pathname;
 const __dirname = dirname(__filename);
 
+/////////////////////////////////
+// Custom plugins (user-provided)
+/////////////////////////////////
+
+const customPlugins: esbuild.Plugin[] = [
+];
+
+///////////////////////
+// End custom plugins
+///////////////////////
+
+
+
 const rootDir = resolve(__dirname);
 const userConfigFilename = './plugin.config.json';
 const userConfigPath = resolve(rootDir, userConfigFilename);
@@ -167,6 +180,7 @@ async function bundle() {
         bundle: true,
         platform: 'node',
         target: 'node22',
+		plugins: customPlugins,
     });
 }
 
@@ -193,10 +207,11 @@ async function buildExtraScripts(userConfig: any) {
             outbase: srcDir,
             bundle: true,
             format: isLibrary ? 'cjs' : 'iife',
+			plugins: customPlugins,
         });
 	};
-	await processScripts(userConfig.extraScripts, true);
-	await processScripts(userConfig.extraStandaloneScripts, false);
+	await processScripts(userConfig.extraScripts ?? [], true);
+	await processScripts(userConfig.extraStandaloneScripts ?? [], false);
 }
 
 const increaseVersion = (version: string) => {
