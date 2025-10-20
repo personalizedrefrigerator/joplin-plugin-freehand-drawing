@@ -113,7 +113,9 @@ export class Resource {
 
 		// Fetch resource data
 		// Note: Fetched data does not include a mime type/file_extension
-		const resourceData = await joplin.data.get(['resources', resourceId]);
+		const resourceData = await joplin.data.get(['resources', resourceId], {
+			fields: ['id', 'mime', 'title', 'file_extension'],
+		});
 		if (!resourceData) {
 			return null;
 		}
@@ -123,7 +125,7 @@ export class Resource {
 			resourceId: resourceData.id,
 			mime: resourceData.mime ?? mimeType,
 			title: resourceData.title,
-			fileExt: fileExt,
+			fileExt: resourceData.file_extension || fileExt,
 
 			// The resource was loaded through Joplin, and thus has no assoicated tempfile.
 			tempfilePath: undefined,
