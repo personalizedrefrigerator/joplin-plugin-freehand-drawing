@@ -1,4 +1,3 @@
-import Plugin from '../Plugin';
 import { SettingItem, SettingSection } from './types';
 export interface ChangeEvent {
     /**
@@ -18,7 +17,7 @@ export type ChangeHandler = (event: ChangeEvent) => void;
  */
 export default class JoplinSettings {
     private plugin_;
-    constructor(plugin: Plugin);
+    constructor(plugin: any);
     private get keyPrefix();
     private namespacedKey;
     /**

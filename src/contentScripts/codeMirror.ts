@@ -1,4 +1,4 @@
-import CodeMirror = require('codemirror');
+import type CodeMirror = require('codemirror');
 
 export default (_context: { contentScriptId: string }) => {
 	return {

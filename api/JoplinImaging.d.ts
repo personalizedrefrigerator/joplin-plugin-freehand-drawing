@@ -74,12 +74,12 @@ export default class JoplinImaging {
      * Creates a new Joplin resource from the image data. The image will be
      * first converted to a JPEG.
      */
-    toJpgResource(handle: Handle, resourceProps: any, quality?: number): Promise<import("../../database/types").ResourceEntity>;
+    toJpgResource(handle: Handle, resourceProps: any, quality?: number): Promise<any>;
     /**
      * Creates a new Joplin resource from the image data. The image will be
      * first converted to a PNG.
      */
-    toPngResource(handle: Handle, resourceProps: any): Promise<import("../../database/types").ResourceEntity>;
+    toPngResource(handle: Handle, resourceProps: any): Promise<any>;
     /**
      * Image data is not automatically deleted by Joplin so make sure you call
      * this method on the handle once you are done.

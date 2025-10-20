@@ -1,4 +1,3 @@
-import Plugin from '../Plugin';
 import JoplinViewsDialogs from './JoplinViewsDialogs';
 import JoplinViewsMenuItems from './JoplinViewsMenuItems';
 import JoplinViewsMenus from './JoplinViewsMenus';
@@ -19,7 +18,7 @@ export default class JoplinViews {
     private menus_;
     private toolbarButtons_;
     private implementation_;
-    constructor(implementation: any, plugin: Plugin, store: any);
+    constructor(implementation: any, plugin: any, store: any);
     get dialogs(): JoplinViewsDialogs;
     get panels(): JoplinViewsPanels;
     get menuItems(): JoplinViewsMenuItems;

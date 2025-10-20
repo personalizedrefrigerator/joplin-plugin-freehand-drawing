@@ -1,4 +1,3 @@
-import { FolderEntity } from '../../database/types';
 import { Disposable, MenuItem } from './types';
 export interface EditContextMenuFilterObject {
     items: MenuItem[];
@@ -78,7 +77,7 @@ export default class JoplinWorkspace {
      * interface. In that case, that function would return the last selected
      * folder.
      */
-    selectedFolder(): Promise<FolderEntity>;
+    selectedFolder(): Promise<any>;
     /**
      * Gets the IDs of the selected notes (can be zero, one, or many). Use the data API to retrieve information about these notes.
      */

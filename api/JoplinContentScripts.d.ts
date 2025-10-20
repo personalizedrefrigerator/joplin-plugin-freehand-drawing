@@ -1,8 +1,7 @@
-import Plugin from '../Plugin';
 import { ContentScriptType } from './types';
 export default class JoplinContentScripts {
     private plugin;
-    constructor(plugin: Plugin);
+    constructor(plugin: unknown);
     /**
      * Registers a new content script. Unlike regular plugin code, which runs in
      * a separate process, content scripts run within the main process code and

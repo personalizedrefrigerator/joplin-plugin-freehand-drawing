@@ -1,5 +1,3 @@
-import { ModelType } from '../../../BaseModel';
-import Plugin from '../Plugin';
 import { Path } from './types';
 /**
  * This module provides access to the Joplin data API: https://joplinapp.org/api/references/rest_api/
@@ -48,7 +46,7 @@ export default class JoplinData {
     post(path: Path, query?: any, body?: any, files?: any[]): Promise<any>;
     put(path: Path, query?: any, body?: any, files?: any[]): Promise<any>;
     delete(path: Path, query?: any): Promise<any>;
-    itemType(itemId: string): Promise<ModelType>;
+    itemType(itemId: string): Promise<any>;
     resourcePath(resourceId: string): Promise<string>;
     /**
      * Gets an item user data. User data are key/value pairs. The `key` can be any
@@ -61,13 +59,13 @@ export default class JoplinData {
      * - If value is modified by client 1, then deleted by client 2, the value will be deleted after merge
      * - If value is deleted by client 1, then updated by client 2, the value will be restored and set to the value from client 2 after merge
      */
-    userDataGet<T>(itemType: ModelType, itemId: string, key: string): Promise<T>;
+    userDataGet<T>(itemType: any, itemId: string, key: string): Promise<T>;
     /**
      * Sets a note user data. See {@link JoplinData.userDataGet} for more details.
      */
-    userDataSet<T>(itemType: ModelType, itemId: string, key: string, value: T): Promise<void>;
+    userDataSet<T>(itemType: any, itemId: string, key: string, value: T): Promise<void>;
     /**
      * Deletes a note user data. See {@link JoplinData.userDataGet} for more details.
      */
-    userDataDelete(itemType: ModelType, itemId: string, key: string): Promise<void>;
+    userDataDelete(itemType: any, itemId: string, key: string): Promise<void>;
 }
