@@ -181,8 +181,8 @@ function resolveExtraScriptPath(name: string, isLibrary: boolean) {
 
 async function buildExtraScripts(userConfig: any) {
 	const extraScripts = [
-		...userConfig.extraScripts,
-		...userConfig.extraStandaloneScripts,
+		...(userConfig?.extraScripts ?? []),
+		...(userConfig?.extraStandaloneScripts ?? []),
 	];
 	if (!extraScripts.length) return;
 
