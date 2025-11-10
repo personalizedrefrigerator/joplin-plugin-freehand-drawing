@@ -63,7 +63,9 @@ export default class DrawingManager {
 		}
 
 		if (originalResource.mime !== expectedMime) {
-			alert(localization.notAnEditableImage(resourceUrl, originalResource.mime));
+			void joplin.views.dialogs.showMessageBox(
+				localization.notAnEditableImage(resourceUrl, originalResource.mime),
+			);
 			return null;
 		}
 

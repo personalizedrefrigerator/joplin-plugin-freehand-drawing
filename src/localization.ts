@@ -48,7 +48,7 @@ interface AppLocalization {
 	allFiles: string;
 
 	loadLargePdf: (pageCount: number) => string;
-	notAnEditableImage: (resourceId: string, resourceType: string) => void;
+	notAnEditableImage: (resourceId: string, resourceType: string) => string;
 }
 
 const defaultStrings: AppLocalization = {
