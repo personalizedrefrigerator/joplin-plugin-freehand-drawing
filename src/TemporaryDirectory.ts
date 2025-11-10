@@ -20,6 +20,9 @@ export default class TemporaryDirectory {
 		if (this.path === null) {
 			throw new Error('Temporary directory does not exist. Possible use after destroySync.');
 		}
+		if (!fileExtension.startsWith('.')) {
+			fileExtension = `.${fileExtension}`;
+		}
 
 		this.fileIdCounter++;
 		return path.join(this.path, `tmp${this.fileIdCounter}${fileExtension ?? ''}`);
