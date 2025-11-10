@@ -1,3 +1,10 @@
+# 4.0.0
+
+- Bug fixes
+  - **Breaking change**: Improve compatibility with the Rich Text Editor and other plugins by adjusting how the "edit" button is shown for editable images. (See 7f1ab19b75efe0442955f7d4e5fc2524bb82b8c3, #24).
+- Features
+  - Slovak language translation (#26) by @dodog.
+
 # 3.1.0
 
 - Bug fixes
