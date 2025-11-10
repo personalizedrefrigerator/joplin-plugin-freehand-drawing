@@ -1,10 +1,10 @@
 import joplin from 'api';
 import { ContentScriptType, MenuItemLocation, ToolbarButtonLocation } from 'api/types';
 import { clearAutosave, getAutosave } from './autosave';
-import localization, { setLocale } from './localization';
+import localization, { getLocales, setLocale } from './localization';
 import TemporaryDirectory from './TemporaryDirectory';
 import DrawingDialog from './dialog/DrawingDialog';
-import { pluginPrefix } from './constants';
+import { markdownItContentScriptId, pluginPrefix } from './constants';
 import DrawingWindow from './dialog/DrawingWindow';
 import { registerSettings } from './settings';
 import DrawingManager from './DrawingManager';
@@ -91,25 +91,28 @@ joplin.plugins.register({
 			},
 		});
 
-		const markdownItContentScriptId = 'jsdraw__markdownIt_editDrawingButton';
 		await joplin.contentScripts.register(
 			ContentScriptType.MarkdownItPlugin,
 			markdownItContentScriptId,
 			'./contentScripts/markdownIt.js',
 		);
+		await joplin.contentScripts.onMessage(markdownItContentScriptId, async (action: string) => {
+			if (action.startsWith('edit:')) {
+				const resourceUrl = action.replace(/^edit:/, '');
+				return (await dialogManager.editDrawing(resourceUrl, { allowSaveAsCopy: true }))
+					?.resourceId;
+			} else if (action === 'get-locale:') {
+				return getLocales();
+			}
+			console.warn('Unknown action', action);
+			return null;
+		});
 
 		const codeMirrorContentScriptId = 'jsdraw__codeMirrorContentScriptId';
 		await joplin.contentScripts.register(
 			ContentScriptType.CodeMirrorPlugin,
 			codeMirrorContentScriptId,
 			'./contentScripts/codeMirror.js',
-		);
-		await joplin.contentScripts.onMessage(
-			markdownItContentScriptId,
-			async (resourceUrl: string) => {
-				return (await dialogManager.editDrawing(resourceUrl, { allowSaveAsCopy: true }))
-					?.resourceId;
-			},
 		);
 	},
 });

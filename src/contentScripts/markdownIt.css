@@ -1,26 +1,24 @@
 .jsdraw--editButton {
-	display: none;
-	width: min-content;
-	max-height: 50px;
+	display: inline-block;
+	opacity: 0;
+	overflow: hidden;
 	z-index: 1;
-	opacity: 0.9;
+	position: relative;
 
 	align-self: flex-end;
 	justify-self: right;
+
+	transition: opacity 0.2s ease;
 }
 
-.jsdraw--svgWrapper {
-	display: inline-grid;
+.jsdraw--editButton.-show,
+.jsdraw--editButton:hover {
+	opacity: 0.9;
+	overflow: visible;
 }
 
-.jsdraw--svgWrapper > * {
-	grid-row: 1;
-	grid-column: 1;
-}
-
-.jsdraw--svgWrapper:hover .jsdraw--editButton,
-.jsdraw--svgWrapper:focus .jsdraw--editButton,
-.jsdraw--svgWrapper:focus-within .jsdraw--editButton,
-.jsdraw--editButton:focus {
-	display: block;
+.jsdraw--editButton > button {
+	width: min-content;
+	max-height: 50px;
+	position: absolute;
 }
