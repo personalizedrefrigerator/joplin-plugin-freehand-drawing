@@ -35,7 +35,6 @@ const customPlugins: esbuild.Plugin[] = [
 ///////////////////////
 
 
-
 const rootDir = resolve(__dirname);
 const userConfigFilename = './plugin.config.json';
 const userConfigPath = resolve(rootDir, userConfigFilename);
@@ -98,8 +97,8 @@ function validateCategories(categories: string[]) {
 			"editor", "files", "personal knowledge management",
 		];
 		if (!allPossibleCategories.includes(category)) {
-            throw new Error(`${category} is not a valid category. Please make sure that the category name is lowercase. Valid categories are: \n${allPossibleCategories}\n`);
-        }
+			throw new Error(`${category} is not a valid category. Please make sure that the category name is lowercase. Valid categories are: \n${allPossibleCategories}\n`);
+		}
 	});
 }
 
@@ -134,12 +133,12 @@ async function createPluginArchive(sourceDir: string, destPath: string) {
 		.map(f => f.substring(sourceDir.length + 1));
 
 	if (!distFiles.length) throw new Error('Plugin archive was not created because the "dist" directory is empty');
-    if (existsSync(destPath)) {
-	    unlinkSync(destPath);
-    }
-    if (!existsSync(publishDir)) {
-        await mkdir(publishDir, {recursive: true});
-    }
+	if (existsSync(destPath)) {
+		unlinkSync(destPath);
+	}
+	if (!existsSync(publishDir)) {
+		await mkdir(publishDir, {recursive: true});
+	}
 
 	tar.create(
 		{
@@ -168,20 +167,20 @@ function createPluginInfo(manifestPath: string, destPath: string, jplFilePath: s
 }
 
 async function onBuildCompleted() {
-    await createPluginArchive(distDir, pluginArchiveFilePath);
-    createPluginInfo(manifestPath, pluginInfoFilePath, pluginArchiveFilePath);
-    validatePackageJson();
+	await createPluginArchive(distDir, pluginArchiveFilePath);
+	createPluginInfo(manifestPath, pluginInfoFilePath, pluginArchiveFilePath);
+	validatePackageJson();
 }
 
 async function bundle() {
-    await esbuild.build({
-        entryPoints: ['./src/index.ts'],
-        outfile: join(distDir, 'index.js'),
-        bundle: true,
-        platform: 'node',
-        target: 'node22',
+	await esbuild.build({
+		entryPoints: ['./src/index.ts'],
+		outfile: join(distDir, 'index.js'),
+		bundle: true,
+		platform: 'node',
+		target: 'node22',
 		plugins: customPlugins,
-    });
+	});
 }
 
 function resolveExtraScriptPath(name: string, isLibrary: boolean) {
@@ -201,14 +200,24 @@ async function buildExtraScripts(userConfig: any) {
 	if (!extraScripts.length) return;
 
 	const processScripts = async (scripts: string[], isLibrary: boolean) => {
-        await esbuild.build({
-            entryPoints: scripts.map(script => resolveExtraScriptPath(script, isLibrary)),
-            outdir: distDir,
-            outbase: srcDir,
-            bundle: true,
-            format: isLibrary ? 'cjs' : 'iife',
-			plugins: customPlugins,
-        });
+		await esbuild.build({
+			entryPoints: scripts.map(script => resolveExtraScriptPath(script, isLibrary)),
+			outdir: distDir,
+			outbase: srcDir,
+			bundle: true,
+			format: isLibrary ? 'cjs' : 'iife',
+			plugins: [
+				{
+					name: 'codemirror-extern',
+					setup: (build) => {
+						build.onResolve({ filter: /^@(codemirror|lezer)\/(state|view|language|common|markdown|highlight|autocomplete|commands|highlight|lint|lang-html|lang-markdown|language-data)$/ }, () => {
+							return { external: true };
+						});
+					},
+				},
+				...customPlugins,
+			],
+		});
 	};
 	await processScripts(userConfig.extraScripts ?? [], true);
 	await processScripts(userConfig.extraStandaloneScripts ?? [], false);
@@ -241,31 +250,31 @@ const updateVersion = () => {
 };
 
 const copyAssets = async () => {
-    const assets = await glob.glob('**/*', {
-        ignore: '**/*.{ts,tsx}',
-        cwd: srcDir,
-    });
-    for (const asset of assets) {
-        const srcPath = join(srcDir, asset);
-        const fileStat = await stat(srcPath);
-        if (fileStat.isFile()) {
-            await copyFile(srcPath, join(distDir, asset));
-        } else {
-            await mkdir(join(distDir, asset), { recursive: true });
-        }
-    }
+	const assets = await glob.glob('**/*', {
+		ignore: '**/*.{ts,tsx}',
+		cwd: srcDir,
+	});
+	for (const asset of assets) {
+		const srcPath = join(srcDir, asset);
+		const fileStat = await stat(srcPath);
+		if (fileStat.isFile()) {
+			await copyFile(srcPath, join(distDir, asset));
+		} else {
+			await mkdir(join(distDir, asset), { recursive: true });
+		}
+	}
 };
 
 async function build() {
-    const userConfig = {
-        extraScripts: [],
-        ...(existsSync(userConfigPath) ? JSON.parse(readFileSync(userConfigFilename, 'utf8')) : {}),
-    };
+	const userConfig = {
+		extraScripts: [],
+		...(existsSync(userConfigPath) ? JSON.parse(readFileSync(userConfigFilename, 'utf8')) : {}),
+	};
 
-    await bundle();
-    await buildExtraScripts(userConfig);
-    await copyAssets();
-    await onBuildCompleted();
+	await bundle();
+	await buildExtraScripts(userConfig);
+	await copyAssets();
+	await onBuildCompleted();
 }
 
 const command = process.argv[2];
