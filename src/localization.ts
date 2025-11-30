@@ -107,6 +107,7 @@ const defaultStrings: AppLocalization = {
 const localizations: Record<string, Partial<AppLocalization>> = {
 	de: {
 		insertDrawing: 'Zeichnung einfügen',
+		insertDrawingInNewWindow: 'Zeichnung in neuem Fenster einfügen',
 		restoreFromAutosave: 'Automatische Sicherung wiederherstellen',
 		deleteAutosave: 'Alle automatischen Sicherungen löschen',
 		noSuchAutosaveExists: 'Keine automatischen Sicherungen vorhanden',
@@ -115,13 +116,44 @@ const localizations: Record<string, Partial<AppLocalization>> = {
 
 		edit: 'Bearbeiten',
 		close: 'Schließen',
+		saveAndClose: 'Speichern und Schließen',
 
 		overwriteExisting: 'Existierende Zeichnung überschreiben',
 		saveAsNewDrawing: 'Als neue Zeichnung speichern',
-		clickBelowToContinue: 'Fertig! Klicke auf „Ok“ um fortzufahen.',
+		clickBelowToContinue: 'Fertig! Unten klicken, um fortzufahen.',
 		discardUnsavedChanges: 'Ungespeicherte Änderungen verwerfen?',
-		resumeEditing: 'Bearbeiten fortfahren',
+		resumeEditing: 'Weiter bearbeiten',
+		saveAndResumeEditing: 'Speichern und weiter bearbeiten',
+		saveChanges: 'Änderungen speichern',
+		exitInstructions: 'Alle Änderungen gespeichert! Unten klicken, um das Fenster zu schließen.',
 
+		settingsPaneDescription: 'Einstellungen für Freihand-Zeichnen.',
+		setting__disableFullScreen: 'Dialogmodus',
+		setting__disableFullScreenDescription:
+		'Wenn diese Einstellung aktiviert ist, füllt der Editor das Joplin-Fenster nur teilweise aus.',
+		setting__autosaveIntervalSettingLabel: 'Intervall für die automatische Speicherung (Minuten)',
+		setting__autosaveIntervalSettingDescription:
+		'Legt fest, wie oft eine Sicherungskopie der aktuellen Zeichnung erstellt wird. Die letzte automatische Speicherung kann wiederhergestellt werden, indem du in der Befehlspalette (Strg+Umschalt+P oder Cmd+Umschalt+P unter MacOS) nach „:restore autosave“ suchst und auf „Automatische Sicherung wiederherstellen“ klickst. Wenn diese Einstellung auf Null gesetzt ist, werden alle zwei Minuten automatische Speichervorgänge durchgeführt.',
+		setting__themeLabel: 'Design',
+		setting__toolbarTypeLabel: 'Toolbar-Typ',
+		setting__toolbarTypeDescription:
+		'Diese Einstellung wechselt zwischen den möglichen Benutzeroberflächen der Symbolleiste für den Bildeditor.',
+		setting__keyboardShortcuts: 'Tastaturkürzel',
+
+		toolbarTypeDefault: 'Standard',
+		toolbarTypeSidebar: 'Sidebar',
+		toolbarTypeDropdown: 'Dropdown-Menü',
+
+		styleMatchJoplin: 'wie Joplin',
+		styleJsDrawLight: 'Hell',
+		styleJsDrawDark: 'Dunkel',
+
+		images: 'Bilder',
+		pdfs: 'PDFs',
+		allFiles: 'Alle Dateien',
+
+		loadLargePdf: (pageCount: number) =>
+		`Die ausgewählte Datei ist eine große PDF-Datei (mit ${pageCount} Seiten). Das Laden kann einige Zeit dauern und die Größe der aktuellen Zeichnung erhöhen. Fortfahren?`,
 		notAnEditableImage: (resourceId: string, resourceType: string) =>
 			`Die Ressource ${resourceId} ist kein bearbeitbares Bild. Ressource vom Typ ${resourceType} kann nicht bearbeitet werden.`,
 	},
