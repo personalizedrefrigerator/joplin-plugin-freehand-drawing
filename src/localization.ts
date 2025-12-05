@@ -145,6 +145,58 @@ const localizations: Record<string, Partial<AppLocalization>> = {
 		resumeEditing: 'Continuar editando',
 		saveAndResumeEditing: 'Guardar y continuar editando',
 	},
+	hr: {
+		insertDrawing: 'Umetni crtež',
+		insertDrawingInNewWindow: 'Umetni crtež u novom prozoru',
+		restoreFromAutosave: 'Obnovi iz automatski spremljenog crteža',
+		deleteAutosave: 'Izbriši sve automatski spremljene crteže',
+		noSuchAutosaveExists: 'Ne postoji automatski spremljeni crtež',
+		discardChanges: 'Odbaci promjene',
+		defaultImageTitle: 'Prostoručni crtež',
+
+		edit: 'Uredi',
+		close: 'Zatvori',
+		saveAndClose: 'Spremi i zatvori',
+
+		overwriteExisting: 'Prepiši postojeće',
+		saveAsNewDrawing: 'Spremi kao novi crtež',
+		clickBelowToContinue: 'Gotovo! Klikni dolje za nastavak.',
+		discardUnsavedChanges: 'Odbaciti nespremljene promjene?',
+		resumeEditing: 'Nastavi uređivati',
+		saveAndResumeEditing: 'Spremi i nastavi uređivati',
+		saveChanges: 'Spremi promjene',
+		exitInstructions: 'Sve promjene su spremljene! Klikni dolje za izlaz.',
+
+		settingsPaneDescription: 'Postavke uređivača crteža.',
+		setting__disableFullScreen: 'Modus dijaloga',
+		setting__disableFullScreenDescription:
+			'Uključivanjem ove postavke će uređivač ispuniti samo dio Joplinovog prozora.',
+		setting__autosaveIntervalSettingLabel: 'Interval automatskog spremanja (minute)',
+		setting__autosaveIntervalSettingDescription:
+			'Prilagođava učestalost stvaranja sigurnosnih kopija trenutačnog crteža. Najnoviji automatski spremljeni crtež se može obnoviti pretraživanjem „:restore autosave” u paleti naredbi (ctrl+shift+p ili cmd+shift+p na MacOS-u) i klikom na „Obnovi iz automatski spremljenog crteža”. Ako je ova postavka postavljena na nulu, automatska spremanja se izvode svake dvije minute.',
+		setting__themeLabel: 'Tema',
+		setting__toolbarTypeLabel: 'Vrsta alatne trake',
+		setting__toolbarTypeDescription:
+			'Ova postavka omogućuje prebacivanje između mogućih korisničkih sučelja alatnih traka za uređivač slika.',
+		setting__keyboardShortcuts: 'Tipkovni prečaci',
+
+		toolbarTypeDefault: 'Zadano',
+		toolbarTypeSidebar: 'Bočna traka',
+		toolbarTypeDropdown: 'Padajući izbornik',
+
+		styleMatchJoplin: 'Uskladi s Joplinom',
+		styleJsDrawLight: 'Svijetla',
+		styleJsDrawDark: 'Tamna',
+
+		images: 'Slike',
+		pdfs: 'PDF-ovi',
+		allFiles: 'Sve datoteke',
+
+		loadLargePdf: (pageCount: number) =>
+			`Jedna odabrana datoteka je veliki PDF (${pageCount} stranica). Učitavanje može potrajati i povećati veličinu trenutačnog crteža. Želiš li nastaviti?`,
+		notAnEditableImage: (resourceId: string, resourceType: string) =>
+			`Resurs ${resourceId} nije slika koja se može uređivati. Nije moguće urediti resurs vrste ${resourceType}.`,
+	};
 	ro: {
 		insertDrawing: 'Inserează un desen',
 		insertDrawingInNewWindow: 'Inserează un desen într-o fereastră nouă',
