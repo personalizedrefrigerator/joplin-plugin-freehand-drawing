@@ -73,7 +73,7 @@ const makeImageEditable = (image: HTMLImageElement, editLabel: Promise<string>) 
 			updateVisibleState();
 			updatePositioning();
 		});
-		image.addEventListener('pointerout', (event) => {
+		image.addEventListener('pointerleave', (event) => {
 			pointerSet.delete(event.pointerId);
 			updateVisibleState();
 		});
