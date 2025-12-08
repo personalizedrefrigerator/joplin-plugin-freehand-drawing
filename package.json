@@ -44,7 +44,7 @@
 		"@types/bezier-js": "4.1.0"
 	},
 	"dependencies": {
-		"@js-draw/material-icons": "1.30.0",
-		"js-draw": "1.30.0"
+		"@js-draw/material-icons": "1.32.0",
+		"js-draw": "1.32.0"
 	}
 }
