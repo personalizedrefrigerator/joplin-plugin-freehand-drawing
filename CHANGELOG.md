@@ -1,3 +1,9 @@
+# 4.1.0
+
+- Features
+  - Updated German language translation (#30) by [@Kachelkaiser](https://github.com/personalizedrefrigerator/joplin-plugin-freehand-drawing/pull/30).
+  - Partial Croatian translation (#32) by [@milotype](https://github.com/milotype).
+
 # 4.0.0
 
 - Bug fixes
