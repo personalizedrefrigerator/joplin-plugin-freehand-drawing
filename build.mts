@@ -19,7 +19,7 @@ import * as glob from 'glob';
 import * as tar from 'tar';
 import { copyFile, mkdir, stat } from 'node:fs/promises';
 
-// @ts-ignore -- import.meta.url *is* defined. This is a .mts file.
+// @ts-expect-error -- import.meta.url *is* defined. This is a .mts file.
 const __filename = new URL(import.meta.url).pathname;
 const __dirname = dirname(__filename);
 
@@ -27,13 +27,11 @@ const __dirname = dirname(__filename);
 // Custom plugins (user-provided)
 /////////////////////////////////
 
-const customPlugins: esbuild.Plugin[] = [
-];
+const customPlugins: esbuild.Plugin[] = [];
 
 ///////////////////////
 // End custom plugins
 ///////////////////////
-
 
 const rootDir = resolve(__dirname);
 const userConfigFilename = './plugin.config.json';
@@ -56,15 +54,23 @@ const getPackageJson = () => {
 function validatePackageJson() {
 	const content = getPackageJson();
 	if (!content.name || content.name.indexOf('joplin-plugin-') !== 0) {
-		console.warn(`WARNING: To publish the plugin, the package name should start with "joplin-plugin-" (found "${content.name}") in ${packageJsonPath}`);
+		console.warn(
+			`WARNING: To publish the plugin, the package name should start with "joplin-plugin-" (found "${content.name}") in ${packageJsonPath}`,
+		);
 	}
 
 	if (!content.keywords || content.keywords.indexOf('joplin-plugin') < 0) {
-		console.warn(`WARNING: To publish the plugin, the package keywords should include "joplin-plugin" (found "${JSON.stringify(content.keywords)}") in ${packageJsonPath}`);
+		console.warn(
+			`WARNING: To publish the plugin, the package keywords should include "joplin-plugin" (found "${JSON.stringify(
+				content.keywords,
+			)}") in ${packageJsonPath}`,
+		);
 	}
 
 	if (content.scripts && content.scripts.postinstall) {
-		console.warn(`WARNING: package.json contains a "postinstall" script. It is recommended to use a "prepare" script instead so that it is executed before publish. In ${packageJsonPath}`);
+		console.warn(
+			`WARNING: package.json contains a "postinstall" script. It is recommended to use a "prepare" script instead so that it is executed before publish. In ${packageJsonPath}`,
+		);
 	}
 }
 
@@ -89,15 +95,26 @@ function currentGitInfo() {
 
 function validateCategories(categories: string[]) {
 	if (!categories) return;
-	if ((categories.length !== new Set(categories).size)) throw new Error('Repeated categories are not allowed');
-	categories.forEach(category => {
+	if (categories.length !== new Set(categories).size)
+		throw new Error('Repeated categories are not allowed');
+	categories.forEach((category) => {
 		const allPossibleCategories = [
-			"appearance", "developer tools", "productivity",
-			"themes", "integrations", "viewer", "search", "tags",
-			"editor", "files", "personal knowledge management",
+			'appearance',
+			'developer tools',
+			'productivity',
+			'themes',
+			'integrations',
+			'viewer',
+			'search',
+			'tags',
+			'editor',
+			'files',
+			'personal knowledge management',
 		];
 		if (!allPossibleCategories.includes(category)) {
-			throw new Error(`${category} is not a valid category. Please make sure that the category name is lowercase. Valid categories are: \n${allPossibleCategories}\n`);
+			throw new Error(
+				`${category} is not a valid category. Please make sure that the category name is lowercase. Valid categories are: \n${allPossibleCategories}\n`,
+			);
 		}
 	});
 }
@@ -105,17 +122,23 @@ function validateCategories(categories: string[]) {
 type Screenshot = { src: string };
 function validateScreenshots(screenshots: Screenshot[]) {
 	if (!screenshots) return;
-	screenshots.forEach(screenshot => {
+	screenshots.forEach((screenshot) => {
 		if (!screenshot.src) throw new Error('You must specify a src for each screenshot');
 
 		const screenshotType = screenshot.src.split('.').pop() ?? '';
-		if (!allPossibleScreenshotsType.includes(screenshotType)) throw new Error(`${screenshotType} is not a valid screenshot type. Valid types are: \n${allPossibleScreenshotsType}\n`);
+		if (!allPossibleScreenshotsType.includes(screenshotType))
+			throw new Error(
+				`${screenshotType} is not a valid screenshot type. Valid types are: \n${allPossibleScreenshotsType}\n`,
+			);
 
 		const screenshotPath = resolve(rootDir, screenshot.src);
 		// Max file size is 1MB
 		const fileMaxSize = 1024;
 		const fileSize = statSync(screenshotPath).size / 1024;
-		if (fileSize > fileMaxSize) throw new Error(`Max screenshot file size is ${fileMaxSize}KB. ${screenshotPath} is ${fileSize}KB`);
+		if (fileSize > fileMaxSize)
+			throw new Error(
+				`Max screenshot file size is ${fileMaxSize}KB. ${screenshotPath} is ${fileSize}KB`,
+			);
 	});
 }
 
@@ -129,15 +152,17 @@ function readManifest(manifestPath: string) {
 }
 
 async function createPluginArchive(sourceDir: string, destPath: string) {
-	const distFiles = glob.sync(`${sourceDir}/**/*`, { nodir: true })
-		.map(f => f.substring(sourceDir.length + 1));
+	const distFiles = glob
+		.sync(`${sourceDir}/**/*`, { nodir: true })
+		.map((f) => f.substring(sourceDir.length + 1));
 
-	if (!distFiles.length) throw new Error('Plugin archive was not created because the "dist" directory is empty');
+	if (!distFiles.length)
+		throw new Error('Plugin archive was not created because the "dist" directory is empty');
 	if (existsSync(destPath)) {
 		unlinkSync(destPath);
 	}
 	if (!existsSync(publishDir)) {
-		await mkdir(publishDir, {recursive: true});
+		await mkdir(publishDir, { recursive: true });
 	}
 
 	tar.create(
@@ -148,7 +173,7 @@ async function createPluginArchive(sourceDir: string, destPath: string) {
 			cwd: sourceDir,
 			sync: true,
 		},
-		distFiles
+		distFiles,
 	);
 
 	console.info(`Plugin archive has been created in ${destPath}`);
@@ -183,11 +208,12 @@ async function bundle() {
 	});
 }
 
-function resolveExtraScriptPath(name: string, isLibrary: boolean) {
+function resolveExtraScriptPath(name: string) {
 	const relativePath = `./src/${name}`;
 
 	const fullPath = resolve(`${rootDir}/${relativePath}`);
-	if (!existsSync(fullPath)) throw new Error(`Could not find extra script: "${name}" at "${fullPath}"`);
+	if (!existsSync(fullPath))
+		throw new Error(`Could not find extra script: "${name}" at "${fullPath}"`);
 
 	return relativePath;
 }
@@ -201,7 +227,7 @@ async function buildExtraScripts(userConfig: any) {
 
 	const processScripts = async (scripts: string[], isLibrary: boolean) => {
 		await esbuild.build({
-			entryPoints: scripts.map(script => resolveExtraScriptPath(script, isLibrary)),
+			entryPoints: scripts.map((script) => resolveExtraScriptPath(script)),
 			outdir: distDir,
 			outbase: srcDir,
 			bundle: true,
@@ -210,9 +236,15 @@ async function buildExtraScripts(userConfig: any) {
 				{
 					name: 'codemirror-extern',
 					setup: (build) => {
-						build.onResolve({ filter: /^@(codemirror|lezer)\/(state|view|language|common|markdown|highlight|autocomplete|commands|highlight|lint|lang-html|lang-markdown|language-data)$/ }, () => {
-							return { external: true };
-						});
+						build.onResolve(
+							{
+								filter:
+									/^@(codemirror|lezer)\/(state|view|language|common|markdown|highlight|autocomplete|commands|highlight|lint|lang-html|lang-markdown|language-data)$/,
+							},
+							() => {
+								return { external: true };
+							},
+						);
 					},
 				},
 				...customPlugins,
@@ -245,7 +277,9 @@ const updateVersion = () => {
 	writeManifest(manifestPath, manifest);
 
 	if (packageJson.version !== manifest.version) {
-		console.warn(`Version numbers have been updated but they do not match: package.json (${packageJson.version}), manifest.json (${manifest.version}). Set them to the required values to get them in sync.`);
+		console.warn(
+			`Version numbers have been updated but they do not match: package.json (${packageJson.version}), manifest.json (${manifest.version}). Set them to the required values to get them in sync.`,
+		);
 	}
 };
 
