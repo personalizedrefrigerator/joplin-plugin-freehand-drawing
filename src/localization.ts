@@ -130,14 +130,14 @@ const localizations: Record<string, Partial<AppLocalization>> = {
 		settingsPaneDescription: 'Einstellungen für Freihand-Zeichnen.',
 		setting__disableFullScreen: 'Dialogmodus',
 		setting__disableFullScreenDescription:
-		'Wenn diese Einstellung aktiviert ist, füllt der Editor das Joplin-Fenster nur teilweise aus.',
+			'Wenn diese Einstellung aktiviert ist, füllt der Editor das Joplin-Fenster nur teilweise aus.',
 		setting__autosaveIntervalSettingLabel: 'Intervall für die automatische Speicherung (Minuten)',
 		setting__autosaveIntervalSettingDescription:
-		'Legt fest, wie oft eine Sicherungskopie der aktuellen Zeichnung erstellt wird. Die letzte automatische Speicherung kann wiederhergestellt werden, indem du in der Befehlspalette (Strg+Umschalt+P oder Cmd+Umschalt+P unter MacOS) nach „:restore autosave“ suchst und auf „Automatische Sicherung wiederherstellen“ klickst. Wenn diese Einstellung auf Null gesetzt ist, werden alle zwei Minuten automatische Speichervorgänge durchgeführt.',
+			'Legt fest, wie oft eine Sicherungskopie der aktuellen Zeichnung erstellt wird. Die letzte automatische Speicherung kann wiederhergestellt werden, indem du in der Befehlspalette (Strg+Umschalt+P oder Cmd+Umschalt+P unter MacOS) nach „:restore autosave“ suchst und auf „Automatische Sicherung wiederherstellen“ klickst. Wenn diese Einstellung auf Null gesetzt ist, werden alle zwei Minuten automatische Speichervorgänge durchgeführt.',
 		setting__themeLabel: 'Design',
 		setting__toolbarTypeLabel: 'Toolbar-Typ',
 		setting__toolbarTypeDescription:
-		'Diese Einstellung wechselt zwischen den möglichen Benutzeroberflächen der Symbolleiste für den Bildeditor.',
+			'Diese Einstellung wechselt zwischen den möglichen Benutzeroberflächen der Symbolleiste für den Bildeditor.',
 		setting__keyboardShortcuts: 'Tastaturkürzel',
 
 		toolbarTypeDefault: 'Standard',
@@ -153,7 +153,7 @@ const localizations: Record<string, Partial<AppLocalization>> = {
 		allFiles: 'Alle Dateien',
 
 		loadLargePdf: (pageCount: number) =>
-		`Die ausgewählte Datei ist eine große PDF-Datei (mit ${pageCount} Seiten). Das Laden kann einige Zeit dauern und die Größe der aktuellen Zeichnung erhöhen. Fortfahren?`,
+			`Die ausgewählte Datei ist eine große PDF-Datei (mit ${pageCount} Seiten). Das Laden kann einige Zeit dauern und die Größe der aktuellen Zeichnung erhöhen. Fortfahren?`,
 		notAnEditableImage: (resourceId: string, resourceType: string) =>
 			`Die Ressource ${resourceId} ist kein bearbeitbares Bild. Ressource vom Typ ${resourceType} kann nicht bearbeitet werden.`,
 	},
@@ -228,7 +228,7 @@ const localizations: Record<string, Partial<AppLocalization>> = {
 			`Jedna odabrana datoteka je veliki PDF (${pageCount} stranica). Učitavanje može potrajati i povećati veličinu trenutačnog crteža. Želiš li nastaviti?`,
 		notAnEditableImage: (resourceId: string, resourceType: string) =>
 			`Resurs ${resourceId} nije slika koja se može uređivati. Nije moguće urediti resurs vrste ${resourceType}.`,
-	};
+	},
 	ro: {
 		insertDrawing: 'Inserează un desen',
 		insertDrawingInNewWindow: 'Inserează un desen într-o fereastră nouă',
