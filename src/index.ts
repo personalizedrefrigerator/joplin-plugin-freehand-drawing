@@ -107,12 +107,5 @@ joplin.plugins.register({
 			console.warn('Unknown action', action);
 			return null;
 		});
-
-		const codeMirrorContentScriptId = 'jsdraw__codeMirrorContentScriptId';
-		await joplin.contentScripts.register(
-			ContentScriptType.CodeMirrorPlugin,
-			codeMirrorContentScriptId,
-			'./contentScripts/codeMirror.js',
-		);
 	},
 });
