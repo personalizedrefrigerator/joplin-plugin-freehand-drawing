@@ -99,8 +99,12 @@ const makeImageEditable = (image: HTMLImageElement, editLabel: Promise<string>) 
 	const isRichTextEditor =
 		document.body.classList.contains('mce-content-body') || document.body.id === 'tinymce';
 	const hasWebViewApi = typeof webviewApi !== 'undefined';
+	const isHtmlNote = !document.body.querySelector('#rendered-md');
 
-	if (isRichTextEditor) {
+	// Avoid adding the edit button to HTML notes or the Rich Text Editor. Doing so can:
+	// - In the case of the Rich Text Editor, add extra content to the saved HTML.
+	// - In the case of HTML notes, result in an always-visible button.
+	if (isRichTextEditor || isHtmlNote) {
 		image.style.cursor = 'pointer';
 	} else if (hasWebViewApi) {
 		// Don't show the edit button e.g. in exported HTML.
