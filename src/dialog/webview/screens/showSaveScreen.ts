@@ -1,10 +1,10 @@
 // Returns false if save screen is shown, true if saved
 
-import { MessageType, ResponseType, SaveMessage, SaveMethod } from '../../../types';
-import localization from '../../../localization';
-import { EditorControl } from '../makeJsDrawEditor';
-import { PostMessageCallback } from '../types';
-import svgElementToString from '../svgElementToString';
+import { MessageType, ResponseType, SaveMessage, SaveMethod } from '../../../types.ts';
+import localization from '../../../localization.ts';
+import { EditorControl } from '../makeJsDrawEditor.ts';
+import type { PostMessageCallback } from '../types.ts';
+import svgElementToString from '../svgElementToString.ts';
 
 // without the need for a screen.
 const showSaveScreen = async (

@@ -1,7 +1,7 @@
-import Editor from 'js-draw';
-import type { PostMessageCallback } from './types';
-import { MessageType } from '../../types';
-import svgElementToString from './svgElementToString';
+import { Editor } from 'js-draw';
+import type { PostMessageCallback } from './types.ts';
+import { MessageType } from '../../types.ts';
+import svgElementToString from './svgElementToString.ts';
 
 const startAutosaveLoop = async (
 	editor: Editor,

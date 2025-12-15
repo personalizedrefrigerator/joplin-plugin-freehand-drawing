@@ -1,4 +1,4 @@
-import Joplin from './Joplin';
+import Joplin from './Joplin.ts';
 /**
  * @ignore
  */

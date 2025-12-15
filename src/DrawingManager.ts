@@ -1,9 +1,9 @@
-import joplin from 'api';
-import AbstractDrawingView from './dialog/AbstractDrawingView';
-import localization from './localization';
-import Resource from './Resource';
-import TemporaryDirectory from './TemporaryDirectory';
-import { SaveMethod } from './types';
+import joplin from 'api/index.ts';
+import AbstractDrawingView from './dialog/AbstractDrawingView.ts';
+import localization from './localization.ts';
+import Resource from './Resource.ts';
+import TemporaryDirectory from './TemporaryDirectory.ts';
+import { SaveMethod } from './types.ts';
 
 type DrawingViewFactory = () => AbstractDrawingView;
 type OnUpdateViewSettings = (view: AbstractDrawingView) => void;

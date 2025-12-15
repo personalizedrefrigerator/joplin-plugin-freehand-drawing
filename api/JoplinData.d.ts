@@ -1,4 +1,4 @@
-import { Path } from './types';
+import { Path } from './types.ts';
 /**
  * This module provides access to the Joplin data API: https://joplinapp.org/api/references/rest_api/
  * This is the main way to retrieve data, such as notes, notebooks, tags, etc.

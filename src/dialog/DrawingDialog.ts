@@ -1,9 +1,9 @@
-import joplin from 'api';
-import { ButtonSpec, DialogResult, ViewHandle } from 'api/types';
-import { pluginPrefix } from '../constants';
-import { SaveMethod, WebViewMessage } from '../types';
-import AbstractDrawingView, { OnWebViewMessageHandler } from './AbstractDrawingView';
-import TemporaryDirectory from '../TemporaryDirectory';
+import joplin from 'api/index.ts';
+import { ButtonSpec, DialogResult, ViewHandle } from 'api/types.ts';
+import { pluginPrefix } from '../constants.ts';
+import { SaveMethod, WebViewMessage } from '../types.ts';
+import AbstractDrawingView, { OnWebViewMessageHandler } from './AbstractDrawingView.ts';
+import TemporaryDirectory from '../TemporaryDirectory.ts';
 
 const dialogs = joplin.views.dialogs;
 

@@ -1,8 +1,8 @@
-import JoplinViewsDialogs from './JoplinViewsDialogs';
-import JoplinViewsMenuItems from './JoplinViewsMenuItems';
-import JoplinViewsMenus from './JoplinViewsMenus';
-import JoplinViewsToolbarButtons from './JoplinViewsToolbarButtons';
-import JoplinViewsPanels from './JoplinViewsPanels';
+import JoplinViewsDialogs from './JoplinViewsDialogs.ts';
+import JoplinViewsMenuItems from './JoplinViewsMenuItems.ts';
+import JoplinViewsMenus from './JoplinViewsMenus.ts';
+import JoplinViewsToolbarButtons from './JoplinViewsToolbarButtons.ts';
+import JoplinViewsPanels from './JoplinViewsPanels.ts';
 /**
  * This namespace provides access to view-related services.
  *

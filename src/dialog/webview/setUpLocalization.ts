@@ -1,4 +1,4 @@
-import { setLocale } from '../../localization';
+import { setLocale } from '../../localization.ts';
 
 const getLocaleInfo = () => {
 	// In some cases, the locale information is provided through a hidden element

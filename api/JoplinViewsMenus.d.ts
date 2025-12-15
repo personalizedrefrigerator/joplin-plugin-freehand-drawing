@@ -1,4 +1,4 @@
-import { MenuItem, MenuItemLocation } from './types';
+import { MenuItem, MenuItemLocation } from './types.ts';
 /**
  * Allows creating menus.
  *

@@ -1,4 +1,4 @@
-import { ContentScriptType, Script } from './types';
+import { ContentScriptType, Script } from './types.ts';
 /**
  * This class provides access to plugin-related features.
  */

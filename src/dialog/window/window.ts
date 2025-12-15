@@ -1,4 +1,4 @@
-import type { ButtonRecord } from '../AbstractDrawingView';
+import type { ButtonRecord } from '../AbstractDrawingView.ts';
 
 const log = (message: string) => {
 	const container = document.createElement('p');

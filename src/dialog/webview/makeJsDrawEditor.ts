@@ -1,18 +1,19 @@
-import MaterialIconProvider from '@js-draw/material-icons';
-import Editor, {
+import { MaterialIconProvider } from '@js-draw/material-icons';
+import {
+	Editor,
 	Erase,
 	RenderingMode,
 	adjustEditorThemeForContrast,
 	getLocalizationTable,
 } from 'js-draw';
-import { EditorCallbacks } from './types';
-import { EditorStyle, KeybindingRecord, ToolbarType } from '../../types';
-import loadTemplate from './template/loadTemplate';
-import { SettingControl } from './settings/types';
-import setupToolbar from './setupToolbar';
-import saveStateAsTemplate from './template/saveStateAsTemplate';
-import applyShortcutOverrides from './applyShortcutOverrides';
-import { getLocales } from '../../localization';
+import type { EditorCallbacks } from './types.ts';
+import type { EditorStyle, KeybindingRecord, ToolbarType } from '../../types.ts';
+import loadTemplate from './template/loadTemplate.ts';
+import type { SettingControl } from './settings/types.ts';
+import setupToolbar from './setupToolbar.ts';
+import saveStateAsTemplate from './template/saveStateAsTemplate.ts';
+import applyShortcutOverrides from './applyShortcutOverrides.ts';
+import { getLocales } from '../../localization.ts';
 
 export interface EditorControl {
 	editor: Editor;

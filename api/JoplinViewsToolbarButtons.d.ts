@@ -1,4 +1,4 @@
-import { ToolbarButtonLocation } from './types';
+import { ToolbarButtonLocation } from './types.ts';
 /**
  * Allows creating and managing toolbar buttons.
  *

@@ -1,4 +1,4 @@
-import { ViewHandle } from './types';
+import { ViewHandle } from './types.ts';
 /**
  * Allows creating and managing view panels. View panels currently are
  * displayed at the right of the sidebar and allows displaying any HTML

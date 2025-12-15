@@ -1,4 +1,4 @@
-import { ButtonSpec, ViewHandle, DialogResult } from './types';
+import { ButtonSpec, ViewHandle, DialogResult } from './types.ts';
 /**
  * Allows creating and managing dialogs. A dialog is modal window that
  * contains a webview and a row of buttons. You can update the

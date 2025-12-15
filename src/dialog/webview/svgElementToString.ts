@@ -1,4 +1,4 @@
-import { escapeHtml } from '../../util/htmlUtil';
+import { escapeHtml } from '../../util/htmlUtil.ts';
 
 const svgElementToString = (element: SVGElement) => {
 	// diagrams.io has special requirements for arguments encoding.

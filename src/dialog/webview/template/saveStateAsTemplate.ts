@@ -1,6 +1,6 @@
-import Editor, { BackgroundComponent } from 'js-draw';
-import { SettingControl } from '../settings/types';
-import { templateKey } from './constants';
+import { Editor, BackgroundComponent } from 'js-draw';
+import type { SettingControl } from '../settings/types.ts';
+import { templateKey } from './constants.ts';
 
 // Update the template for new images based on the current state of the editor
 const saveStateAsTemplate = (editor: Editor, settings: SettingControl) => {

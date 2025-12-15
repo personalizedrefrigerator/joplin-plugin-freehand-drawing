@@ -1,8 +1,8 @@
-import { MessageType } from '../../../types';
-import localization from '../../../localization';
-import { EditorControl } from '../makeJsDrawEditor';
-import { PostMessageCallback } from '../types';
-import showSaveScreen from './showSaveScreen';
+import { MessageType } from '../../../types.ts';
+import localization from '../../../localization.ts';
+import { EditorControl } from '../makeJsDrawEditor.ts';
+import { PostMessageCallback } from '../types.ts';
+import showSaveScreen from './showSaveScreen.ts';
 
 type AddSaveCompletedListenerCallback = (listener: () => void) => void;
 

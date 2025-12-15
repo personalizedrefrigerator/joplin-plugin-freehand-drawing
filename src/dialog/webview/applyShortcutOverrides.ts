@@ -1,5 +1,5 @@
-import Editor, { KeyBinding } from 'js-draw';
-import { KeybindingRecord } from '../../types';
+import { Editor, KeyBinding } from 'js-draw';
+import type { KeybindingRecord } from '../../types.ts';
 
 const applyShortcutOverrides = (editor: Editor, shortcuts: KeybindingRecord) => {
 	for (const id in shortcuts) {

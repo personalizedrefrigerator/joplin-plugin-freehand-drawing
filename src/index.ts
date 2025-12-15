@@ -1,13 +1,13 @@
-import joplin from 'api';
-import { ContentScriptType, MenuItemLocation, ToolbarButtonLocation } from 'api/types';
-import { clearAutosave, getAutosave } from './autosave';
-import localization, { getLocales, setLocale } from './localization';
-import TemporaryDirectory from './TemporaryDirectory';
-import DrawingDialog from './dialog/DrawingDialog';
-import { markdownItContentScriptId, pluginPrefix } from './constants';
-import DrawingWindow from './dialog/DrawingWindow';
-import { registerSettings } from './settings';
-import DrawingManager from './DrawingManager';
+import joplin from 'api/index.ts';
+import { ContentScriptType, MenuItemLocation, ToolbarButtonLocation } from 'api/types.ts';
+import { clearAutosave, getAutosave } from './autosave.ts';
+import localization, { getLocales, setLocale } from './localization.ts';
+import TemporaryDirectory from './TemporaryDirectory.ts';
+import DrawingDialog from './dialog/DrawingDialog.ts';
+import { markdownItContentScriptId, pluginPrefix } from './constants.ts';
+import DrawingWindow from './dialog/DrawingWindow.ts';
+import { registerSettings } from './settings.ts';
+import DrawingManager from './DrawingManager.ts';
 
 joplin.plugins.register({
 	onStart: async function () {
@@ -94,7 +94,7 @@ joplin.plugins.register({
 		await joplin.contentScripts.register(
 			ContentScriptType.MarkdownItPlugin,
 			markdownItContentScriptId,
-			'./contentScripts/markdownIt.js',
+			'./contentScripts/markdownIt.cjs',
 		);
 		await joplin.contentScripts.onMessage(markdownItContentScriptId, async (action: string) => {
 			if (action.startsWith('edit:')) {

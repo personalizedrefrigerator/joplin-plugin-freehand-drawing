@@ -1,4 +1,4 @@
-import joplin from 'api';
+import joplin from 'api/index.ts';
 
 import type FsExtra = require('fs-extra');
 import path = require('path');

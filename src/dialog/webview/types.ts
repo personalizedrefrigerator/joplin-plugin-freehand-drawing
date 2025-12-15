@@ -1,4 +1,4 @@
-import { TransferableImageData, WebViewMessage, WebViewMessageResponse } from '../../types';
+import type { TransferableImageData, WebViewMessage, WebViewMessageResponse } from '../../types.ts';
 
 export type PostMessageCallback = (message: WebViewMessage) => Promise<WebViewMessageResponse>;
 

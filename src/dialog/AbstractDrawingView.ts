@@ -1,6 +1,6 @@
-import { DialogResult } from 'api/types';
-import { autosave, clearAutosave } from '../autosave';
-import localization from '../localization';
+import { DialogResult } from 'api/types.ts';
+import { autosave, clearAutosave } from '../autosave.ts';
+import localization from '../localization.ts';
 import {
 	EditorStyle,
 	KeybindingRecord,
@@ -11,14 +11,14 @@ import {
 	ToolbarType,
 	WebViewMessage,
 	WebViewMessageResponse,
-} from '../types';
-import TemporaryDirectory from '../TemporaryDirectory';
+} from '../types.ts';
+import TemporaryDirectory from '../TemporaryDirectory.ts';
 import promptForImages, {
 	cleanUpTaskResult,
 	taskById as imagePickerTaskById,
-} from '../util/promptForImages';
-import { escapeHtml } from '../util/htmlUtil';
-import joplin from 'api';
+} from '../util/promptForImages.ts';
+import { escapeHtml } from '../util/htmlUtil.ts';
+import joplin from 'api/index.ts';
 
 export type SaveCallback = (svgData: string) => void | Promise<void>;
 export type SaveCallbacks =

@@ -1,4 +1,4 @@
-import { Command } from './types';
+import { Command } from './types.ts';
 /**
  * This class allows executing or registering new Joplin commands. Commands
  * can be executed or associated with

@@ -10,11 +10,12 @@
 		"strictBindCallApply": true,
 		"strictFunctionTypes": true,
 		"strictNullChecks": true,
+		"allowImportingTsExtensions": true,
 		"noEmit": true,
 
 		"outDir": "./dist/",
-		"module": "commonjs",
-		"target": "ES2015",
+		"module": "nodenext",
+		"target": "ES2022",
 		"jsx": "react",
 		"allowJs": true,
 		"baseUrl": "."

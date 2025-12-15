@@ -1,6 +1,6 @@
-import localization, { setLocale } from 'src/localization';
-import { markdownItContentScriptId } from '../constants';
-import makeImageEditable from './utils/makeImageEditable';
+import localization, { setLocale } from '../localization.ts';
+import { markdownItContentScriptId } from '../constants.ts';
+import makeImageEditable from './utils/makeImageEditable.ts';
 
 declare const webviewApi: any;
 

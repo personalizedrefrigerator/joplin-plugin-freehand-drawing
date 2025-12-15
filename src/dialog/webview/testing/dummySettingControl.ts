@@ -1,7 +1,7 @@
-import { SettingControl } from '../settings/types';
+import type { SettingControl } from '../settings/types.ts';
 
 const dummySettingControl: SettingControl = {
-	updateSetting: jest.fn(),
+	updateSetting: () => {},
 	getSetting(_key) {
 		return null;
 	},

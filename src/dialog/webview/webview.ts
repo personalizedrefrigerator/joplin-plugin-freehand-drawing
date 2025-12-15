@@ -8,13 +8,13 @@ import {
 	MessageType,
 	ResponseType,
 	SaveMethod,
-} from '../../types';
-import startAutosaveLoop from './startAutosaveLoop';
-import { LoadImageTask, PostMessageCallback } from './types';
-import makeJsDrawEditor, { EditorControl } from './makeJsDrawEditor';
-import localStorageSettingControl from './settings/localStorageSettingControl';
-import showSaveScreen from './screens/showSaveScreen';
-import showCloseScreen from './screens/showCloseScreen';
+} from '../../types.ts';
+import startAutosaveLoop from './startAutosaveLoop.ts';
+import { LoadImageTask, PostMessageCallback } from './types.ts';
+import makeJsDrawEditor, { EditorControl } from './makeJsDrawEditor.ts';
+import localStorageSettingControl from './settings/localStorageSettingControl.ts';
+import showSaveScreen from './screens/showSaveScreen.ts';
+import showCloseScreen from './screens/showCloseScreen.ts';
 
 type OnMessageCallback = (info: { message: WebViewMessage }) => Promise<WebViewMessageResponse>;
 declare const webviewApi: {

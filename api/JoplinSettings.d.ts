@@ -1,4 +1,4 @@
-import { SettingItem, SettingSection } from './types';
+import { SettingItem, SettingSection } from './types.ts';
 export interface ChangeEvent {
     /**
      * Setting keys that have been changed

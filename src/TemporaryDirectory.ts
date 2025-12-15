@@ -1,4 +1,4 @@
-import joplin from 'api';
+import joplin from 'api/index.ts';
 import { tmpdir } from 'os';
 import * as path from 'path';
 

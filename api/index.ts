@@ -1,4 +1,4 @@
-import type Joplin from './Joplin';
+import type Joplin from './Joplin.ts';
 
 declare const joplin: Joplin;
 

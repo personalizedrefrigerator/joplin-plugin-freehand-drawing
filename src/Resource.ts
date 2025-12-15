@@ -1,5 +1,5 @@
-import joplin from 'api';
-import TemporaryDirectory from './TemporaryDirectory';
+import joplin from 'api/index.ts';
+import TemporaryDirectory from './TemporaryDirectory.ts';
 
 import type FsExtra = require('fs-extra');
 const fs = joplin.require('fs-extra') as typeof FsExtra;

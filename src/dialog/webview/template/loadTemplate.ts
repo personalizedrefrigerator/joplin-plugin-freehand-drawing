@@ -1,6 +1,6 @@
-import Editor, { AbstractComponent, Rect2, Vec2 } from 'js-draw';
-import { SettingControl } from '../settings/types';
-import { defaultTemplate, templateKey } from './constants';
+import { Editor, AbstractComponent, Rect2, Vec2 } from 'js-draw';
+import type { SettingControl } from '../settings/types.ts';
+import { defaultTemplate, templateKey } from './constants.ts';
 
 // Initialize the editor's state from the template stored in localStorage.
 // This must be done in a way that can be overwritten by editor.loadFrom.

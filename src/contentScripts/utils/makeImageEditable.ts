@@ -1,4 +1,4 @@
-import { markdownItContentScriptId } from '../../constants';
+import { markdownItContentScriptId } from '../../constants.ts';
 
 declare const webviewApi: any;
 

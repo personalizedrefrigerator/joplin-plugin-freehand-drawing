@@ -1,4 +1,4 @@
-import { Disposable, MenuItem } from './types';
+import { Disposable, MenuItem } from './types.ts';
 export interface EditContextMenuFilterObject {
     items: MenuItem[];
 }

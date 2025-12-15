@@ -1,8 +1,8 @@
-import joplin from 'api';
-import localization from './localization';
-import { SettingItemType, SettingStorage } from 'api/types';
-import { EditorStyle, ToolbarType } from './types';
-import AbstractDrawingView from './dialog/AbstractDrawingView';
+import joplin from 'api/index.ts';
+import localization from './localization.ts';
+import { SettingItemType, SettingStorage } from 'api/types.ts';
+import { EditorStyle, ToolbarType } from './types.ts';
+import AbstractDrawingView from './dialog/AbstractDrawingView.ts';
 
 // Joplin adds a prefix to the setting in settings.json for us.
 const disableFullscreenKey = 'disable-editor-fills-window';

@@ -1,4 +1,4 @@
-import { ContentScriptType } from './types';
+import { ContentScriptType } from './types.ts';
 export default class JoplinContentScripts {
     private plugin;
     constructor(plugin: unknown);

@@ -19,7 +19,6 @@ import * as glob from 'glob';
 import * as tar from 'tar';
 import { copyFile, mkdir, stat } from 'node:fs/promises';
 
-// @ts-expect-error -- import.meta.url *is* defined. This is a .mts file.
 const __filename = new URL(import.meta.url).pathname;
 const __dirname = dirname(__filename);
 

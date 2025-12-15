@@ -1,4 +1,4 @@
-import { Rectangle } from './types';
+import { Rectangle } from './types.ts';
 export interface CreateFromBufferOptions {
     width?: number;
     height?: number;

@@ -1,8 +1,11 @@
-import { DialogResult } from 'api/types';
-import { WebViewMessage } from 'src/types';
-import AbstractDrawingView, { ButtonRecord, OnWebViewMessageHandler } from './AbstractDrawingView';
+import { DialogResult } from 'api/types.ts';
+import { WebViewMessage } from 'src/types.ts';
+import AbstractDrawingView, {
+	ButtonRecord,
+	OnWebViewMessageHandler,
+} from './AbstractDrawingView.ts';
 import { posix as posixPath, resolve } from 'path';
-import joplin from 'api';
+import joplin from 'api/index.ts';
 
 export default class DrawingWindow extends AbstractDrawingView {
 	private win: Window | undefined = undefined;

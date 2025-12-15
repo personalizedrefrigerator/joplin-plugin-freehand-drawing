@@ -1,9 +1,9 @@
-import joplin from 'api';
+import joplin from 'api/index.ts';
 import { basename, extname } from 'path';
-import TemporaryDirectory from '../TemporaryDirectory';
-import type { TransferableImageData } from '../types';
-import localization from '../localization';
-import isVersionGreater from './isVersionGreater';
+import TemporaryDirectory from '../TemporaryDirectory.ts';
+import type { TransferableImageData } from '../types.ts';
+import localization from '../localization.ts';
+import isVersionGreater from './isVersionGreater.ts';
 const { remove } = joplin.require('fs-extra');
 
 type TaskRecord = {

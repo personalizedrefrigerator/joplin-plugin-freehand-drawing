@@ -1,4 +1,4 @@
-import { SettingControl } from './types';
+import { SettingControl } from './types.ts';
 
 const localStorageSettingControl: SettingControl = {
 	updateSetting(key, value) {

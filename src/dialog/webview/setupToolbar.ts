@@ -1,12 +1,13 @@
-import Editor, {
+import {
+	Editor,
 	AbstractToolbar,
 	BaseWidget,
 	EditorEventType,
 	makeDropdownToolbar,
 	makeEdgeToolbar,
 } from 'js-draw';
-import { ToolbarType } from '../../types';
-import { SettingControl } from './settings/types';
+import { ToolbarType } from '../../types.ts';
+import type { SettingControl } from './settings/types.ts';
 
 type ToolbarCallbacks = {
 	onSavePress: () => void;
