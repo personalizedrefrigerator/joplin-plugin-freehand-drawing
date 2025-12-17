@@ -20,6 +20,8 @@ jobs:
         run: if test "x$(git tag --points-at)" = "x" ; then exit 1 ; fi
       - run: npm install -g npm
       - run: npm ci
+      # Verify that all tests pass
+      - run: npm run validate
 
       # See https://docs.github.com/en/actions/using-workflows/using-github-cli-in-workflows
       - name: Upload to GitHub
