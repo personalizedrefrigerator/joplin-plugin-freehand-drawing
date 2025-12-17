@@ -11,7 +11,7 @@
 		"lint-staged": "lint-staged",
 		"lint": "eslint --fix . && prettier --ignore-path .eslintignore --write .",
 		"test": "node --experimental-transform-types --test",
-		"validate": "tsc && test"
+		"validate": "npm run tsc && npm run test"
 	},
 	"license": "MIT",
 	"keywords": [
