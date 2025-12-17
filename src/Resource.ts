@@ -2,6 +2,7 @@ import joplin from 'api/index.ts';
 import TemporaryDirectory from './TemporaryDirectory.ts';
 
 import type FsExtra = require('fs-extra');
+import { escapeHtml } from './util/htmlUtil.ts';
 const fs = joplin.require('fs-extra') as typeof FsExtra;
 
 // References for the Joplin REST API:
@@ -72,13 +73,7 @@ export class Resource {
 	}
 
 	public htmlSafeTitle(): string {
-		// Ref: https://stackoverflow.com/a/7382028
-		return this.title
-			.replace(/[&]/g, '&amp;')
-			.replace(/[<]/g, '&lt;')
-			.replace(/[>]/g, '&gt;')
-			.replace(/["]/g, '&quot;')
-			.replace(/[']/g, '&#39;');
+		return escapeHtml(this.title);
 	}
 
 	// Given a URL in the form
