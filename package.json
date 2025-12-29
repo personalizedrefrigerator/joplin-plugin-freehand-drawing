@@ -44,7 +44,7 @@
 		"@types/jsdom": "27.0.0"
 	},
 	"dependencies": {
-		"@js-draw/material-icons": "1.32.0",
-		"js-draw": "1.32.0"
+		"@js-draw/material-icons": "1.33.0",
+		"js-draw": "1.33.0"
 	}
 }
