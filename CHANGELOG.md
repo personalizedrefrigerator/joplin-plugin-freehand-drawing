@@ -1,3 +1,8 @@
+# 4.2.0
+
+- [Updates `js-draw` to v1.33.0](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#1330)
+  - Fixes a touchscreen scrolling issue in the "attach image" menu.
+
 # 4.1.0
 
 - Features
