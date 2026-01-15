@@ -4,10 +4,10 @@
 	"type": "module",
 	"scripts": {
 		"dist": "node build.mts build",
+		"setup": "git config core.hookspath .githooks",
 		"tsc": "tsc",
 		"prepare": "npm run dist",
 		"update": "npm install -g generator-joplin && yo joplin --update",
-		"preinstall": "git config core.hookspath .githooks",
 		"lint-staged": "lint-staged",
 		"lint": "eslint --fix . && prettier --ignore-path .eslintignore --write .",
 		"test": "node --experimental-transform-types --test",
