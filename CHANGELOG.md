@@ -1,3 +1,8 @@
+# 4.3.0
+
+- Features
+  - Partial French translation (#33) by [@Pritam-Sing-2025](https://github.com/Pritam-Sing-2025).
+
 # 4.2.0
 
 - [Updates `js-draw` to v1.33.0](https://github.com/personalizedrefrigerator/js-draw/blob/main/CHANGELOG.md#1330)
