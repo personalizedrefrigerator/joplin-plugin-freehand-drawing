@@ -2,6 +2,10 @@
 
 - Features
   - Partial French translation (#33) by [@Pritam-Sing-2025](https://github.com/Pritam-Sing-2025).
+- Bug fixes
+  - Fix language detection within the editor WebView sometimes incorrectly uses the system locale instead of the Joplin locale.
+- Development/packaging
+  - Fix development environment setup script runs when `joplin-plugin-freehand-drawing` is added as an NPM dependency.
 
 # 4.2.0
 
