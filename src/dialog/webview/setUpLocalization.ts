@@ -14,5 +14,6 @@ const getLocaleInfo = () => {
 		console.warn('Locale information not found');
 		localeInfo = 'unknown';
 	}
-	setLocale([localeInfo, ...navigator.languages]);
+
+	setLocale(localeInfo);
 })();
