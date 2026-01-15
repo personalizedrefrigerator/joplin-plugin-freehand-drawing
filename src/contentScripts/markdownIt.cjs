@@ -1,4 +1,3 @@
-
 exports.default = () => {
 	return {
 		plugin: (_markdownIt, _options) => {},

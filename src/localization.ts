@@ -166,11 +166,11 @@ const localizations: Record<string, Partial<AppLocalization>> = {
 		noSuchAutosaveExists: 'Aucune sauvegarde automatique n’existe',
 		discardChanges: 'Ignorer les modifications',
 		defaultImageTitle: 'Dessin à main levée',
-	  
+
 		edit: 'Modifier',
 		close: 'Fermer',
 		saveAndClose: 'Enregistrer et fermer',
-	  
+
 		overwriteExisting: 'Écraser l’existant',
 		saveAsNewDrawing: 'Enregistrer comme nouveau dessin',
 		clickBelowToContinue: 'Terminé ! Cliquez ci-dessous pour continuer.',
@@ -178,38 +178,39 @@ const localizations: Record<string, Partial<AppLocalization>> = {
 		resumeEditing: 'Reprendre l’édition',
 		saveAndResumeEditing: 'Enregistrer et continuer l’édition',
 		saveChanges: 'Enregistrer les modifications',
-		exitInstructions: 'Toutes les modifications sont enregistrées. Cliquez ci-dessous pour quitter.',
-	  
+		exitInstructions:
+			'Toutes les modifications sont enregistrées. Cliquez ci-dessous pour quitter.',
+
 		settingsPaneDescription: 'Paramètres pour l’éditeur de dessin.',
 		setting__disableFullScreen: 'Mode dialogue',
 		setting__disableFullScreenDescription:
-		  'Lorsque cette option est activée, l’éditeur ne remplit que partiellement la fenêtre Joplin.',
+			'Lorsque cette option est activée, l’éditeur ne remplit que partiellement la fenêtre Joplin.',
 		setting__autosaveIntervalSettingLabel: 'Intervalle de sauvegarde automatique (minutes)',
 		setting__autosaveIntervalSettingDescription:
-		  'Définit la fréquence de création des sauvegardes automatiques du dessin courant.',
+			'Définit la fréquence de création des sauvegardes automatiques du dessin courant.',
 		setting__themeLabel: 'Thème',
 		setting__toolbarTypeLabel: 'Type de barre d’outils',
 		setting__toolbarTypeDescription:
-		  'Cette option permet de changer l’interface de la barre d’outils de l’éditeur.',
+			'Cette option permet de changer l’interface de la barre d’outils de l’éditeur.',
 		setting__keyboardShortcuts: 'Raccourcis clavier',
-	  
+
 		toolbarTypeDefault: 'Par défaut',
 		toolbarTypeSidebar: 'Barre latérale',
 		toolbarTypeDropdown: 'Menu déroulant',
-	  
+
 		styleMatchJoplin: 'Identique à Joplin',
 		styleJsDrawLight: 'Clair',
 		styleJsDrawDark: 'Sombre',
-	  
+
 		images: 'Images',
 		pdfs: 'PDF',
 		allFiles: 'Tous les fichiers',
-	  
+
 		loadLargePdf: (pageCount: number) =>
-		  `Le fichier sélectionné est un PDF volumineux (${pageCount} pages). Son chargement peut prendre du temps et augmenter la taille du dessin. Continuer ?`,
+			`Le fichier sélectionné est un PDF volumineux (${pageCount} pages). Son chargement peut prendre du temps et augmenter la taille du dessin. Continuer ?`,
 		notAnEditableImage: (resourceId: string, resourceType: string) =>
-		  `La ressource ${resourceId} n’est pas une image modifiable. Impossible de modifier une ressource de type ${resourceType}.`,
-	  },	  
+			`La ressource ${resourceId} n’est pas une image modifiable. Impossible de modifier une ressource de type ${resourceType}.`,
+	},
 	es: {
 		insertDrawing: 'Añada dibujo',
 		restoreFromAutosave: 'Resturar al autoguardado',
