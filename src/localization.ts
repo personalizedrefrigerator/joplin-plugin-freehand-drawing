@@ -334,6 +334,58 @@ const localizations: Record<string, Partial<AppLocalization>> = {
 		notAnEditableImage: (resourceId: string, resourceType: string) =>
 			`Resursa ${resourceId} nu este o imagine editabilă. Nu se poate edita resursa de tipul ${resourceType}.`,
 	},
+	ru: {
+    	insertDrawing: 'Вставить рисунок',
+    	insertDrawingInNewWindow: 'Вставить рисунок в новом окне',
+    	restoreFromAutosave: 'Восстановить автосохранённый рисунок',
+    	deleteAutosave: 'Удалить все автосохранённые рисунки',
+    	noSuchAutosaveExists: 'Автосохранённых рисунков нет',
+    	discardChanges: 'Не сохранять изменения',
+    	defaultImageTitle: 'Freehand Drawing',
+
+    	edit: 'Редактировать',
+    	close: 'Закрыть',
+    	saveAndClose: 'Сохранить и закрыть',
+
+    	overwriteExisting: 'Перезаписать существующий рисунок',
+    	saveAsNewDrawing: 'Сохранить как новый рисунок',
+    	clickBelowToContinue: 'Готово! Нажмите ниже, чтобы продолжить.',
+    	discardUnsavedChanges: 'Не сохранять изменения?',
+    	resumeEditing: 'Продолжить редактирование',
+    	saveAndResumeEditing: 'Сохранить и продолжить редактирование',
+    	saveChanges: 'Сохранить изменения',
+    	exitInstructions: 'Все изменения сохранены! Нажмите ниже, чтобы выйти.',
+
+    	settingsPaneDescription: 'Настройки редактора Freehand Drawing.',
+    	setting__disableFullScreen: 'Режим диалогового окна',
+    	setting__disableFullScreenDescription:
+    		'Если эта настройка включена, редактор будет занимать только часть окна Joplin.',
+    	setting__autosaveIntervalSettingLabel: 'Интервал автосохранения (минуты)',
+    	setting__autosaveIntervalSettingDescription:
+    		'Определяет, как часто создаётся резервная копия текущего рисунка. Последний автосохранённый рисунок можно восстановить: найдите ":restore autosave" в командной палитре (Ctrl+Shift+P или Cmd+Shift+P в macOS) и выберите "Восстановить автосохранённый рисунок". Если значение равно нулю, автосохранение выполняется каждые две минуты.',
+    	setting__themeLabel: 'Тема',
+    	setting__toolbarTypeLabel: 'Тип панели инструментов',
+    	setting__toolbarTypeDescription:
+    		'Эта настройка переключает доступные варианты панели инструментов редактора изображений.',
+    	setting__keyboardShortcuts: 'Сочетания клавиш',
+
+    	toolbarTypeDefault: 'По умолчанию',
+    	toolbarTypeSidebar: 'Боковая панель',
+    	toolbarTypeDropdown: 'Выпадающее меню',
+
+    	styleMatchJoplin: 'Как в Joplin',
+    	styleJsDrawLight: 'Светлая',
+    	styleJsDrawDark: 'Тёмная',
+
+    	images: 'Изображения',
+    	pdfs: 'PDF-файлы',
+    	allFiles: 'Все файлы',
+
+    	loadLargePdf: (pageCount: number) =>
+    		`Выбран большой PDF-файл (${pageCount} стр.). Его загрузка может занять некоторое время и увеличить размер текущего рисунка. Продолжить?`,
+    	notAnEditableImage: (resourceId: string, resourceType: string) =>
+    		`Ресурс ${resourceId} не является редактируемым изображением. Невозможно редактировать ресурс типа ${resourceType}.`,
+    },
 	sk: {
 		insertDrawing: 'Vložiť kresbu',
 		insertDrawingInNewWindow: 'Vložiť kresbu do nového okna',
