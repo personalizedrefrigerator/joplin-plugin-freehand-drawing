@@ -36,7 +36,7 @@
 		"glob": "^10.3.10",
 		"lint-staged": "14.0.1",
 		"prettier": "3.0.3",
-		"tar": "7.5.1",
+		"tar": "7.5.13",
 		"typescript": "^5.9.3",
 		"esbuild": "0.25.11",
 		"jsdom": "27.3.0",
